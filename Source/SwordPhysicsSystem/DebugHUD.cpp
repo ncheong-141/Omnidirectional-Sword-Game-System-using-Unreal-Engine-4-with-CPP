@@ -17,7 +17,7 @@ void ADebugHUD::DrawHUD() {
 	// Iterate from back to fron thru the list, so if we remove an item while iterating it wont be a problem
 	for (int i = messages.Num() - 1; i >= 0; i--) {
 
-		// Draw the bnackground vox the right size for the message
+		// Get the background box the right size for the message
 		float outputWidth, outputHeight, pad = 10.f;
 		GetTextSize(ADebugHUD::messages[i].message, outputWidth, outputHeight, hudFont, 1.f);
 

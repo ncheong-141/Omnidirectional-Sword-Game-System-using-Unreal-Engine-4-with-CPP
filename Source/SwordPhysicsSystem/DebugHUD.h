@@ -8,6 +8,11 @@
 
 /**
  * 
+ * The DebugHUD class is to display messages to the HUD ingame. 
+ * - The messages will display in red if it is a problem.
+ * - The message will display in white if it is just information
+ * 
+ * The DebugMessage class is an internal class used to encapsulate output data
  */
 
  // Internal Message class to ouput to HUD
