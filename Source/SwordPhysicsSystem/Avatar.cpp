@@ -4,11 +4,22 @@
 #include "Avatar.h"
 #include "DebugOutput.h"
 
+// Stances 
+#include "SwordStance.h"
+#include "DefaultSwordStance.h"
+
 // Sets default values
-AAvatar::AAvatar()
-{
+AAvatar::AAvatar() {
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Set stance variables
+	defaultStance = DefaultSwordStance(); 
+	slashStance = SlashSwordStance();
+
+	// Set the stance initially to Default.
+	AAvatar::setStance(defaultStance);
 
 }
 
@@ -43,14 +54,36 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Yaw", this, &AAvatar::Yaw);
 	PlayerInputComponent->BindAxis("Pitch", this, &AAvatar::Pitch);
 
+	// Action inputs 
 	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
+	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
+	PlayerInputComponent->BindAction("SlashSwordStance", IE_Pressed, this, &AAvatar::switch_SlashSwordStance);
+
 
 }
 
 
+/* Class member functions */
+
+// Stance functions
+
+void AAvatar::setStance(SwordStance& newStance) {
+	currentStance = &newStance; 
+}
+
+void AAvatar::switch_DefaultSwordStance() {
+	currentStance = &defaultStance;
+	currentStance->displayStance();
+}
+
+void AAvatar::switch_SlashSwordStance() {
+	currentStance = &slashStance;
+	currentStance->displayStance();
+}
+
+
+
 /* Movement functions */
-
-
 void AAvatar::MoveForward(float amount) {
 
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
