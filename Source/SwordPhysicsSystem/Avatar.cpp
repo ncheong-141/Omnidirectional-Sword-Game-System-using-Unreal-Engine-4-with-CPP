@@ -2,7 +2,7 @@
 
 
 #include "Avatar.h"
-#include "DebugHUD.h"
+#include "DebugOutput.h"
 
 // Sets default values
 AAvatar::AAvatar()
@@ -129,9 +129,7 @@ void AAvatar::Pitch(float amount) {
 void AAvatar::debugMessageOut() {
 
 	// Get a reference to  the controller
-	APlayerController* PController = GetWorld()->GetFirstPlayerController();
+	DebugOutput output = DebugOutput();
 
-	// Get refernce of the Hud from the controller
-	ADebugHUD* hud = Cast<ADebugHUD>(PController->GetHUD());
-	hud->addDebugMessage(DebugMessage(FString("Test"), 5.f, true));
+	output.toHUD("Test", 5.f, true);
 }
