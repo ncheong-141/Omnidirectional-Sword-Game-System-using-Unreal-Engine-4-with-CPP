@@ -2,6 +2,7 @@
 
 
 #include "Avatar.h"
+#include "DebugHUD.h"
 
 // Sets default values
 AAvatar::AAvatar()
@@ -41,6 +42,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Mouse inputs 
 	PlayerInputComponent->BindAxis("Yaw", this, &AAvatar::Yaw);
 	PlayerInputComponent->BindAxis("Pitch", this, &AAvatar::Pitch);
+
+	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
 
 }
 
@@ -120,4 +123,15 @@ void AAvatar::Pitch(float amount) {
 		AddControllerPitchInput(200.f * amount * GetWorld()->GetDeltaSeconds());
 	}
 
+}
+
+
+void AAvatar::debugMessageOut() {
+
+	// Get a reference to  the controller
+	APlayerController* PController = GetWorld()->GetFirstPlayerController();
+
+	// Get refernce of the Hud from the controller
+	ADebugHUD* hud = Cast<ADebugHUD>(PController->GetHUD());
+	hud->addDebugMessage(DebugMessage(FString("Test"), 5.f, true));
 }

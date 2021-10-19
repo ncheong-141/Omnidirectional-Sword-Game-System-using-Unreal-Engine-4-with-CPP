@@ -26,6 +26,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Debug HUD test
+	void debugMessageOut();
+	
 	// Player input 
 	void MoveForward(float amount);
 	void MoveBack(float amount);
