@@ -69,6 +69,9 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 ======================== */
 
 // Stance functions
+SwordStance* AAvatar::getStance() {
+	return currentStance; 
+}
 
 void AAvatar::setStance(SwordStance& newStance) {
 	currentStance = &newStance; 

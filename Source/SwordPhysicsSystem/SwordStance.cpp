@@ -1,20 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "SwordStance.h"
+
+// Game class files
 #include "Avatar.h"
+
+// Debug file
 #include "DebugOutput.h"
 
 // UE4 Global functions
 #include "Kismet/GameplayStatics.h"
 
-SwordStance::SwordStance()
-{
-}
+SwordStance::SwordStance(){}
 
-SwordStance::~SwordStance()
-{
-}
+SwordStance::~SwordStance(){}
 
 
 void SwordStance::setContext() {

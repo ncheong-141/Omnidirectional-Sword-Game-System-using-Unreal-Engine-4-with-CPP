@@ -6,13 +6,24 @@
 #include "SwordStance.h"
 
 /**
- * 
+ *	DefaultSwordStance class. 
+	Inherits from SwordStance such that it can be referenced through its parent pointer and also inherits
+	any common functionality.
+
+ 	In this stance the user is able to move the avatar freely and also change direction using mouse motion
  */
+
 class SWORDPHYSICSSYSTEM_API DefaultSwordStance : public SwordStance
 {
+private:
+	/* Class attributes */
+
 public:
+
+	// Constructor and destructor 
 	DefaultSwordStance();
 	~DefaultSwordStance(); 
 
+	// Virtual function overrides of parent class to redefine functionality specific for this class
 	virtual void displayStance() override;
 };

@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "DefaultSwordStance.h"
+
+// Debug output file
 #include "DebugOutput.h"
 
+// Constructor and destructor implementation
 DefaultSwordStance::DefaultSwordStance(){
 }
 
@@ -11,6 +12,7 @@ DefaultSwordStance::~DefaultSwordStance() {
 
 }
 
+// Virtual function override class function implementation
 void DefaultSwordStance::displayStance() {
 
 	DebugOutput output = DebugOutput(); 

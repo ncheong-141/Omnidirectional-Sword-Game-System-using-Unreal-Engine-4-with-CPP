@@ -4,7 +4,7 @@
 #include "SlashSwordStance.h"
 #include "DebugOutput.h"
 
-
+// Constructor and destructor implementation
 SlashSwordStance::SlashSwordStance()
 {
 }
@@ -13,6 +13,7 @@ SlashSwordStance::~SlashSwordStance()
 {
 }
 
+// Virtual function override class function implementation
 void SlashSwordStance::displayStance() {
 
 	DebugOutput output = DebugOutput();
