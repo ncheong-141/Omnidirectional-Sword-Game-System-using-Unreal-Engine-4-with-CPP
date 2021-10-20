@@ -6,9 +6,6 @@
 // Debug output for printing to console
 #include "DebugOutput.h"
 
-// Stances files
-#include "SwordStance.h"
-#include "DefaultSwordStance.h"
 
 // Sets default values
 AAvatar::AAvatar() {
@@ -17,12 +14,15 @@ AAvatar::AAvatar() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set Sword stance variables and instanciate objects for referencing
-	defaultStance = DefaultSwordStance(this); 
-	slashStance = SlashSwordStance(this);
+	defaultStance	= DefaultSwordStance(this); 
+	slashStance		= SlashSwordStance(this);
+	blockStance		= BlockSwordStance(this);
+	stabStance		= StabSwordStance(this);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
 }
+
 
 // Called when the game starts or when spawned
 void AAvatar::BeginPlay()
@@ -60,6 +60,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Sword stance change input
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
 	PlayerInputComponent->BindAction("SlashSwordStance", IE_Pressed, this, &AAvatar::switch_SlashSwordStance);
+	PlayerInputComponent->BindAction("BlockSwordStance", IE_Pressed, this, &AAvatar::switch_BlockSwordStance);
+	PlayerInputComponent->BindAction("StabSwordStance", IE_Pressed, this, &AAvatar::switch_StabSwordStance);
 
 
 }
@@ -88,7 +90,15 @@ void AAvatar::switch_SlashSwordStance() {
 	currentStance->displayStance();
 }
 
+void AAvatar::switch_BlockSwordStance() {
+	currentStance = &blockStance; 
+	currentStance->displayStance(); 
+}
 
+void AAvatar::switch_StabSwordStance() {
+	currentStance = &stabStance; 
+	currentStance->displayStance(); 
+}
 
 /* ======================== 
 	Player input functions 

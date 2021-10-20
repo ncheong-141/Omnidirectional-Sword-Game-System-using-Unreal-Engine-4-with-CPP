@@ -10,6 +10,8 @@
 #include "SwordStance.h"
 #include "DefaultSwordStance.h"
 #include "SlashSwordStance.h"
+#include "BlockSwordStance.h"
+#include "StabSwordStance.h"
 #include "Avatar.generated.h"
 
 UCLASS()
@@ -28,6 +30,8 @@ private:
 	// This means the stance wont be created/deleted every time it is called. 
 	DefaultSwordStance	defaultStance;
 	SlashSwordStance	slashStance; 
+	BlockSwordStance	blockStance;
+	StabSwordStance		stabStance; 
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +57,8 @@ public:
 	void			setStance(SwordStance& newStance);
 	void			switch_DefaultSwordStance(); 
 	void			switch_SlashSwordStance();
+	void			switch_BlockSwordStance();
+	void			switch_StabSwordStance(); 
 
 	/* Player input */
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
