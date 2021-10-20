@@ -20,13 +20,6 @@ SwordStance::SwordStance(AAvatar* avatar){
 SwordStance::~SwordStance(){}
 
 
-// Function implementation common to all Sword stances
-void SwordStance::setContext() {
-
-	// Get player avatar
-}
-
-
 // Virtual functions likely common to all states but can be overidden when required
 void SwordStance::displayStance() {
 	DebugOutput output = DebugOutput();

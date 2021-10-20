@@ -20,20 +20,19 @@ class SWORDPHYSICSSYSTEM_API SwordStance
 {
 private:
 protected:
-	/* Class attributes */
+	/* Protected class attributes usable by sub-classes  */
 	AAvatar* avatarPtr;
 
 public:
 	
+	// Constructors
 	SwordStance() {}
-
-	// Constructor and destructor 
 	SwordStance(AAvatar* avatar);
+
+	// Virtual destructor to ensure sub class objects are appopiately deleted
 	virtual ~SwordStance();
 
 	/* Functions common to ALL states(SwordStances) (implementation only required once) */
-	// Set the Context of the State pattern
-	void setContext();
 
 	/* Virtual functions likely common to all states but can be overidden when required */
 	virtual void displayStance();

@@ -15,5 +15,5 @@ void SlashSwordStance::displayStance() {
 
 	DebugOutput output = DebugOutput();
 
-	output.toHUD(FString("Slash"), 2.f, false);
+	output.toHUD(FString("Slash Stance"), 2.f, false);
 }

@@ -14,5 +14,5 @@ void DefaultSwordStance::displayStance() {
 
 	DebugOutput output = DebugOutput(); 
 	
-	output.toHUD(FString("Default"), 2.f, false);
+	output.toHUD(FString("Default Stance"), 2.f, false);
 }
