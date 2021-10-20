@@ -38,4 +38,10 @@ public:
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class
 	virtual void displayStance() override;
+
+	// Overiding movement functions
+	virtual void MoveForward(float amount) override;
+	virtual void MoveBack(float amount) override;
+	virtual void MoveLeft(float amount) override;
+	virtual void MoveRight(float amount) override;
 };
