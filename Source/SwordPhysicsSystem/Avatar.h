@@ -12,19 +12,22 @@
 #include "SlashSwordStance.h"
 #include "Avatar.generated.h"
 
-
 UCLASS()
 class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
 {
 	GENERATED_BODY()
 
 private:
-	// Class attributes
-	SwordStance* currentStance;
+	
+	/* Class attributes */
 
-	// Store instances of all stances such that just need to swap currentStance reference to them 
-	DefaultSwordStance defaultStance;
-	SlashSwordStance slashStance; 
+	// SwordStance parent class pointer, used for polymorphic referenceing of other Stance classes (concrete class in state pattern)
+	SwordStance*		currentStance;
+
+	// Store instances of all stances such that SwordStance* currentStance can interchange which stance it points too
+	// This means the stance wont be created/deleted every time it is called. 
+	DefaultSwordStance	defaultStance;
+	SlashSwordStance	slashStance; 
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,10 +35,11 @@ protected:
 
 public:
 
-
-	// Sets default values for this character's properties
+	// Constructor: Sets default values for this character's properties
 	AAvatar();
 	
+
+	/* Unreal engine 4 class functions */
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -44,13 +48,11 @@ public:
 
 
 	/* Class member functions */
-
 	// Stance setting
-	void setStance(SwordStance& newStance);
-	void switch_DefaultSwordStance(); 
-	void switch_SlashSwordStance();
-
-
+	SwordStance*	getStance();
+	void			setStance(SwordStance& newStance);
+	void			switch_DefaultSwordStance(); 
+	void			switch_SlashSwordStance();
 
 	// Player input 
 	void MoveForward(float amount);
@@ -60,7 +62,6 @@ public:
 
 	void Yaw(float amount);
 	void Pitch(float amount);
-
 
 	// Debug HUD test
 	void debugMessageOut();
