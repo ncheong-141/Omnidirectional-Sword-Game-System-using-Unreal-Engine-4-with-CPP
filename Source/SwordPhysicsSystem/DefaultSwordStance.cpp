@@ -5,9 +5,6 @@
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation
-DefaultSwordStance::DefaultSwordStance(){
-}
-
 DefaultSwordStance::~DefaultSwordStance() {
 
 }

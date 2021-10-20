@@ -11,19 +11,98 @@
 // UE4 Global functions
 #include "Kismet/GameplayStatics.h"
 
-SwordStance::SwordStance(){}
+
+// Constructor and destructor implementation
+SwordStance::SwordStance(AAvatar* avatar){
+	avatarPtr = avatar; 
+}
 
 SwordStance::~SwordStance(){}
 
 
+// Function implementation common to all Sword stances
 void SwordStance::setContext() {
 
 	// Get player avatar
-	avatarPtr = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GWorld->GetWorld(), 0));
 }
 
+
+// Virtual functions likely common to all states but can be overidden when required
 void SwordStance::displayStance() {
 	DebugOutput output = DebugOutput();
 
 	output.toHUD(FString("AHH"), 2.f, false);
+}
+
+void SwordStance::MoveForward(float amount) {
+
+	// Don't enter the body of this function if the controller is not set up, or amount == 0
+	if (avatarPtr->Controller && amount) {
+
+		// Get current forward movement
+		FVector fwd = avatarPtr->GetActorForwardVector();
+
+		// We call add movement to actually move the player by amount in the fwd direction
+		avatarPtr->AddMovementInput(fwd, amount);
+	}
+}
+
+void SwordStance::MoveBack(float amount) {
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0
+	if (avatarPtr->Controller && amount) {
+
+		// Get current forward movement (no back vector) 
+		FVector fwd = avatarPtr->GetActorForwardVector();
+
+		// Add amount to movement, since it is back it is subtract
+		avatarPtr->AddMovementInput(fwd, -amount);
+	}
+}
+
+void SwordStance::MoveRight(float amount) {
+
+	// Dont enter the body ofthis function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->Controller && amount) {
+
+		// Get current right movement (no left vector) 
+		FVector right = avatarPtr->GetActorRightVector();
+
+		// Add amount to movement
+		avatarPtr->AddMovementInput(right, amount);
+	}
+}
+
+void SwordStance::MoveLeft(float amount) {
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->Controller && amount) {
+
+		// Get current right movemnet
+		FVector right = avatarPtr->GetActorRightVector();
+
+		// Add amount to movmenet, in this case subract since it is left
+		avatarPtr->AddMovementInput(right, -amount);
+	}
+}
+
+
+void SwordStance::Yaw(float amount) {
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->Controller && amount) {
+
+		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
+		avatarPtr->AddControllerYawInput(200.f * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+	}
+}
+
+void SwordStance::Pitch(float amount) {
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->Controller && amount) {
+
+		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
+		avatarPtr->AddControllerPitchInput(200.f * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+	}
 }

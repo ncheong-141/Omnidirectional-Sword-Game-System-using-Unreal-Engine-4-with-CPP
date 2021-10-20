@@ -14,14 +14,21 @@
 	-	move their sword freely using mouse motion. 
 	-	The user should also be able to move their character using WASD
  */
+
+class AAvatar;
+
+
 class SWORDPHYSICSSYSTEM_API SlashSwordStance : public SwordStance
 {
 private:
 	/* Class attributes */
 public:
 
-	// Constructor and destructor 
-	SlashSwordStance();
+	SlashSwordStance() {}
+
+	// Constructor using constructor chaining to call super constructor with inputs
+	SlashSwordStance(AAvatar* avatar) : SwordStance(avatar) {}
+
 	~SlashSwordStance();
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class

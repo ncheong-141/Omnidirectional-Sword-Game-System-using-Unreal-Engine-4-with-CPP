@@ -17,8 +17,8 @@ AAvatar::AAvatar() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set Sword stance variables and instanciate objects for referencing
-	defaultStance = DefaultSwordStance(); 
-	slashStance = SlashSwordStance();
+	defaultStance = DefaultSwordStance(this); 
+	slashStance = SlashSwordStance(this);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
@@ -34,6 +34,7 @@ void AAvatar::BeginPlay()
 void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
 // Called to bind functionality to input
@@ -90,80 +91,38 @@ void AAvatar::switch_SlashSwordStance() {
 
 
 /* ======================== 
-	Player input functions
+	Player input functions 
+	All refer to stance functions such that the stances have full control over Avatar behaviour
 ======================== */
 void AAvatar::MoveForward(float amount) {
 
-	// Don't enter the body of this function if the controller is not set up, or amount == 0
-	if (Controller && amount) {
-
-		// Get current forward movement
-		FVector fwd = GetActorForwardVector();
-
-		// We call add movement to actually move the player by amount in the fwd direction
-		AddMovementInput(fwd, amount);
-	}
+	currentStance->MoveForward(amount);
 }
 
 void AAvatar::MoveBack(float amount) {
 
-	// Dont enter the body of this function if the controller is not set up, or amount == 0
-	if (Controller && amount) {
-
-		// Get current forward movement (no back vector) 
-		FVector fwd = GetActorForwardVector();
-
-		// Add amount to movement, since it is back it is subtract
-		AddMovementInput(fwd, -amount);
-	}
+	currentStance->MoveBack(amount);
 }
 
 void AAvatar::MoveRight(float amount) {
 
-	// Dont enter the body ofthis function if the controller is not set up, or amount == 0; 
-	if (Controller && amount) {
-
-		// Get current right movement (no left vector) 
-		FVector right = GetActorRightVector();
-
-		// Add amount to movement
-		AddMovementInput(right, amount);
-	}
+	currentStance->MoveRight(amount);
 }
 
 void AAvatar::MoveLeft(float amount) {
 
-	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (Controller && amount) {
-
-		// Get current right movemnet
-		FVector right = GetActorRightVector();
-
-		// Add amount to movmenet, in this case subract since it is left
-		AddMovementInput(right, -amount);
-	}
+	currentStance->MoveLeft(amount);
 }
 
 
 void AAvatar::Yaw(float amount) {
 
-	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (Controller && amount) {
-
-		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
-		AddControllerYawInput(200.f * amount * GetWorld()->GetDeltaSeconds());
-	}
+	currentStance->Yaw(amount);
 }
 
 void AAvatar::Pitch(float amount) {
 
-	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (Controller && amount) {
-
-		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
-		AddControllerPitchInput(200.f * amount * GetWorld()->GetDeltaSeconds());
-	}
-
+	currentStance->Pitch(amount);
 }
 
 

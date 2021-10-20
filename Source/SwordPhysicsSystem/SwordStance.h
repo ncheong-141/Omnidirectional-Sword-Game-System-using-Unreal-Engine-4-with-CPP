@@ -24,10 +24,12 @@ protected:
 	AAvatar* avatarPtr;
 
 public:
+	
+	SwordStance() {}
 
 	// Constructor and destructor 
-	SwordStance();
-	~SwordStance();
+	SwordStance(AAvatar* avatar);
+	virtual ~SwordStance();
 
 	/* Functions common to ALL states(SwordStances) (implementation only required once) */
 	// Set the Context of the State pattern
@@ -35,6 +37,16 @@ public:
 
 	/* Virtual functions likely common to all states but can be overidden when required */
 	virtual void displayStance();
+
+	// Player input functions (WASD)
+	virtual void MoveForward(float amount);
+	virtual void MoveBack(float amount);
+	virtual void MoveLeft(float amount);
+	virtual void MoveRight(float amount);
+
+	// Mouse motion 
+	virtual void Yaw(float amount);
+	virtual void Pitch(float amount);
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 };

@@ -13,15 +13,20 @@
  	In this stance the user is able to move the avatar freely and also change direction using mouse motion
  */
 
+class AAvatar;
+
 class SWORDPHYSICSSYSTEM_API DefaultSwordStance : public SwordStance
 {
 private:
 	/* Class attributes */
 
 public:
+	
+	DefaultSwordStance() {}
 
-	// Constructor and destructor 
-	DefaultSwordStance();
+	// Constructor using constructor chaining to call super constructor with inputs
+	DefaultSwordStance(AAvatar* avatar) : SwordStance(avatar) {}
+	
 	~DefaultSwordStance(); 
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class
