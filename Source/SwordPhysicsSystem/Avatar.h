@@ -12,6 +12,8 @@
 #include "SlashSwordStance.h"
 #include "BlockSwordStance.h"
 #include "StabSwordStance.h"
+#include "MeleeWeapon.h"
+
 #include "Avatar.generated.h"
 
 UCLASS()
@@ -72,5 +74,20 @@ public:
 
 	// Debug HUD test
 	void debugMessageOut();
+
+
+	/*
+	Adding weapon to Avatar, assuming a specific mesh is already set
+	*/
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPMeleeWeapon; 
+
+	AMeleeWeapon* MeleeWeapon; 
+
+	// Ths runs after the avatars constructor is complete. 
+	virtual void PostInitializeComponents() override; 
+
+
 
 };

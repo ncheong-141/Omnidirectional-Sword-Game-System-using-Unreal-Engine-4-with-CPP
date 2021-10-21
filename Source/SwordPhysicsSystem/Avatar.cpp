@@ -6,6 +6,8 @@
 // Debug output for printing to console
 #include "DebugOutput.h"
 
+// Unreal engine component classes
+#include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values
 AAvatar::AAvatar() {
@@ -136,6 +138,29 @@ void AAvatar::Pitch(float amount) {
 }
 
 
+void AAvatar::PostInitializeComponents() {
+
+	Super::PostInitializeComponents(); 
+
+	// Instantiate the melee weapon if a BP was selected in UE4
+	if (BPMeleeWeapon) {
+
+		// Instantiate melee weapon
+		MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(BPMeleeWeapon, FVector(), FRotator());
+
+		if (MeleeWeapon) {
+
+			// Get refence to the socket
+			const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+			
+			// Attach meleeWeapon to socket
+			socket->AttachActor(MeleeWeapon, GetMesh());
+			MeleeWeapon->weaponHolder = this;
+		}
+
+	}
+}
+
 void AAvatar::debugMessageOut() {
 
 	// Get a reference to  the controller
@@ -143,3 +168,4 @@ void AAvatar::debugMessageOut() {
 
 	output.toHUD("Test", 5.f, true);
 }
+
