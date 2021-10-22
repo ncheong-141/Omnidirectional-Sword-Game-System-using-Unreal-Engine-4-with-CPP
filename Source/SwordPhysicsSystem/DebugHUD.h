@@ -2,6 +2,11 @@
 
 #pragma once
 
+
+// General
+#include <string>
+
+
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "DebugHUD.generated.h"
@@ -60,6 +65,11 @@ public:
 
 	// Add this function tobe able to draw to the HUD
 	virtual void DrawHUD() override;
+
+private:
+	// Internal functions
+	// Always displayed messages to HUD
+	void alwaysDisplayedMessages(std::string& outputStr);
 };
 
 
