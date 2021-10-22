@@ -17,3 +17,15 @@ void StabSwordStance::displayStance() {
 
 	output.toHUD(FString("Stab Stance"), 2.f, false);
 }
+
+
+void StabSwordStance::Yaw(float amount) {
+
+	// Change sword position based on mouse position
+
+}
+
+void StabSwordStance::Pitch(float amount) {
+	// Change sword position based on mouse position
+
+}

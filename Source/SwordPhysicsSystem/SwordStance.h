@@ -21,8 +21,14 @@ class SWORDPHYSICSSYSTEM_API SwordStance
 private:
 protected:
 	/* Protected class attributes usable by sub-classes  */
+	
+	//  Avatar pointer 
 	AAvatar* avatarPtr;
 
+	// Sword position of the focal point. Sword root and tip position will be a function of this
+	// Sub-stances can alter this variable and use it between stances
+	float swordFocalPointPosition[2]; 
+	 
 public:
 	
 	// Constructors

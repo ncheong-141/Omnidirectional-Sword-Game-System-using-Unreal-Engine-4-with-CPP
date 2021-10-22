@@ -86,3 +86,15 @@ void BlockSwordStance::MoveLeft(float amount) {
 		SwordStance::avatarPtr->AddMovementInput(right, -amount);
 	}
 }
+
+
+void BlockSwordStance::Yaw(float amount) {
+
+	// Change sword position based on mouse position
+
+}
+
+void BlockSwordStance::Pitch(float amount) {
+	// Change sword position based on mouse position
+
+}

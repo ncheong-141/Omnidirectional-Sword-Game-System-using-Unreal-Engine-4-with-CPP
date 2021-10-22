@@ -44,4 +44,8 @@ public:
 	virtual void MoveBack(float amount) override;
 	virtual void MoveLeft(float amount) override;
 	virtual void MoveRight(float amount) override;
+
+	// Mouse motion override functions for this specific stance
+	virtual void Yaw(float amount) override;
+	virtual void Pitch(float amount) override;
 };

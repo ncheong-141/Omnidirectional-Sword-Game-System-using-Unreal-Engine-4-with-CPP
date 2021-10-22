@@ -33,4 +33,9 @@ public:
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class
 	virtual void displayStance() override;
+
+	// Mouse motion override functions for this specific stance
+	virtual void Yaw(float amount) override; 
+	virtual void Pitch(float amount) override;
+
 };
