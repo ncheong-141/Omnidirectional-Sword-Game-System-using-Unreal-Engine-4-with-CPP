@@ -9,6 +9,9 @@
 // Unreal engine component classes
 #include "Engine/SkeletalMeshSocket.h"
 
+// General imports
+#include <string>
+
 // Sets default values
 AAvatar::AAvatar() {
 
@@ -166,6 +169,14 @@ void AAvatar::debugMessageOut() {
 	// Get a reference to  the controller
 	DebugOutput output = DebugOutput();
 
-	output.toHUD("Test", 5.f, true);
+	APlayerController* PController = GetWorld()->GetFirstPlayerController();
+	
+	FVector2D mouse; 
+
+	PController->GetMousePosition(mouse.X, mouse.Y);
+
+	std::string strOut = "Mouse position: " + std::to_string(mouse.X) + "," + std::to_string(mouse.Y);
+
+	output.toHUD(FString(strOut.c_str()), 5.f, true);
 }
 
