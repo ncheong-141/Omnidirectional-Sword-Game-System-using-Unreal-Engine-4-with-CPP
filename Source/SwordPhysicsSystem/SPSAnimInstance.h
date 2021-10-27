@@ -27,6 +27,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
 		float speed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+		bool isInAir; 
+
+	bool test;
 
 	// Class functions
 	// Called at each animation tick

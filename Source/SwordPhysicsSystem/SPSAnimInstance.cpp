@@ -3,10 +3,21 @@
 
 #include "SPSAnimInstance.h"
 
+// Game classes
+#include "Avatar.h"
+
+// Unreal engine files
+#include "GameFramework/CharacterMovementComponent.h"
+
+
+
 USPSAnimInstance::USPSAnimInstance() {
 
 	// Set animinstance class attributes
 	speed = 0.f;
+	isInAir = false;
+
+	test = false;
 }
 
 USPSAnimInstance::~USPSAnimInstance() {
@@ -27,6 +38,16 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 		// Get the speed. Size as getvelocity returns an FVector
 		speed = animatedActor->GetVelocity().Size(); 
+
+		// Cast actor to Avatar to access derived class functionality 
+		AAvatar* animatedAvatar = Cast<AAvatar>(animatedActor);
+
+		// Check if cast was successful
+		if (animatedAvatar != nullptr) {
+
+			// Check if actor is in air
+			isInAir = animatedAvatar->GetCharacterMovement()->IsFalling();
+		}
 	}
 
 }
