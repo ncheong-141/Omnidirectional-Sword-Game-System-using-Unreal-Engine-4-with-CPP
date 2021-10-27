@@ -61,6 +61,7 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	// Action inputs 
 	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
+	PlayerInputComponent->BindAxis("DodgeLeft", this, &AAvatar::dodgeLeft);
 
 	// Sword stance change input
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
@@ -138,6 +139,17 @@ void AAvatar::Yaw(float amount) {
 void AAvatar::Pitch(float amount) {
 
 	currentStance->Pitch(amount);
+}
+
+
+/* ========================
+	Player Action functions
+	All refer to stance functions such that the stances have full control over Avatar behaviour
+======================== */
+
+void AAvatar::dodgeLeft(float amount) {
+	
+	currentStance->dodgeLeft(amount); 
 }
 
 

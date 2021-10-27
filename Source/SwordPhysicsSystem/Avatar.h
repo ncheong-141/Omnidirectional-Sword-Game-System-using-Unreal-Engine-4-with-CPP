@@ -72,8 +72,14 @@ public:
 	void Yaw(float amount);
 	void Pitch(float amount);
 
+	// Player action inputs
+	void dodgeLeft(float amount);
+
+
 	// Debug HUD test
 	void debugMessageOut();
+
+
 
 
 	/*

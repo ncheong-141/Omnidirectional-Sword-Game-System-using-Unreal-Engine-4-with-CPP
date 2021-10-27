@@ -8,6 +8,9 @@
 *  This class holds the pointer to the Context and defines functionality for concrete classes (sword stance)
 *  which is required to be defined. 
 *  It also defines some functionality which can be common for all classes 
+* 
+*  Defining movement and avatar controls in sword stance to further decouple Sword system from 
+*  Avatar implementation. This is so the system is easy to add to existing avatars
 */
 
 // Forward declaration such that implementation of the class can be declared in the implementation file (.cpp)
@@ -24,6 +27,12 @@ protected:
 	
 	//  Avatar pointer 
 	AAvatar* avatarPtr;
+
+	// Flow control variables to control avatar behaviour in specifc situations
+	bool cardinalMovementLock;		// Stops WASD movement when true
+
+	// Action characteristics
+	float dodgeTime = 1.f; 
 
 	// Sword position of the focal point. Sword root and tip position will be a function of this
 	// Sub-stances can alter this variable and use it between stances
@@ -52,6 +61,10 @@ public:
 	// Mouse motion 
 	virtual void Yaw(float amount);
 	virtual void Pitch(float amount);
+
+	// Action functions
+	virtual void dodgeLeft(float amount);
+
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 };
