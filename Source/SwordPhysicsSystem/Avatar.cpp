@@ -168,11 +168,12 @@ void AAvatar::PostInitializeComponents() {
 			// Get refence to the socket
 			const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
 			
-			// Attach meleeWeapon to socket
-			socket->AttachActor(MeleeWeapon, GetMesh());
-			MeleeWeapon->weaponHolder = this;
+			if (socket) {
+				// Attach meleeWeapon to socket
+				socket->AttachActor(MeleeWeapon, GetMesh());
+				MeleeWeapon->weaponHolder = this;
+			}
 		}
-
 	}
 }
 

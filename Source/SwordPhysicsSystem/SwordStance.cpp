@@ -153,8 +153,7 @@ void SwordStance::dodgeLeft(float amount) {
 
 		/* Start the dodge */
 		float dodgingTime = dodgeTime;
-
-		UCharacterMovementComponent* move = avatarPtr->GetCharacterMovement();
+		
 
 		// Loop until dodging time is not over
 		while (dodgingTime > 0) {
