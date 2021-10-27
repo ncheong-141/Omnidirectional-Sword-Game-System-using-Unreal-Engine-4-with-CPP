@@ -73,6 +73,7 @@ public:
 	void Pitch(float amount);
 
 	// Player action inputs
+	void jump(); 
 	void dodgeLeft(float amount);
 
 

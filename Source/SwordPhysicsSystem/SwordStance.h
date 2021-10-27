@@ -63,6 +63,8 @@ public:
 	virtual void Pitch(float amount);
 
 	// Action functions
+	virtual void jump();
+
 	virtual void dodgeLeft(float amount);
 
 

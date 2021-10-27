@@ -138,6 +138,11 @@ void SwordStance::Pitch(float amount) {
 
 /* Action functions */
 
+void SwordStance::jump() {
+
+	avatarPtr->Jump();
+}
+
 void SwordStance::dodgeLeft(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
