@@ -67,13 +67,11 @@ public:
 		float resultantSpeed; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		float velocity_X; 
+		float inputVelocity_X; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		float velocity_Y;
+		float inputVelocity_Y;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		float velocity_Z;
 
 
 	// Avatar flow control conditions 

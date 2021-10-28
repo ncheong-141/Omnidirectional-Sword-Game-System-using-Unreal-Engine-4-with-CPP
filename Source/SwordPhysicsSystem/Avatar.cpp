@@ -36,9 +36,8 @@ AAvatar::AAvatar() {
 	swordFocalPointPosition_X = 0.f;
 	swordFocalPointPosition_Y = 0.f;
 	resultantSpeed = 0.f;
-	velocity_X = 0.f;
-	velocity_Y = 0.f; 
-	velocity_Z = 0.f;
+	inputVelocity_X = 0.f;
+	inputVelocity_Y = 0.f;
 	isInAir		= false;
 	isInIframe	= false;
 	isWalking	= false;
@@ -59,15 +58,15 @@ void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 	/* Key physics */
 
 	// Velocity update
 	FVector avatarVector = GetVelocity();
 	resultantSpeed = avatarVector.Size(); 
-	velocity_X = avatarVector.X;
-	velocity_Y = avatarVector.Y;
-	velocity_Z = avatarVector.Z;
-
+	inputVelocity_X = GetInputAxisValue(FName("Forward")) + GetInputAxisValue(FName("Back"));
+	inputVelocity_Y = GetInputAxisValue(FName("StrafeRight")) + GetInputAxisValue(FName("StrafeLeft"));
+	
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
 }
@@ -209,13 +208,8 @@ void AAvatar::debugMessageOut() {
 	// Get a reference to  the controller
 	DebugOutput output = DebugOutput();
 
-	APlayerController* PController = GetWorld()->GetFirstPlayerController();
-	
-	FVector2D mouse; 
+	std::string strOut = "X,Y,Z input: " + std::to_string(inputVelocity_X) + "," + std::to_string(inputVelocity_Y);
 
-	PController->GetMousePosition(mouse.X, mouse.Y);
-
-	std::string strOut = "Mouse position: " + std::to_string(mouse.X) + "," + std::to_string(mouse.Y);
 
 	output.toHUD(FString(strOut.c_str()), 5.f, true);
 }
