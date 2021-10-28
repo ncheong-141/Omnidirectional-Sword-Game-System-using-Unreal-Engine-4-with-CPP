@@ -28,6 +28,10 @@ public:
 		float speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+		AActor* animatedActorTest;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
 		bool isInAir; 
 
 	bool test;

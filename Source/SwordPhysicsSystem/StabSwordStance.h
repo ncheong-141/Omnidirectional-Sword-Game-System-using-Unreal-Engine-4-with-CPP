@@ -26,7 +26,7 @@ public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
 	StabSwordStance() {}
-	StabSwordStance(AAvatar* avatar) : SwordStance(avatar) {}
+	StabSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
 
 	// Destructor
 	~StabSwordStance();

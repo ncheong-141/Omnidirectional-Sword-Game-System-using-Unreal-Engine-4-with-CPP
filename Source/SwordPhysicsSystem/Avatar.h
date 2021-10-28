@@ -21,25 +21,55 @@ class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
 {
 	GENERATED_BODY()
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
 	
-	/* Class attributes */
+	/* Internal class attributes */
 
 	// SwordStance parent class pointer, used for polymorphic referenceing of other Stance classes (concrete class in state pattern)
 	SwordStance*		currentStance;
 
 	// Store instances of all stances such that SwordStance* currentStance can interchange which stance it points too
 	// This means the stance wont be created/deleted every time it is called. 
-	DefaultSwordStance	defaultStance;
-	SlashSwordStance	slashStance; 
-	BlockSwordStance	blockStance;
-	StabSwordStance		stabStance; 
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	// Note, each stance has an internal ID variable which is used to reference each stance as an integer and makes it easy to define in UE BPs
+	DefaultSwordStance	defaultStance;		// ID = 0
+	SlashSwordStance	slashStance;		// ID = 1
+	BlockSwordStance	blockStance;		// ID = 2
+	StabSwordStance		stabStance;			// ID = 3 
 
 public:
+
+	/* Class attributes */
+	/* Unreal engine class attributes to be used in BPs */
+
+	// Current stance ID, this variable is used to denote which stance the avatar is in
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float currentStanceID;
+
+	// Sword position focal point. This is the mouse position on the screen where the sword will zone to. 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float swordFocalPointPosition_X; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float swordFocalPointPosition_Y;
+
+
+	// Avatar flow control conditions 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool inAir; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool inIframe; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isWalking; 
+
+
+
+
 
 	// Constructor: Sets default values for this character's properties
 	AAvatar();
@@ -53,6 +83,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
+
 	/* Class member functions */
 	// Stance setting
 	SwordStance*	getStance();
@@ -61,6 +92,7 @@ public:
 	void			switch_SlashSwordStance();
 	void			switch_BlockSwordStance();
 	void			switch_StabSwordStance(); 
+
 
 	/* Player input */
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
@@ -74,13 +106,10 @@ public:
 
 	// Player action inputs
 	void jump(); 
-	void dodgeLeft(float amount);
 
 
 	// Debug HUD test
 	void debugMessageOut();
-
-
 
 
 	/*

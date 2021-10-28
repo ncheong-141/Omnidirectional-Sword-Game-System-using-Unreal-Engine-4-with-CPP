@@ -31,7 +31,7 @@ public:
 	
 	// Constructor using constructor chaining to call super constructor with inputs
 	BlockSwordStance() {}
-	BlockSwordStance(AAvatar* avatar) : SwordStance(avatar) {}
+	BlockSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
 
 	// Destructor
 	~BlockSwordStance();

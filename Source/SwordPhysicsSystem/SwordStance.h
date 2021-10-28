@@ -27,22 +27,15 @@ protected:
 	
 	//  Avatar pointer 
 	AAvatar* avatarPtr;
-
-	// Flow control variables to control avatar behaviour in specifc situations
-	bool cardinalMovementLock;		// Stops WASD movement when true
-
-	// Action characteristics
-	float dodgeTime = 1.f; 
-
-	// Sword position of the focal point. Sword root and tip position will be a function of this
-	// Sub-stances can alter this variable and use it between stances
-	float swordFocalPointPosition[2]; 
 	 
 public:
+
+	/* Class attributes */
+	int stanceID;			// Used to reference the stance as an integer
 	
 	// Constructors
 	SwordStance() {}
-	SwordStance(AAvatar* avatar);
+	SwordStance(AAvatar* avatar, int stance_ID);
 
 	// Virtual destructor to ensure sub class objects are appopiately deleted
 	virtual ~SwordStance();
@@ -64,9 +57,6 @@ public:
 
 	// Action functions
 	virtual void jump();
-
-	virtual void dodgeLeft(float amount);
-
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 };

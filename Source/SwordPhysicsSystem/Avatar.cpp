@@ -8,6 +8,7 @@
 
 // Unreal engine component classes
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // General imports
 #include <string>
@@ -19,13 +20,25 @@ AAvatar::AAvatar() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set Sword stance variables and instanciate objects for referencing
-	defaultStance	= DefaultSwordStance(this); 
-	slashStance		= SlashSwordStance(this);
-	blockStance		= BlockSwordStance(this);
-	stabStance		= StabSwordStance(this);
+	// Integer values are the stance ID sets
+	defaultStance	= DefaultSwordStance(this,0); 
+	slashStance		= SlashSwordStance(this,1);
+	blockStance		= BlockSwordStance(this,2);
+	stabStance		= StabSwordStance(this,3);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
+
+	// Set the current stance ID variable for reference
+	AAvatar::currentStanceID = currentStance->stanceID; 
+
+	// Initialise other variables and control flow
+	swordFocalPointPosition_X = 0.f;
+	swordFocalPointPosition_Y = 0.f;
+
+	isInAir		= false;
+	isInIframe	= false;
+	isWalking	= false;
 }
 
 
@@ -40,6 +53,9 @@ void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Key physics
+	// Check if avatar is in the air for physics and animation flow
+	isInAir = this->GetCharacterMovement()->IsFalling();
 }
 
 // Called to bind functionality to input
@@ -63,15 +79,11 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
 
-	PlayerInputComponent->BindAxis("DodgeLeft", this, &AAvatar::dodgeLeft);
-
 	// Sword stance change input
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
 	PlayerInputComponent->BindAction("SlashSwordStance", IE_Pressed, this, &AAvatar::switch_SlashSwordStance);
 	PlayerInputComponent->BindAction("BlockSwordStance", IE_Pressed, this, &AAvatar::switch_BlockSwordStance);
 	PlayerInputComponent->BindAction("StabSwordStance", IE_Pressed, this, &AAvatar::switch_StabSwordStance);
-
-
 }
 
 
@@ -153,12 +165,6 @@ void AAvatar::jump() {
 
 	currentStance->jump();
 }
-
-void AAvatar::dodgeLeft(float amount) {
-	
-	currentStance->dodgeLeft(amount); 
-}
-
 
 void AAvatar::PostInitializeComponents() {
 

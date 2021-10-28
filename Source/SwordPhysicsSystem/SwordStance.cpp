@@ -15,13 +15,16 @@
 
 
 // Constructor and destructor implementation
-SwordStance::SwordStance(AAvatar* avatar){
+SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
 	
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
 
 	// Set avatar playstates to default to untrue
 	cardinalMovementLock = false;
+
+	// Set the stance ID
+	stanceID = stance_ID; 
 }
 
 SwordStance::~SwordStance(){
@@ -141,37 +144,4 @@ void SwordStance::Pitch(float amount) {
 void SwordStance::jump() {
 
 	avatarPtr->Jump();
-}
-
-void SwordStance::dodgeLeft(float amount) {
-
-	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller) {
-
-		// Lock cardinal movement 
-		cardinalMovementLock = true; 
-
-		// Get avatar vector and set X,Y components to 0 (as going to "overwrite" movement with dodge)
-		FVector right = avatarPtr->GetActorRightVector();
-		//right.X = 0.f;
-		//right.Y = 0.f;
-
-		/* Start the dodge */
-		float dodgingTime = dodgeTime;
-		
-
-		// Loop until dodging time is not over
-		while (dodgingTime > 0) {
-
-			// Add amount to movmenet, in this case subract since it is left
-			avatarPtr->AddMovementInput(right, -100*amount);
-
-			// Subtract the time between last frame and current (the time passed basically)
-			dodgingTime = dodgingTime - 0.001 - avatarPtr->GetWorld()->GetDeltaSeconds();
-		}
-
-		// Unlock cardinal movement
-		cardinalMovementLock = false;
-	}
-
 }

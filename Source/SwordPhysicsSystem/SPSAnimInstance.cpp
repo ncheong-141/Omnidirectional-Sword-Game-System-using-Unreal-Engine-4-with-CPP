@@ -30,6 +30,10 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	// Call super function of this function 
 	UAnimInstance::NativeUpdateAnimation(DeltaSeconds);
 	
+	if (animatedActorTest == nullptr) {
+		animatedActorTest = GetOwningActor();
+	} 
+
 	// Actor that is perfoming the animation
 	AActor* animatedActor = GetOwningActor();
 
