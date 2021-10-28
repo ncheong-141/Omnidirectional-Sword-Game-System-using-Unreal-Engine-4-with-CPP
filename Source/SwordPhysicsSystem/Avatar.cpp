@@ -64,8 +64,8 @@ void AAvatar::Tick(float DeltaTime)
 	// Velocity update
 	FVector avatarVector = GetVelocity();
 	resultantSpeed = avatarVector.Size(); 
-	inputVelocity_X = GetInputAxisValue(FName("Forward")) + GetInputAxisValue(FName("Back"));
-	inputVelocity_Y = GetInputAxisValue(FName("StrafeRight")) + GetInputAxisValue(FName("StrafeLeft"));
+	inputVelocity_X = GetInputAxisValue(FName("Forward")) - GetInputAxisValue(FName("Back"));
+	inputVelocity_Y = GetInputAxisValue(FName("StrafeRight")) - GetInputAxisValue(FName("StrafeLeft"));
 	
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
@@ -192,7 +192,7 @@ void AAvatar::PostInitializeComponents() {
 		if (MeleeWeapon) {
 
 			// Get refence to the socket
-			const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+			const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
 			
 			if (socket) {
 				// Attach meleeWeapon to socket
