@@ -20,20 +20,18 @@ SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
 
-	// Set avatar playstates to default to untrue
-	cardinalMovementLock = false;
-
 	// Set the stance ID
 	stanceID = stance_ID; 
 }
 
-SwordStance::~SwordStance(){
+SwordStance::SwordStance(){
 
 	// Set avatar pointer to NULL
 	avatarPtr = NULL;
 
-	// Set avatar playstates to default to untrue
-	cardinalMovementLock = false;
+}
+
+SwordStance::~SwordStance() {
 }
 
 
@@ -46,11 +44,6 @@ void SwordStance::displayStance() {
 
 // Note, input of amount is 0 or 1
 void SwordStance::MoveForward(float amount) {
-
-	// Check if cardinal movement is disabled (e.g. during a certain action)
-	if (cardinalMovementLock) {
-		return;
-	}
 
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
@@ -65,11 +58,6 @@ void SwordStance::MoveForward(float amount) {
 
 void SwordStance::MoveBack(float amount) {
 
-	// Check if cardinal movement is disabled (e.g. during a certain action)
-	if (cardinalMovementLock) {
-		return;
-	}
-
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
 
@@ -83,11 +71,6 @@ void SwordStance::MoveBack(float amount) {
 
 void SwordStance::MoveRight(float amount) {
 
-	// Check if cardinal movement is disabled (e.g. during a certain action)
-	if (cardinalMovementLock) {
-		return;
-	}
-
 	// Dont enter the body ofthis function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->Controller && amount) {
 
@@ -100,11 +83,6 @@ void SwordStance::MoveRight(float amount) {
 }
 
 void SwordStance::MoveLeft(float amount) {
-
-	// Check if cardinal movement is disabled (e.g. during a certain action)
-	if (cardinalMovementLock) {
-		return;
-	}
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->Controller && amount) {

@@ -35,10 +35,15 @@ AAvatar::AAvatar() {
 	// Initialise other variables and control flow
 	swordFocalPointPosition_X = 0.f;
 	swordFocalPointPosition_Y = 0.f;
-
+	resultantSpeed = 0.f;
+	velocity_X = 0.f;
+	velocity_Y = 0.f; 
+	velocity_Z = 0.f;
 	isInAir		= false;
 	isInIframe	= false;
 	isWalking	= false;
+
+	//avatarMovementVector = GetVelocity();
 }
 
 
@@ -48,12 +53,21 @@ void AAvatar::BeginPlay()
 	Super::BeginPlay();
 }
 
+
 // Called every frame
 void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Key physics
+	/* Key physics */
+
+	// Velocity update
+	FVector avatarVector = GetVelocity();
+	resultantSpeed = avatarVector.Size(); 
+	velocity_X = avatarVector.X;
+	velocity_Y = avatarVector.Y;
+	velocity_Z = avatarVector.Z;
+
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
 }

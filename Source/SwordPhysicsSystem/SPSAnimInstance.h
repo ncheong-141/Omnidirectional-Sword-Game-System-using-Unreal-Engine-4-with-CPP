@@ -12,6 +12,9 @@
  * in the blueprint viewer. 
  */
 
+// Forward declaration to keep implementation in translation units
+class AAvatar;
+
 UCLASS(transient, Blueprintable, hideCategories=AnimInstance, BlueprintType)
 class SWORDPHYSICSSYSTEM_API USPSAnimInstance : public UAnimInstance
 {
@@ -28,13 +31,11 @@ public:
 		float speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-		AActor* animatedActorTest;
+		AAvatar* animatedAvatar;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
 		bool isInAir; 
-
-	bool test;
 
 	// Class functions
 	// Called at each animation tick

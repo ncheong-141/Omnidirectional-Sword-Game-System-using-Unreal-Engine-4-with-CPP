@@ -34,7 +34,7 @@ public:
 	int stanceID;			// Used to reference the stance as an integer
 	
 	// Constructors
-	SwordStance() {}
+	SwordStance();	// NMeed to remove i think
 	SwordStance(AAvatar* avatar, int stance_ID);
 
 	// Virtual destructor to ensure sub class objects are appopiately deleted

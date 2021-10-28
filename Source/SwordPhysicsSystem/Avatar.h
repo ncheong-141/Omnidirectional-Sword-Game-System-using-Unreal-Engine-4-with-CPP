@@ -45,9 +45,11 @@ public:
 	/* Class attributes */
 	/* Unreal engine class attributes to be used in BPs */
 
+
 	// Current stance ID, this variable is used to denote which stance the avatar is in
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float currentStanceID;
+
 
 	// Sword position focal point. This is the mouse position on the screen where the sword will zone to. 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
@@ -57,18 +59,32 @@ public:
 		float swordFocalPointPosition_Y;
 
 
-	// Avatar flow control conditions 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool inAir; 
+	// Avatar properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	//	FVector avatarMovementVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool inIframe; 
+		float resultantSpeed; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float velocity_X; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float velocity_Y;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float velocity_Z;
+
+
+	// Avatar flow control conditions 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isInAir; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isInIframe; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isWalking; 
-
-
-
 
 
 	// Constructor: Sets default values for this character's properties
