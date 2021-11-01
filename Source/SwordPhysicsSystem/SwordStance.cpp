@@ -121,5 +121,12 @@ void SwordStance::Pitch(float amount) {
 
 void SwordStance::jump() {
 
+	// Use inbuilt UE function for characters (can set characteristics in cosntructor)
 	avatarPtr->Jump();
+}
+
+
+void SwordStance::dodgeRight() {
+
+
 }

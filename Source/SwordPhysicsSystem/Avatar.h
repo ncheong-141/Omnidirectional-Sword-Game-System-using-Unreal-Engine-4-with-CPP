@@ -64,7 +64,7 @@ public:
 	//	FVector avatarMovementVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		float resultantSpeed; 
+		float resultantInputVelocity; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float inputVelocity_X; 

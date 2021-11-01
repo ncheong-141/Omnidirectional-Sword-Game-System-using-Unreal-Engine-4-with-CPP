@@ -57,6 +57,7 @@ public:
 
 	// Action functions
 	virtual void jump();
+	virtual void dodgeRight();
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 };

@@ -10,7 +10,9 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+
 // General imports
+#include <cmath>
 #include <string>
 
 // Sets default values
@@ -35,14 +37,14 @@ AAvatar::AAvatar() {
 	// Initialise other variables and control flow
 	swordFocalPointPosition_X = 0.f;
 	swordFocalPointPosition_Y = 0.f;
-	resultantSpeed = 0.f;
+	resultantInputVelocity = 0.f;
 	inputVelocity_X = 0.f;
 	inputVelocity_Y = 0.f;
 	isInAir		= false;
 	isInIframe	= false;
 	isWalking	= false;
 
-	//avatarMovementVector = GetVelocity();
+
 }
 
 
@@ -58,14 +60,19 @@ void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
 	/* Key physics */
+	FTransform actorTransform = this->GetActorTransform();
+	FVector vel = this->GetVelocity(); 
+	FQuat rot = actorTransform.GetRotation();
 
-	// Velocity update
-	FVector avatarVector = GetVelocity();
-	resultantSpeed = avatarVector.Size(); 
-	inputVelocity_X = GetInputAxisValue(FName("Forward")) - GetInputAxisValue(FName("Back"));
-	inputVelocity_Y = GetInputAxisValue(FName("StrafeRight")) - GetInputAxisValue(FName("StrafeLeft"));
+	FVector actualvel = rot.UnrotateVector(vel); 
+	float maxVel = this->GetCharacterMovement()->GetMaxSpeed(); 
+
+	inputVelocity_X = actualvel.X/maxVel;
+	inputVelocity_Y = actualvel.Y/maxVel; 
+	
+	//Velocity update
+	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;// std::abs(inputVelocity_X) + std::abs(inputVelocity_Y);
 	
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
@@ -111,25 +118,30 @@ SwordStance* AAvatar::getStance() {
 
 void AAvatar::setStance(SwordStance& newStance) {
 	currentStance = &newStance; 
+	currentStanceID = currentStance->stanceID;
 }
 
 void AAvatar::switch_DefaultSwordStance() {
 	currentStance = &defaultStance;
+	currentStanceID = currentStance->stanceID;
 	currentStance->displayStance();
 }
 
 void AAvatar::switch_SlashSwordStance() {
 	currentStance = &slashStance;
+	currentStanceID = currentStance->stanceID;
 	currentStance->displayStance();
 }
 
 void AAvatar::switch_BlockSwordStance() {
 	currentStance = &blockStance; 
+	currentStanceID = currentStance->stanceID;
 	currentStance->displayStance(); 
 }
 
 void AAvatar::switch_StabSwordStance() {
 	currentStance = &stabStance; 
+	currentStanceID = currentStance->stanceID;
 	currentStance->displayStance(); 
 }
 
