@@ -13,13 +13,31 @@
 #include "BlockSwordStance.h"
 #include "StabSwordStance.h"
 #include "MeleeWeapon.h"
-
 #include "Avatar.generated.h"
+
+// Forward declarations to reduce compile time 
+class USpringArmComponent;
+class UCameraComponent; 
+class USkeletalMeshComponent;
 
 UCLASS()
 class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
 {
 	GENERATED_BODY()
+
+public:
+	// Constructor: Sets default values for this character's properties
+	AAvatar();
+
+	/* Game set up avatar variables*/
+	// Avatar camera set up. Doing in C++ to give more control over the camera 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
+		USpringArmComponent* cameraSpringArmComponent; 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
+		UCameraComponent* cameraComponent; 
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -52,35 +70,36 @@ public:
 	/* Class attributes */
 	/* Unreal engine class attributes to be used in BPs */
 
-
 	// Current stance ID, this variable is used to denote which stance the avatar is in
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float currentStanceID;
 
-
 	// Sword position focal point. This is the mouse position on the screen where the sword will zone to. 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float swordFocalPointPosition_X; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float swordFocalPointPosition_Y;
 
-
 	// Avatar properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-	//	FVector avatarMovementVector;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float resultantInputVelocity; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float inputVelocity_X; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float inputVelocity_Y;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float avatarMaxSpeed; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float baseYawTurnSpeed; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float basePitchTurnSpeed;
+
 
 
 	// Avatar flow control conditions 
@@ -94,11 +113,8 @@ public:
 		bool isWalking; 
 
 
-	// Constructor: Sets default values for this character's properties
-	AAvatar();
-	
-
 	/* Unreal engine 4 class functions */
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -106,8 +122,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-
 	/* Class member functions */
+
 	// Stance setting
 	SwordStance*	getStance();
 	void			setStance(SwordStance& newStance);
@@ -118,6 +134,7 @@ public:
 
 
 	/* Player input */
+
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
 	// Functions for input are required in Avatar since UE4 framework requires Avatar function pointers
 	void MoveForward(float amount);
@@ -129,7 +146,7 @@ public:
 
 	// Player action inputs
 	void jump(); 
-
+	void dodge();
 
 	// Debug HUD test
 	void debugMessageOut();
@@ -146,7 +163,4 @@ public:
 
 	// Ths runs after the avatars constructor is complete. 
 	virtual void PostInitializeComponents() override; 
-
-
-
 };

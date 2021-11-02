@@ -9,7 +9,12 @@
 // Unreal engine component classes
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/Controller.h"
 
 // General imports
 #include <cmath>
@@ -20,6 +25,16 @@ AAvatar::AAvatar() {
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	// Set up player camera
+	// Instantiate spring arm and attach spring arm to the root component of avatar (the capsule)
+	cameraSpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("AvatarSpringArmComponent"));
+	cameraSpringArmComponent->SetupAttachment(RootComponent);
+	// Can change sprint arm characteristics here (but going to do in blueprints since more visual)
+
+	// Instantiate Camera and attach to spring arm
+	cameraComponent = CreateDefaultSubobject <UCameraComponent>(TEXT("AvatarCameraComponent"));
+	cameraComponent->SetupAttachment(cameraSpringArmComponent);
 
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
@@ -34,13 +49,6 @@ AAvatar::AAvatar() {
 	// Set the current stance ID variable for reference
 	AAvatar::currentStanceID = currentStance->stanceID; 
 
-	// Initialise pointers/references to commonly used Avatar objects
-/*	avatarWorldTransform = &(this->GetActorTransform());
-	avatarWorldVelocity = &(this->GetVelocity());
-	avatarWorldRotation = &(avatarWorldTransform->GetRotation());
-	avatarLocalVelocity = &(*avatarWorldVelocity);	*/				// Set the local velocity to world initially
-
-
 	// Initialise other variables and control flow
 	swordFocalPointPosition_X = 0.f;
 	swordFocalPointPosition_Y = 0.f;
@@ -51,6 +59,9 @@ AAvatar::AAvatar() {
 	isInIframe	= false;
 	isWalking	= false;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
+	baseYawTurnSpeed = 45.f;
+	basePitchTurnSpeed = 5.f;
+
 
 }
 
@@ -110,6 +121,9 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Action inputs 
 	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
+	// 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );this is possible to stop the jump input, can use this for other things 
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
+
 
 	// Sword stance change input
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
@@ -201,6 +215,10 @@ void AAvatar::Pitch(float amount) {
 void AAvatar::jump() {
 
 	currentStance->jump();
+}
+
+void AAvatar::dodge()
+{
 }
 
 void AAvatar::PostInitializeComponents() {

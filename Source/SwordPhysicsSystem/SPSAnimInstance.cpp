@@ -13,9 +13,6 @@
 
 USPSAnimInstance::USPSAnimInstance() {
 
-	// Set animinstance class attributes
-	speed = 0.f;
-	isInAir = false;
 }
 
 USPSAnimInstance::~USPSAnimInstance() {
@@ -53,10 +50,10 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	if (animatedAvatar != nullptr) {
 
 		// Get the speed. Size as getvelocity returns an FVector
-		speed = animatedAvatar->GetVelocity().Size(); 
+		animatedAvatar->resultantInputVelocity = animatedAvatar->GetVelocity().Size();
 
 		// Check if actor is in air
-		isInAir = animatedAvatar->GetCharacterMovement()->IsFalling();
+		animatedAvatar->isInAir = animatedAvatar->GetCharacterMovement()->IsFalling();
 		
 	}
 

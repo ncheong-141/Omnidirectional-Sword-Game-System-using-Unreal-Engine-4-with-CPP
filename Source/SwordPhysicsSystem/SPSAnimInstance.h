@@ -27,15 +27,9 @@ public:
 	~USPSAnimInstance(); 
 
 	// Class properties usable in blueprints. 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-		float speed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Properties")
 		AAvatar* animatedAvatar;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-		bool isInAir; 
 
 	// Class functions
 	// Called at each animation tick
