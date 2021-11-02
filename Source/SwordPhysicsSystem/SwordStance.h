@@ -29,10 +29,10 @@ protected:
 	//  Avatar pointer 
 	AAvatar* avatarPtr;
 
-	// Pointers/direct links to some commonly used Avatar objects to avoid function calls
+	// Pointers/references to some commonly used Avatar objects to avoid function calls
 	// and/or reads from memory
-	FVector avatarForwardVector;
-	FVector avatarRightVector; 
+	//FVector* avatarForwardVector;
+	//FVector* avatarRightVector; 
 	 
 public:
 

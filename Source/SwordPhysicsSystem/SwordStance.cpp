@@ -21,8 +21,8 @@ SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
 	avatarPtr = avatar; 
 
 	// Set Pointers/references to some commonly used Avatar objects
-	avatarForwardVector = &avatarPtr->GetActorForwardVector();
-	avatarRightVector = &avatarPtr->GetActorRightVector();
+	//avatarForwardVector = &avatarPtr->GetActorForwardVector();
+	//avatarRightVector = &avatarPtr->GetActorRightVector();
 
 	// Set the stance ID
 	stanceID = stance_ID; 
@@ -52,8 +52,14 @@ void SwordStance::MoveForward(float amount) {
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
 	
+		// Get the value of the forward vector
+		FVector avatarForwardVector = avatarPtr->GetActorForwardVector(); 
+
 		// Add movement input to the avatar forward vector. 
-		avatarPtr->AddMovementInput(*(avatarForwardVector), amount);
+		avatarPtr->AddMovementInput(avatarForwardVector, amount);
+
+		// Add movement input to the avatar forward vector. 
+		// avatarPtr->AddMovementInput(*(avatarForwardVector), amount);
 	}
 }
 
@@ -62,8 +68,14 @@ void SwordStance::MoveBack(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
 
+		// Get the value of the forward vector
+		FVector avatarForwardVector = avatarPtr->GetActorForwardVector();
+
+		// Subtract movement input to the avatar forward vector. 
+		avatarPtr->AddMovementInput(avatarForwardVector, -amount);
+
 		// Add amount to movement, since it is back it is subtract
-		avatarPtr->AddMovementInput(*(avatarForwardVector), -amount);
+		// avatarPtr->AddMovementInput(*(avatarForwardVector), -amount);
 	}
 }
 
@@ -73,10 +85,12 @@ void SwordStance::MoveRight(float amount) {
 	if (avatarPtr->Controller && amount) {
 
 		// Get current right movement (no left vector) 
-		FVector right = avatarPtr->GetActorRightVector();
+		FVector avatarRightVector = avatarPtr->GetActorRightVector();
+
+		avatarPtr->AddMovementInput(avatarRightVector, amount);
 
 		// Add amount to movement
-		avatarPtr->AddMovementInput(*(avatarRightVector), amount);
+		// avatarPtr->AddMovementInput(*(avatarRightVector), amount);
 	}
 }
 
@@ -85,8 +99,13 @@ void SwordStance::MoveLeft(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->Controller && amount) {
 
+		// Get current right movement (no left vector) 
+		FVector avatarRightVector = avatarPtr->GetActorRightVector();
+
+		avatarPtr->AddMovementInput(avatarRightVector, -amount);
+
 		// Add amount to movmenet, in this case subract since it is left
-		avatarPtr->AddMovementInput(*(avatarRightVector), -amount);
+		// avatarPtr->AddMovementInput(*(avatarRightVector), -amount);
 	}
 }
 

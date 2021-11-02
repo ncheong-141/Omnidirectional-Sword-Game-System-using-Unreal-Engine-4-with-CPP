@@ -34,6 +34,13 @@ AAvatar::AAvatar() {
 	// Set the current stance ID variable for reference
 	AAvatar::currentStanceID = currentStance->stanceID; 
 
+	// Initialise pointers/references to commonly used Avatar objects
+/*	avatarWorldTransform = &(this->GetActorTransform());
+	avatarWorldVelocity = &(this->GetVelocity());
+	avatarWorldRotation = &(avatarWorldTransform->GetRotation());
+	avatarLocalVelocity = &(*avatarWorldVelocity);	*/				// Set the local velocity to world initially
+
+
 	// Initialise other variables and control flow
 	swordFocalPointPosition_X = 0.f;
 	swordFocalPointPosition_Y = 0.f;
@@ -43,7 +50,7 @@ AAvatar::AAvatar() {
 	isInAir		= false;
 	isInIframe	= false;
 	isWalking	= false;
-
+	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 
 }
 
@@ -61,18 +68,23 @@ void AAvatar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	/* Key physics */
-	FTransform actorTransform = this->GetActorTransform();
-	FVector vel = this->GetVelocity(); 
-	FQuat rot = actorTransform.GetRotation();
 
-	FVector actualvel = rot.UnrotateVector(vel); 
-	float maxVel = this->GetCharacterMovement()->GetMaxSpeed(); 
+	// Velocity update
 
-	inputVelocity_X = actualvel.X/maxVel;
-	inputVelocity_Y = actualvel.Y/maxVel; 
+	// Calculate the local velocity of the avatar from the World velocity
+	FTransform avatarWorldTransform = this->GetActorTransform();
+	FVector avatarWorldVelocity = this->GetVelocity();
+	FQuat avatarWorldRotation = avatarWorldTransform.GetRotation();
 	
-	//Velocity update
-	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;// std::abs(inputVelocity_X) + std::abs(inputVelocity_Y);
+	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
+
+	// Calculate the normalised inputed velocity 
+	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
+	
+	inputVelocity_X = avatarLocalVelocity.X/ avatarMaxSpeed;
+	inputVelocity_Y = avatarLocalVelocity.Y/ avatarMaxSpeed;
+	
+	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;
 	
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();

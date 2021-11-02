@@ -40,6 +40,13 @@ private:
 	BlockSwordStance	blockStance;		// ID = 2
 	StabSwordStance		stabStance;			// ID = 3 
 
+	// Pointers/references to some commonly used Avatar objects to avoid function calls
+	// and/or reads from memory
+	//const FTransform* avatarWorldTransform;
+	//FVector*	avatarWorldVelocity; 
+	//FQuat*		avatarWorldRotation;
+	//FVector*	avatarLocalVelocity; 
+
 public:
 
 	/* Class attributes */
@@ -72,6 +79,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float inputVelocity_Y;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		float avatarMaxSpeed; 
 
 
 	// Avatar flow control conditions 
