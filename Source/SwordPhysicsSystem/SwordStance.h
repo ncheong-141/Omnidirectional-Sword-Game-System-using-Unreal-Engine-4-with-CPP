@@ -22,11 +22,17 @@ class AAvatar;
 class SWORDPHYSICSSYSTEM_API SwordStance
 {
 private:
+	
 protected:
 	/* Protected class attributes usable by sub-classes  */
 	
 	//  Avatar pointer 
 	AAvatar* avatarPtr;
+
+	// Pointers/direct links to some commonly used Avatar objects to avoid function calls
+	// and/or reads from memory
+	FVector avatarForwardVector;
+	FVector avatarRightVector; 
 	 
 public:
 
@@ -57,7 +63,6 @@ public:
 
 	// Action functions
 	virtual void jump();
-	virtual void dodgeRight();
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 };

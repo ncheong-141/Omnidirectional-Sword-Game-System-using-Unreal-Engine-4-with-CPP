@@ -20,6 +20,10 @@ SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
 
+	// Set Pointers/references to some commonly used Avatar objects
+	avatarForwardVector = &avatarPtr->GetActorForwardVector();
+	avatarRightVector = &avatarPtr->GetActorRightVector();
+
 	// Set the stance ID
 	stanceID = stance_ID; 
 }
@@ -47,12 +51,9 @@ void SwordStance::MoveForward(float amount) {
 
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
-
-		// Get current forward movement
-		FVector fwd = avatarPtr->GetActorForwardVector();
-
-		// We call add movement to actually move the player by amount in the fwd direction
-		avatarPtr->AddMovementInput(fwd, amount);
+	
+		// Add movement input to the avatar forward vector. 
+		avatarPtr->AddMovementInput(*(avatarForwardVector), amount);
 	}
 }
 
@@ -61,11 +62,8 @@ void SwordStance::MoveBack(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->Controller && amount) {
 
-		// Get current forward movement (no back vector) 
-		FVector fwd = avatarPtr->GetActorForwardVector();
-
 		// Add amount to movement, since it is back it is subtract
-		avatarPtr->AddMovementInput(fwd, -amount);
+		avatarPtr->AddMovementInput(*(avatarForwardVector), -amount);
 	}
 }
 
@@ -78,7 +76,7 @@ void SwordStance::MoveRight(float amount) {
 		FVector right = avatarPtr->GetActorRightVector();
 
 		// Add amount to movement
-		avatarPtr->AddMovementInput(right, amount);
+		avatarPtr->AddMovementInput(*(avatarRightVector), amount);
 	}
 }
 
@@ -87,11 +85,8 @@ void SwordStance::MoveLeft(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->Controller && amount) {
 
-		// Get current right movemnet
-		FVector right = avatarPtr->GetActorRightVector();
-
 		// Add amount to movmenet, in this case subract since it is left
-		avatarPtr->AddMovementInput(right, -amount);
+		avatarPtr->AddMovementInput(*(avatarRightVector), -amount);
 	}
 }
 
@@ -123,10 +118,4 @@ void SwordStance::jump() {
 
 	// Use inbuilt UE function for characters (can set characteristics in cosntructor)
 	avatarPtr->Jump();
-}
-
-
-void SwordStance::dodgeRight() {
-
-
 }
