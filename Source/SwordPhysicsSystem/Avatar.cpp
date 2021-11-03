@@ -219,6 +219,7 @@ void AAvatar::jump() {
 
 void AAvatar::dodge()
 {
+	currentStance->dodge();
 }
 
 void AAvatar::PostInitializeComponents() {

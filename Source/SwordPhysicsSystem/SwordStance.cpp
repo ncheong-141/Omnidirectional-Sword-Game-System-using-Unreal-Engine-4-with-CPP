@@ -9,6 +9,7 @@
 #include "DebugOutput.h"
 
 // UE4 Global functions
+#include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 //#include "Engine/GameFramework/UCharacterMovementComponent.h"
@@ -137,4 +138,48 @@ void SwordStance::jump() {
 
 	// Use inbuilt UE function for characters (can set characteristics in cosntructor)
 	avatarPtr->Jump();
+}
+
+void SwordStance::dodge() {
+
+	DebugOutput output = DebugOutput();
+
+	output.toHUD(FString("In Dodge"), 2.f, false);
+
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->Controller) {
+		
+		// Get player controller for input data
+		APlayerController* pController = avatarPtr->GetWorld()->GetFirstPlayerController(); 
+
+		// Determine if its a WASD dodge (should change to switch statement to minimise latency)
+		// Need to find out how to get key value
+
+		if (pController->IsInputKeyDown(EKeys::A)) {
+
+			output.toHUD(FString("Dodge left"), 2.f, false);
+		}
+		else if (pController->IsInputKeyDown(EKeys::D)) {
+
+			output.toHUD(FString("Dodge Right"), 2.f, false);
+
+		}
+		else if (pController->IsInputKeyDown(EKeys::W)) {
+
+			output.toHUD(FString("Dodge Forward"), 2.f, false);
+
+		}
+		else if (pController->IsInputKeyDown(EKeys::S)) {
+
+			output.toHUD(FString("Dodge Back"), 2.f, false);
+
+		}
+
+		
+		
+		// Get animation curve of dodge
+
+	}
+
 }
