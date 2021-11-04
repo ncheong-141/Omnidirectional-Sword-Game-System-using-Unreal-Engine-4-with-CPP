@@ -15,22 +15,6 @@
 
 
 
-/* Internal function implementation */
-
-// Check if the dodge key was last pressed function for all movement functions
-bool dodgeKeyCurrentlyPressed(AAvatar* avatarPtr) {
-
-	// Check if player controller set
-	if (avatarPtr->pController) {
-
-		// Get current key pressed from custom player controller and compared with dodge key
-		if (*(avatarPtr->pController->getCurrentKeyPressed()) == EKeys::LeftShift) {
-			return true;
-		}
-	}
-	return false;
-}
-
 
 // Constructor and destructor implementation
 SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
@@ -71,11 +55,6 @@ void SwordStance::MoveForward(float amount) {
 
 		// Add movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(avatarForwardVector, amount);
-
-		// Check if dodge button is now activated
-		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
-			SwordStance::dodge();
-		}
 	}
 }
 
@@ -89,11 +68,6 @@ void SwordStance::MoveBack(float amount) {
 
 		// Subtract movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(avatarForwardVector, -amount);
-
-		// Check if dodge button is now activated
-		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
-			SwordStance::dodge();
-		}
 	}
 }
 
@@ -106,11 +80,6 @@ void SwordStance::MoveRight(float amount) {
 		FVector avatarRightVector = avatarPtr->GetActorRightVector();
 
 		avatarPtr->AddMovementInput(avatarRightVector, amount);
-
-		// Check if dodge button is now activated
-		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
-			SwordStance::dodge();
-		}
 	}
 }
 
@@ -123,11 +92,6 @@ void SwordStance::MoveLeft(float amount) {
 		FVector avatarRightVector = avatarPtr->GetActorRightVector();
 
 		avatarPtr->AddMovementInput(avatarRightVector, -amount);
-
-		// Check if dodge button is now activated
-		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
-			SwordStance::dodge();
-		}
 	}
 }
 
@@ -165,42 +129,39 @@ void SwordStance::dodge() {
 
 	DebugOutput output = DebugOutput();
 
-	output.toHUD(FString("In Dodge"), 2.f, false);
-
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController) {
 
 		// Set WASD control to false 
 
-		// Determine if its a WASD dodge (should change to switch statement to minimise latency)
-		// Need to find out how to get key value
-		if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
-			output.toHUD(FString("Dodge left"), 2.f, false);
+		// Check if shift is active (dodge key)
+		if (avatarPtr->pController->dodgeKeyActive()) {
+
+			output.toHUD(FString("Dodge key active"), 2.f, false);
+
+			// Determine if its a WASD dodge (should change to switch statement to minimise latency)
+			// Need to find out how to get key value
+			if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
+
+				output.toHUD(FString("Dodge left"), 2.f, false);
+			}
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
+
+				output.toHUD(FString("Dodge Right"), 2.f, false);
+			}
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
+
+				output.toHUD(FString("Dodge Forward"), 2.f, false);
+			}
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
+
+				output.toHUD(FString("Dodge Back"), 2.f, false);
+			}
 		}
-		else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
-			output.toHUD(FString("Dodge Right"), 2.f, false);
-
-		}
-		else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
-
-			output.toHUD(FString("Dodge Forward"), 2.f, false);
-
-		}
-		else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
-
-			output.toHUD(FString("Dodge Back"), 2.f, false);
-
-		}
-		
-
-
-		
-		
 		// Get animation curve of dodge
 
 	}
-
 }
 

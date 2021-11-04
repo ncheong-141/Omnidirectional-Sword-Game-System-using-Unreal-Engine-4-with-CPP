@@ -108,6 +108,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isWalking; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isInDodge; 
+
 
 	/* Unreal engine 4 class functions */
 
@@ -162,5 +165,8 @@ public:
 
 private:
 
+	/* Internal class functions (helpers) */
+
+	bool cardinalMovementDisabled();
 
 };

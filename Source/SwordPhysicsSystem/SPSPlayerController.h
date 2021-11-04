@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Containers/Array.h"
 #include "Components/InputComponent.h"
+#include "Containers/Array.h"
 #include "SPSPlayerController.generated.h"
 
 /**
@@ -14,6 +14,27 @@
 	Purpose of this class is to add functionality to the PlayerController, mainly to be able to
 	store key presses such that inputs can be more flexible (e.g. press A then shift to dodge) 
  */
+
+// Forward declarations
+class AAvatar;
+
+// Internal struct
+// Purpose of this class is to hold a key information and attach a lifetime onto it
+struct KeyPressed {
+
+	// Attribute
+	FKey key; 
+	float lifetime; 
+
+	KeyPressed(FKey key_, float lifetime_) :	key(key_), 
+													lifetime(lifetime_) {}
+
+	// Struct functions 
+	void updateLifetime(float DeltaTime) {
+		lifetime -= DeltaTime;
+	}
+};
+
 UCLASS()
 class SWORDPHYSICSSYSTEM_API ASPSPlayerController : public APlayerController
 {
@@ -22,23 +43,12 @@ class SWORDPHYSICSSYSTEM_API ASPSPlayerController : public APlayerController
 private:
 
 
-	// Instances of keys being monitored such that only one instance is requried
-	FKey	empty_FKey;
-	FKey	A_FKey; 
-	FKey	D_FKey;
-	FKey	W_FKey;
-	FKey	S_FKey;
-	FKey	LShift_FKey; 
-
 	// Key variable pointers which switch between FKey instances (no copying required)
 	// Will likely change this to a Queue Storage in the future
-	FKey* lastKeyPressed;
-	FKey* currentKeyPressed;
-
+	TArray<KeyPressed> currentKeysPressed;
 
 	// Key "sensitivity" to change
-	float lastKeyOverwriteDelayValue; 
-	float lastKeyTimeTillOverwrite;
+	float keyPressTimeInMemory; 
 
 public:
 
@@ -46,21 +56,11 @@ public:
 	ASPSPlayerController();
 	ASPSPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
-		// Initialise key variables such that no copying is required and checks are done on a single instance of each key
-		A_FKey = EKeys::A;
-		D_FKey = EKeys::D; 
-		W_FKey = EKeys::W;
-		S_FKey = EKeys::S;
-		LShift_FKey = EKeys::LeftShift;
-		empty_FKey = FKey(); 
-
-		// Set pointers to none
-		lastKeyPressed = &empty_FKey;
-		currentKeyPressed = &empty_FKey;
+		// Instantiate current keys pressed set
+		currentKeysPressed = TArray<KeyPressed>();
 
 		// Set input characteristics
-		lastKeyOverwriteDelayValue = 0.1;
-		lastKeyTimeTillOverwrite = lastKeyOverwriteDelayValue;
+		keyPressTimeInMemory = 0.2;
 	}
 
 	/**
@@ -71,7 +71,9 @@ public:
 	*/
 	virtual void PlayerTick(float DeltaTime) override;
 
-	const FKey* getLastKeyPressed();
-	const FKey* getCurrentKeyPressed();
+	const TArray<KeyPressed> getCurrentKeysPressed();
+
+	// Dodge key currently pressed
+	bool dodgeKeyActive(); 
 
 };
