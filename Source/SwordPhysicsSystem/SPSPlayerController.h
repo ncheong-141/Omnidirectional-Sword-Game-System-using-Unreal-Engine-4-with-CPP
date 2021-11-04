@@ -31,6 +31,7 @@ private:
 	FKey	LShift_FKey; 
 
 	// Key variable pointers which switch between FKey instances (no copying required)
+	// Will likely change this to a Queue Storage in the future
 	FKey* lastKeyPressed;
 	FKey* currentKeyPressed;
 

@@ -13,6 +13,7 @@
 #include "BlockSwordStance.h"
 #include "StabSwordStance.h"
 #include "MeleeWeapon.h"
+#include "SPSPlayerController.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -37,7 +38,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
 		UCameraComponent* cameraComponent; 
 
-
+	// Pointers/references to some commonly used Avatar objects to avoid function calls
+	// and/or reads from memory
+	ASPSPlayerController* pController;
 
 protected:
 	// Called when the game starts or when spawned
@@ -57,13 +60,6 @@ private:
 	SlashSwordStance	slashStance;		// ID = 1
 	BlockSwordStance	blockStance;		// ID = 2
 	StabSwordStance		stabStance;			// ID = 3 
-
-	// Pointers/references to some commonly used Avatar objects to avoid function calls
-	// and/or reads from memory
-	//const FTransform* avatarWorldTransform;
-	//FVector*	avatarWorldVelocity; 
-	//FQuat*		avatarWorldRotation;
-	//FVector*	avatarLocalVelocity; 
 
 public:
 
@@ -163,4 +159,8 @@ public:
 
 	// Ths runs after the avatars constructor is complete. 
 	virtual void PostInitializeComponents() override; 
+
+private:
+
+
 };

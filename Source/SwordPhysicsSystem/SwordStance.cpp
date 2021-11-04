@@ -4,6 +4,7 @@
 
 // Game class files
 #include "Avatar.h"
+#include "SPSPlayerController.h"
 
 // Debug file
 #include "DebugOutput.h"
@@ -12,7 +13,23 @@
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-//#include "Engine/GameFramework/UCharacterMovementComponent.h"
+
+
+/* Internal function implementation */
+
+// Check if the dodge key was last pressed function for all movement functions
+bool dodgeKeyCurrentlyPressed(AAvatar* avatarPtr) {
+
+	// Check if player controller set
+	if (avatarPtr->pController) {
+
+		// Get current key pressed from custom player controller and compared with dodge key
+		if (*(avatarPtr->pController->getCurrentKeyPressed()) == EKeys::LeftShift) {
+			return true;
+		}
+	}
+	return false;
+}
 
 
 // Constructor and destructor implementation
@@ -20,10 +37,6 @@ SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
 	
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
-
-	// Set Pointers/references to some commonly used Avatar objects
-	//avatarForwardVector = &avatarPtr->GetActorForwardVector();
-	//avatarRightVector = &avatarPtr->GetActorRightVector();
 
 	// Set the stance ID
 	stanceID = stance_ID; 
@@ -51,7 +64,7 @@ void SwordStance::displayStance() {
 void SwordStance::MoveForward(float amount) {
 
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 	
 		// Get the value of the forward vector
 		FVector avatarForwardVector = avatarPtr->GetActorForwardVector(); 
@@ -59,15 +72,17 @@ void SwordStance::MoveForward(float amount) {
 		// Add movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(avatarForwardVector, amount);
 
-		// Add movement input to the avatar forward vector. 
-		// avatarPtr->AddMovementInput(*(avatarForwardVector), amount);
+		// Check if dodge button is now activated
+		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
+			SwordStance::dodge();
+		}
 	}
 }
 
 void SwordStance::MoveBack(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 
 		// Get the value of the forward vector
 		FVector avatarForwardVector = avatarPtr->GetActorForwardVector();
@@ -75,8 +90,10 @@ void SwordStance::MoveBack(float amount) {
 		// Subtract movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(avatarForwardVector, -amount);
 
-		// Add amount to movement, since it is back it is subtract
-		// avatarPtr->AddMovementInput(*(avatarForwardVector), -amount);
+		// Check if dodge button is now activated
+		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
+			SwordStance::dodge();
+		}
 	}
 }
 
@@ -90,23 +107,27 @@ void SwordStance::MoveRight(float amount) {
 
 		avatarPtr->AddMovementInput(avatarRightVector, amount);
 
-		// Add amount to movement
-		// avatarPtr->AddMovementInput(*(avatarRightVector), amount);
+		// Check if dodge button is now activated
+		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
+			SwordStance::dodge();
+		}
 	}
 }
 
 void SwordStance::MoveLeft(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 
 		// Get current right movement (no left vector) 
 		FVector avatarRightVector = avatarPtr->GetActorRightVector();
 
 		avatarPtr->AddMovementInput(avatarRightVector, -amount);
 
-		// Add amount to movmenet, in this case subract since it is left
-		// avatarPtr->AddMovementInput(*(avatarRightVector), -amount);
+		// Check if dodge button is now activated
+		if (dodgeKeyCurrentlyPressed(avatarPtr)) {
+			SwordStance::dodge();
+		}
 	}
 }
 
@@ -114,7 +135,7 @@ void SwordStance::MoveLeft(float amount) {
 void SwordStance::Yaw(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
 		avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
@@ -124,7 +145,7 @@ void SwordStance::Yaw(float amount) {
 void SwordStance::Pitch(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
 		avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
@@ -146,35 +167,34 @@ void SwordStance::dodge() {
 
 	output.toHUD(FString("In Dodge"), 2.f, false);
 
-
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller) {
-		
-		// Get player controller for input data
-		APlayerController* pController = avatarPtr->GetWorld()->GetFirstPlayerController(); 
+	if (avatarPtr->pController) {
+
+		// Set WASD control to false 
 
 		// Determine if its a WASD dodge (should change to switch statement to minimise latency)
 		// Need to find out how to get key value
-
-		if (pController->IsInputKeyDown(EKeys::A)) {
+		if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
 			output.toHUD(FString("Dodge left"), 2.f, false);
 		}
-		else if (pController->IsInputKeyDown(EKeys::D)) {
+		else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
 			output.toHUD(FString("Dodge Right"), 2.f, false);
 
 		}
-		else if (pController->IsInputKeyDown(EKeys::W)) {
+		else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
 			output.toHUD(FString("Dodge Forward"), 2.f, false);
 
 		}
-		else if (pController->IsInputKeyDown(EKeys::S)) {
+		else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
 			output.toHUD(FString("Dodge Back"), 2.f, false);
 
 		}
+		
+
 
 		
 		
@@ -183,3 +203,4 @@ void SwordStance::dodge() {
 	}
 
 }
+

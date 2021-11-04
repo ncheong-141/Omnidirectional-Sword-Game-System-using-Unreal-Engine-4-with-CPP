@@ -6,8 +6,6 @@
 // Debug file
 #include "DebugOutput.h"
 
-#include "RHI.h"
-
 ASPSPlayerController::ASPSPlayerController() {
 
 	// Initialise key variables such that no copying is required and checks are done on a single instance of each key
@@ -36,7 +34,7 @@ void ASPSPlayerController::PlayerTick(float DeltaTime) {
 	// Call parent class player tick initially
 	APlayerController::PlayerTick(DeltaTime); 
 
-	DebugOutput output = DebugOutput();
+	//DebugOutput output = DebugOutput();
 
 	/* Set the last key pressed to current key pressed AFTER A CERTAIN DELAY(lastKeyOverwriteDelayValue) since this is the next tick
 	   and current key was set from last tick */
@@ -57,11 +55,6 @@ void ASPSPlayerController::PlayerTick(float DeltaTime) {
 		// Reduce the time till overwrite by the time difference between this and last frame. 
 		lastKeyTimeTillOverwrite -= DeltaTime;
 	}
-		
-
-	//output.toHUD(FString(lastKeyPressed->GetFName().ToString()), 2.f, false);
-	
-
 
 	/* Setting currentKeyPressed based on user input*/
 	// Set current key by checking if any of the key keys (lol) is pressed
@@ -77,11 +70,13 @@ void ASPSPlayerController::PlayerTick(float DeltaTime) {
 	else if (IsInputKeyDown(EKeys::S)) {
 		currentKeyPressed = &S_FKey;
 	}
-	else if (IsInputKeyDown(EKeys::LeftShift)) {
-		currentKeyPressed = &LShift_FKey;
-	}
 	else {
 		currentKeyPressed = &empty_FKey;
+	}
+
+	// Left shift gets priority ( need a better soln for this though)
+	if (IsInputKeyDown(EKeys::LeftShift)) {
+		currentKeyPressed = &LShift_FKey;
 	}
 }
 

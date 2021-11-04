@@ -70,6 +70,12 @@ AAvatar::AAvatar() {
 void AAvatar::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Get reference to player Controller (since should be set up by now, whereas not set up when in constructor)
+	// Pointer/references to some commonly used avatar objects
+	// Get player controller reference and cast to custom player controller (which is the actual object set in gamemode BP)
+	pController = Cast<ASPSPlayerController>(GetWorld()->GetFirstPlayerController());
+
 }
 
 
