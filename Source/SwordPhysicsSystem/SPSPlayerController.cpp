@@ -50,31 +50,31 @@ void ASPSPlayerController::PlayerTick(float DeltaTime) {
 	// Set current key by checking if any of the key keys (lol) is pressed
 	// Turn this into an iterable datastructure later
 
-	//the [&] in the lambda body tells the compiler to capture outer variables by reference
-
-
+	// Using TArray predicate function. 
+	// the [&] in the lambda body tells the compiler to capture outer variables by reference
+	// The () is the parameters (Keypress) and condition in curly brackets.
 	if (IsInputKeyDown(EKeys::LeftShift)) {
 		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::LeftShift; })) {
 			currentKeysPressed.Emplace(EKeys::LeftShift, keyPressTimeInMemory);
 		}
 	}
 	if (IsInputKeyDown(EKeys::A)) {
-		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::A; })) {
+		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::A || keyP.key == EKeys::D || keyP.key == EKeys::W || keyP.key == EKeys::S; })) {
 			currentKeysPressed.Emplace(EKeys::A, keyPressTimeInMemory);
 		}
 	}
 	if (IsInputKeyDown(EKeys::D)) {
-		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::D; })) {
+		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::A || keyP.key == EKeys::D || keyP.key == EKeys::W || keyP.key == EKeys::S; })) {
 			currentKeysPressed.Emplace(EKeys::D, keyPressTimeInMemory);
 		}
 	}
 	if (IsInputKeyDown(EKeys::W)) {
-		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::W; })) {
+		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::A || keyP.key == EKeys::D || keyP.key == EKeys::W || keyP.key == EKeys::S; })) {
 			currentKeysPressed.Emplace(EKeys::W, keyPressTimeInMemory);
 		}
 	}
 	if (IsInputKeyDown(EKeys::S)) {
-		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::S; })) {
+		if (!currentKeysPressed.ContainsByPredicate([&](KeyPressed keyP) {return keyP.key == EKeys::A || keyP.key == EKeys::D || keyP.key == EKeys::W || keyP.key == EKeys::S; })) {
 			currentKeysPressed.Emplace(EKeys::S, keyPressTimeInMemory);
 		}
 	}
