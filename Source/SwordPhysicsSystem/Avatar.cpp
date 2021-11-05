@@ -128,7 +128,7 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
 	// 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );this is possible to stop the jump input, can use this for other things 
-	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
+	PlayerInputComponent->BindAction("Dodge", IE_Repeat, this, &AAvatar::dodge);
 
 
 	// Sword stance change input

@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Components/InputComponent.h"
 #include "Containers/Array.h"
+#include "GameFramework/InputSettings.h"
 #include "SPSPlayerController.generated.h"
 
 /**
@@ -17,6 +17,7 @@
 
 // Forward declarations
 class AAvatar;
+class UInputSettings; 
 
 // Internal struct
 // Purpose of this class is to hold a key information and attach a lifetime onto it
@@ -52,6 +53,10 @@ private:
 
 public:
 
+	// Public class attributes
+	// Reference to input settings
+	UInputSettings* inputSettings;
+
 	// Constructors. Note, super constructor required to be called in order to set up the controller. 
 	ASPSPlayerController();
 	ASPSPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
@@ -59,8 +64,11 @@ public:
 		// Instantiate current keys pressed set
 		currentKeysPressed = TArray<KeyPressed>();
 
+		// Get input settings for reference
+		inputSettings = UInputSettings::GetInputSettings();
+
 		// Set input characteristics
-		keyPressTimeInMemory = 0.2;
+		keyPressTimeInMemory = 0.5;
 	}
 
 	/**
@@ -72,8 +80,5 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 
 	const TArray<KeyPressed> getCurrentKeysPressed();
-
-	// Dodge key currently pressed
-	bool dodgeKeyActive(); 
 
 };
