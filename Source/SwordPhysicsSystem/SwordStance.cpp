@@ -146,25 +146,28 @@ void SwordStance::dodge() {
 			// (should change to switch statement to minimise latency)
 			if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
-				output.toHUD(FString("Dodge left"), 2.f, false);
+				GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::White, TEXT("Dodge Left"));
+				UE_LOG(LogTemp, Display, TEXT("Dodge Left"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 2;
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
-				output.toHUD(FString("Dodge Right"), 2.f, false);
+				UE_LOG(LogTemp, Display, TEXT("Dodge Right"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 3;
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
 				output.toHUD(FString("Dodge Forward"), 2.f, false);
+				UE_LOG(LogTemp, Display, TEXT("Dodge Forward"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 0;
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
 				output.toHUD(FString("Dodge Back"), 2.f, false);
+				UE_LOG(LogTemp, Display, TEXT("Dodge Back"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 1;
 			}

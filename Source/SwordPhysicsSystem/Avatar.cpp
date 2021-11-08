@@ -91,18 +91,16 @@ void AAvatar::Tick(float DeltaTime)
 	// Velocity update
 
 	// Calculate the local velocity of the avatar from the World velocity
-	FTransform avatarWorldTransform = this->GetActorTransform();
 	FVector avatarWorldVelocity = this->GetVelocity();
 	FQuat avatarWorldRotation = avatarWorldTransform.GetRotation();
-	
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
 
 	// Calculate the normalised inputed velocity 
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
-	
 	inputVelocity_X = avatarLocalVelocity.X/ avatarMaxSpeed;
 	inputVelocity_Y = avatarLocalVelocity.Y/ avatarMaxSpeed;
 	
+	// Calculate resultant velocity (change later)
 	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;
 	
 	// Check if avatar is in the air for physics and animation flow

@@ -16,17 +16,17 @@ void ADebugHUD::DrawHUD() {
 	Super::DrawHUD();
 
 	// Add always display messages
-	std::string outputStr; 
-	ADebugHUD::alwaysDisplayedMessages(outputStr);
+	//std::string outputStr; 
+	//ADebugHUD::alwaysDisplayedMessages(outputStr);
 
 	// Always display message size and padding
 	float outputWidth, outputHeight, pad = 10.f;
-	GetTextSize(FString(outputStr.c_str()), outputWidth, outputHeight, hudFont, 1.f);
+	//GetTextSize(FString(outputStr.c_str()), outputWidth, outputHeight, hudFont, 1.f);
 	float messageH = outputHeight + 2.f * pad;
 	float x = 0.f;
 	float y = messageH;
 
-	DrawText(FString(outputStr.c_str()), FColor::White, x + pad, y + pad, hudFont);
+	//DrawText(FString(outputStr.c_str()), FColor::White, x + pad, y + pad, hudFont);
 
 	// Temporary messages
 	// Iterate from back to fron through the list, so if we remove an item while iterating it wont be a problem
