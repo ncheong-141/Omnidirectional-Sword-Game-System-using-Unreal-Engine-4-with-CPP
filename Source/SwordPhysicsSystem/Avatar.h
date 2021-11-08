@@ -99,17 +99,22 @@ public:
 
 
 	// Avatar flow control conditions 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		bool isInAir; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		bool isInIframe; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		bool isWalking; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		bool isInDodge; 
+
+	// Dodge direction (0 = forward, 1 = backwards, 2 = left, 3 = right
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		int dodgeDirection; 
+
 
 
 	/* Unreal engine 4 class functions */

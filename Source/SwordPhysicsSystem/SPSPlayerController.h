@@ -49,33 +49,33 @@ private:
 	TArray<KeyPressed> currentKeysPressed;
 
 	// Key "sensitivity" to change
-	float keyPressTimeInMemory; 
+	//float keyPressTimeInMemory; 
 
 public:
 
-	// Public class attributes
+	/* Public class attributes used in Sword/Avatar methods for input informations */
+	
 	// Reference to input settings
 	UInputSettings* inputSettings;
+
+	// Input mappings for reference
+	TArray<FInputActionKeyMapping> dodgeActionMappings;
+
 
 	// Constructors. Note, super constructor required to be called in order to set up the controller. 
 	ASPSPlayerController();
 	ASPSPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
-		// Instantiate current keys pressed set
-		currentKeysPressed = TArray<KeyPressed>();
-
 		// Get input settings for reference
 		inputSettings = UInputSettings::GetInputSettings();
 
-		// Set input characteristics
-		keyPressTimeInMemory = 0.5;
+		// Set up dodge action mappings
+		inputSettings->GetActionMappingByName("Dodge", dodgeActionMappings);
 	}
 
 	/**
 	* Processes player input (immediately after PlayerInput gets ticked) and calls UpdateRotation().
 	* PlayerTick is only called if the PlayerController has a PlayerInput object. Therefore, it will only be called for locally controlled PlayerControllers.
-	
-	This function will be used to store the last and current key pressed. Only certain keys will be checked for. 
 	*/
 	virtual void PlayerTick(float DeltaTime) override;
 

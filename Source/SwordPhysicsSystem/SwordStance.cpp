@@ -133,65 +133,40 @@ void SwordStance::dodge() {
 	if (avatarPtr->pController) {
 
 		// Set WASD control to false 
-		
-
-		// Dodge action mappings (should be only one)
-		TArray<FInputActionKeyMapping> dodgeActionMappings;
-		avatarPtr->pController->inputSettings->GetActionMappingByName("Dodge", dodgeActionMappings);
-
-		// Determine which WASD is pressed and if dodge key is active 
-		// Current keys pressed maximum size of 2 since custom controller does not allow for more than 1 WASD input to be stored
-		
-		// Temp key containers (could optimise this and store the dodge key in the controller for reference)
-		FKey WASDkeyPressed = FKey(FName(TEXT("None")));
-		FKey dodgeKey = dodgeActionMappings[dodgeActionMappings.Num() - 1].Key; // Note, since the dodge key is specified first in the input UI section, this is its position
-
-		// Boolean for switching 
-		bool dodgeKeyActive = false; 
-
-		// check for dodge key 
-		for (int i = 0; i < avatarPtr->pController->getCurrentKeysPressed().Num(); i++) {
-			
-			// Check if it = dodge key, if not then set
-			if (avatarPtr->pController->getCurrentKeysPressed()[i].key != dodgeKey) {
-				WASDkeyPressed = avatarPtr->pController->getCurrentKeysPressed()[i].key;
-			}
-			// Check for dodge key
-			else if (avatarPtr->pController->getCurrentKeysPressed()[i].key == dodgeKey) {
-				dodgeKeyActive = true;
-			}
-		}
-
-		// Debug
-		if (dodgeKeyActive) {
-			output.toHUD(FString("Dodge key active"), 2.f, false);
-		}
-
-		if (WASDkeyPressed.GetFName() != FName(TEXT("None"))) {
-			output.toHUD(WASDkeyPressed.GetFName().ToString(), 2.f, false);
-		}
 
 
-		// If the dodge key is pressed and WASDkey is not
-		if (dodgeKeyActive == true && WASDkeyPressed.GetFName() != FName(TEXT("None"))) {
+		// Determine the dodge key from the player controller
+		// Dodge action mappings (should be WASD and Lshift) (Should move the dodge action mapping to the SPSPlayer controller)
+		FKey dodgeKey = avatarPtr->pController->dodgeActionMappings[avatarPtr->pController->dodgeActionMappings.Num() - 1].Key; // Note, since the dodge key is specified first in the input UI section, this is its position
+
+
+		if (avatarPtr->pController->IsInputKeyDown(dodgeKey)) {
 
 			// Flow control for each WASD key 
 			// (should change to switch statement to minimise latency)
-			if (WASDkeyPressed == EKeys::A) {
+			if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
 				output.toHUD(FString("Dodge left"), 2.f, false);
+				avatarPtr->isInDodge = true;
+				avatarPtr->dodgeDirection = 2;
 			}
-			else if (WASDkeyPressed == EKeys::D) {
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
 				output.toHUD(FString("Dodge Right"), 2.f, false);
+				avatarPtr->isInDodge = true;
+				avatarPtr->dodgeDirection = 3;
 			}
-			else if (WASDkeyPressed == EKeys::W) {
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
 				output.toHUD(FString("Dodge Forward"), 2.f, false);
+				avatarPtr->isInDodge = true;
+				avatarPtr->dodgeDirection = 0;
 			}
-			else if (WASDkeyPressed == EKeys::S) {
+			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
 				output.toHUD(FString("Dodge Back"), 2.f, false);
+				avatarPtr->isInDodge = true;
+				avatarPtr->dodgeDirection = 1;
 			}
 		}
 
