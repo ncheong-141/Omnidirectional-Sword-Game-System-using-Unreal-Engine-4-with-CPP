@@ -146,38 +146,100 @@ void SwordStance::dodge() {
 			// (should change to switch statement to minimise latency)
 			if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
-				GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::White, TEXT("Dodge Left"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Left"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Left"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 2;
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Right"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Right"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 3;
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
-				output.toHUD(FString("Dodge Forward"), 2.f, false);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Forward"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Forward"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 0;
+
+				applyAnimationCurveCardinalMovement(); 
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
-				output.toHUD(FString("Dodge Back"), 2.f, false);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Back"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Back"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 1;
 			}
 		}
 
-
-		
-
 		// Get animation curve of dodge
-
 	}
 }
 
+
+
+/* Internal helper functions for all sword stance classes */
+void SwordStance::applyAnimationCurveCardinalMovement() {
+
+	// Get animation instance of the avatar (SPSAnimInstance)
+	UAnimInstance* avatarAnimInstance = avatarPtr->GetMesh()->GetAnimInstance(); 
+
+	// Get the Animation montage (blended animation sequences currently playing)
+	UAnimMontage* currentAnimMontage = avatarAnimInstance->GetCurrentActiveMontage();
+
+	if (currentAnimMontage == nullptr) {
+
+		UE_LOG(LogTemp, Display, TEXT("Shit"));
+		return;
+	}
+
+	// Get curve smartNames and therefore ID to extract data from
+	//FSmartName avatarAnimForwardMovementCurve;
+	//FSmartName avatarAnimRightMovementCurve; 
+	//FSmartName avatarAnimUpMovementCurve;
+	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("ForwardMovement"), avatarAnimForwardMovementCurve);
+	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("RightMovement"), avatarAnimRightMovementCurve);
+	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("UpMovement"), avatarAnimUpMovementCurve);
+
+	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimForwardMovementCurve.DisplayName.ToString()));
+	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimRightMovementCurve.DisplayName.ToString()));
+	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimUpMovementCurve.DisplayName.ToString()));
+
+	// Get the curve data at corresponding curve ID
+	auto avatarAnimCurves = currentAnimMontage->GetCurveData().GetCurveData(0);
+	UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimCurves->Name.DisplayName.ToString()));
+
+	//// Get the corresponding float curve 
+	//TArray<const FFloatCurve*> avatarAnimFloatCurves;
+	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimForwardMovementCurve.UID)));
+	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimRightMovementCurve.UID)));
+	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimUpMovementCurve.UID)));
+
+	//// Debug
+	//float minTime;
+	//float maxTime; 
+	//avatarAnimFloatCurves[0]->FloatCurve.GetTimeRange(minTime, maxTime);
+
+	//UE_LOG(LogTemp, Display, TEXT("Min time: %f"), minTime);
+	//UE_LOG(LogTemp, Display, TEXT("Max time: %f"), maxTime);
+
+	//float currentTime = minTime; 
+
+	//while (currentTime < maxTime) {
+
+	//	// Get data from curvve
+	//	float data = avatarAnimFloatCurves[0]->Evaluate(currentTime); 
+	//	UE_LOG(LogTemp, Display, TEXT("Time: %f"), currentTime);
+	//	UE_LOG(LogTemp, Display, TEXT("ForwardMovement: %f"), data);
+
+	//	// add to the current time
+	//	currentTime = currentTime + avatarPtr->GetWorld()->GetDeltaSeconds(); 
+	//}
+
+
+
+}

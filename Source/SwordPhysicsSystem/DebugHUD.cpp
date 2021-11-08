@@ -20,7 +20,9 @@ void ADebugHUD::DrawHUD() {
 	//ADebugHUD::alwaysDisplayedMessages(outputStr);
 
 	// Always display message size and padding
-	float outputWidth, outputHeight, pad = 10.f;
+	float outputWidth = 10.f;
+	float outputHeight = 10.f; 
+	float pad = 10.f;
 	//GetTextSize(FString(outputStr.c_str()), outputWidth, outputHeight, hudFont, 1.f);
 	float messageH = outputHeight + 2.f * pad;
 	float x = 0.f;

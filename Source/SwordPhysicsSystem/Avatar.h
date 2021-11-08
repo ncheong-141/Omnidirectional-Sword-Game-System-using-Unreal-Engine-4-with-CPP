@@ -38,6 +38,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
 		UCameraComponent* cameraComponent; 
 
+
 	// Pointers/references to some commonly used Avatar objects to avoid function calls
 	// and/or reads from memory
 	ASPSPlayerController* pController;
@@ -99,22 +100,27 @@ public:
 
 
 	// Avatar flow control conditions 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAir; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInIframe; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isWalking; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInDodge; 
 
 	// Dodge direction (0 = forward, 1 = backwards, 2 = left, 3 = right
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		int dodgeDirection; 
 
+
+
+	/* Animation data for reference */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		UAnimSequenceBase* currentAnimationSequence; 
 
 
 	/* Unreal engine 4 class functions */

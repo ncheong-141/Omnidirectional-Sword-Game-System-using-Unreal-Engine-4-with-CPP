@@ -5,6 +5,7 @@
 
 // Debug output for printing to console
 #include "DebugOutput.h"
+#include "DrawDebugHelpers.h"
 
 // Unreal engine component classes
 #include "Engine/SkeletalMeshSocket.h"
@@ -89,10 +90,9 @@ void AAvatar::Tick(float DeltaTime)
 	/* Key physics */
 
 	// Velocity update
-
 	// Calculate the local velocity of the avatar from the World velocity
 	FVector avatarWorldVelocity = this->GetVelocity();
-	FQuat avatarWorldRotation = avatarWorldTransform.GetRotation();
+	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
 
 	// Calculate the normalised inputed velocity 
@@ -103,8 +103,16 @@ void AAvatar::Tick(float DeltaTime)
 	// Calculate resultant velocity (change later)
 	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;
 	
+
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
+
+
+	/* ------------------- Debug displaying ------------------------ */
+	FVector avatarLocation = this->GetActorLocation(); 
+	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
+
+	// Po
 }
 
 // Called to bind functionality to input
@@ -254,12 +262,5 @@ void AAvatar::PostInitializeComponents() {
 
 void AAvatar::debugMessageOut() {
 
-	// Get a reference to  the controller
-	DebugOutput output = DebugOutput();
-
-	std::string strOut = "X,Y,Z input: " + std::to_string(inputVelocity_X) + "," + std::to_string(inputVelocity_Y);
-
-
-	output.toHUD(FString(strOut.c_str()), 5.f, true);
 }
 

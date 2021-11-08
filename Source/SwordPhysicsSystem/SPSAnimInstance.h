@@ -27,9 +27,11 @@ public:
 	~USPSAnimInstance(); 
 
 	// Class properties usable in blueprints. 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 		AAvatar* animatedAvatar;
 
+	// Reference to current animation
+	UAnimMontage* currentAnimMontage; 
 
 	// Class functions
 	// Called at each animation tick

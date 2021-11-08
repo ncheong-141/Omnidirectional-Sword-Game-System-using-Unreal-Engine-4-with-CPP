@@ -14,8 +14,6 @@
 
 ASPSPlayerController::ASPSPlayerController() {
 
-	// Instantiate current keys pressed set
-	currentKeysPressed = TArray<KeyPressed>();
 
 	// Get input settings for reference
 	inputSettings = UInputSettings::GetInputSettings();
@@ -33,10 +31,6 @@ void ASPSPlayerController::PlayerTick(float DeltaTime) {
 	APlayerController::PlayerTick(DeltaTime); 
 }
 
-
-const TArray<KeyPressed>ASPSPlayerController::getCurrentKeysPressed() {
-	return currentKeysPressed;
-}
 
 
 
@@ -96,3 +90,20 @@ const TArray<KeyPressed>ASPSPlayerController::getCurrentKeysPressed() {
 ////	}
 ////	output.toHUD(FString("----"), 2.f, true);
 ////}
+
+//// Internal struct
+//// Purpose of this class is to hold a key information and attach a lifetime onto it
+//struct KeyPressed {
+//
+//	// Attribute
+//	FKey key;
+//	float lifetime;
+//
+//	KeyPressed(FKey key_, float lifetime_) : key(key_),
+//		lifetime(lifetime_) {}
+//
+//	// Struct functions 
+//	void updateLifetime(float DeltaTime) {
+//		lifetime -= DeltaTime;
+//	}
+//};

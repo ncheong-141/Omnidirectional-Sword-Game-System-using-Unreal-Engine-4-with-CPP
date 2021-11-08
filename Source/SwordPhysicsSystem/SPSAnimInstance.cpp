@@ -12,7 +12,8 @@
 
 
 USPSAnimInstance::USPSAnimInstance() {
-
+	animatedAvatar = nullptr;
+	currentAnimMontage = nullptr;
 }
 
 USPSAnimInstance::~USPSAnimInstance() {
@@ -56,5 +57,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		animatedAvatar->isInAir = animatedAvatar->GetCharacterMovement()->IsFalling();
 		
 	}
+
+	
 
 }

@@ -11,30 +11,15 @@
 /**
  *  This class is set in the BP_GameModeSPS. It automaticalled assigns this as the PlayerController (I think)
 	
-	Purpose of this class is to add functionality to the PlayerController, mainly to be able to
-	store key presses such that inputs can be more flexible (e.g. press A then shift to dodge) 
+	Purpose of this class is to add functionality to the PlayerController, 
+	Mainly to store input settings which can be refrenced throughout the game when required.
+	A further usage would be to store key presses to allow for multiple key press actions.
  */
 
 // Forward declarations
 class AAvatar;
 class UInputSettings; 
 
-// Internal struct
-// Purpose of this class is to hold a key information and attach a lifetime onto it
-struct KeyPressed {
-
-	// Attribute
-	FKey key; 
-	float lifetime; 
-
-	KeyPressed(FKey key_, float lifetime_) :	key(key_), 
-													lifetime(lifetime_) {}
-
-	// Struct functions 
-	void updateLifetime(float DeltaTime) {
-		lifetime -= DeltaTime;
-	}
-};
 
 UCLASS()
 class SWORDPHYSICSSYSTEM_API ASPSPlayerController : public APlayerController
@@ -46,7 +31,7 @@ private:
 
 	// Key variable pointers which switch between FKey instances (no copying required)
 	// Will likely change this to a Queue Storage in the future
-	TArray<KeyPressed> currentKeysPressed;
+	//TArray<KeyPressed> currentKeysPressed;
 
 	// Key "sensitivity" to change
 	//float keyPressTimeInMemory; 
@@ -78,7 +63,5 @@ public:
 	* PlayerTick is only called if the PlayerController has a PlayerInput object. Therefore, it will only be called for locally controlled PlayerControllers.
 	*/
 	virtual void PlayerTick(float DeltaTime) override;
-
-	const TArray<KeyPressed> getCurrentKeysPressed();
 
 };

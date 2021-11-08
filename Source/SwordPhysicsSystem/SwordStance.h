@@ -66,4 +66,7 @@ public:
 	virtual void dodge(); 
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
+
+	/* Internal helper functions for all sword stance classes */
+	void applyAnimationCurveCardinalMovement();
 };
