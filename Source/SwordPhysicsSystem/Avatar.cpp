@@ -107,12 +107,27 @@ void AAvatar::Tick(float DeltaTime)
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
 
+	// Mouse position update
+	// Top left is (0,0), bottom right is (1,1)
+	FVector2D mouse;
+	pController->GetMousePosition(mouse.X, mouse.Y);
+
+	if (GEngine) {
+		const FVector2D viewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+		swordFocalPointPosition_X = mouse.X / viewportSize.X;
+		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
+	}
 
 	/* ------------------- Debug displaying ------------------------ */
+	// Show root component of Avatar
 	FVector avatarLocation = this->GetActorLocation(); 
 	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
 
-	// Po
+	// Show mouse position
+	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
+	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
+
 }
 
 // Called to bind functionality to input
