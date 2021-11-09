@@ -50,14 +50,21 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	// Check if actor exists so to not crash if not
 	if (animatedAvatar != nullptr) {
 
-		// Get the speed. Size as getvelocity returns an FVector
-		animatedAvatar->resultantInputVelocity = animatedAvatar->GetVelocity().Size();
+		UAnimInstance* avatarAnimInstance = animatedAvatar->GetMesh()->GetAnimInstance();
 
-		// Check if actor is in air
-		animatedAvatar->isInAir = animatedAvatar->GetCharacterMovement()->IsFalling();
-		
+		// Get the Animation montage (blended animation sequences currently playing)
+		//UAnimMontage* currentAnimMontage = avatarAnimInstance->GetCurrentActiveMontage();
+
+		while (!(currentAnimMontage == nullptr)) {
+
+			UE_LOG(LogTemp, Display, TEXT("Montage not Null"));
+			auto avatarAnimCurves = currentAnimMontage->GetCurveData().GetCurveData(0);
+			if (avatarAnimCurves != nullptr) {
+				UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimCurves->Name.DisplayName.ToString()));
+			}
+			else {
+				UE_LOG(LogTemp, Display, TEXT("Curve data Null"));
+			}
+		}
 	}
-
-	
-
 }

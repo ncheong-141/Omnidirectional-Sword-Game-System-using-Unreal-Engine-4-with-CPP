@@ -26,7 +26,7 @@ void BlockSwordStance::displayStance() {
 void BlockSwordStance::MoveForward(float amount) {
 
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
-	if (SwordStance::avatarPtr->Controller && amount) {
+	if (SwordStance::avatarPtr->pController && amount) {
 
 		// Half the amount when moving
 		amount = amount / 2;
@@ -42,7 +42,7 @@ void BlockSwordStance::MoveForward(float amount) {
 void BlockSwordStance::MoveBack(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
-	if (SwordStance::avatarPtr->Controller && amount) {
+	if (SwordStance::avatarPtr->pController && amount) {
 
 		// Half the amount when moving
 		amount = amount / 2;
@@ -58,7 +58,7 @@ void BlockSwordStance::MoveBack(float amount) {
 void BlockSwordStance::MoveRight(float amount) {
 
 	// Dont enter the body ofthis function if the controller is not set up, or amount == 0; 
-	if (SwordStance::avatarPtr->Controller && amount) {
+	if (SwordStance::avatarPtr->pController && amount) {
 
 		// Half the amount when moving
 		amount = amount / 2;
@@ -74,7 +74,7 @@ void BlockSwordStance::MoveRight(float amount) {
 void BlockSwordStance::MoveLeft(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (SwordStance::avatarPtr->Controller && amount) {
+	if (SwordStance::avatarPtr->pController && amount) {
 
 		// Half the amount when moving
 		amount = amount / 2;

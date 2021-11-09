@@ -101,8 +101,7 @@ void AAvatar::Tick(float DeltaTime)
 	inputVelocity_Y = avatarLocalVelocity.Y/ avatarMaxSpeed;
 	
 	// Calculate resultant velocity (change later)
-	resultantInputVelocity = inputVelocity_X + inputVelocity_Y;
-	
+	resultantInputVelocity = GetVelocity().Size();
 
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
@@ -128,6 +127,13 @@ void AAvatar::Tick(float DeltaTime)
 	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
 	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
 
+
+	// Show right hand socket
+	const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
+
+	if (socket) {
+;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
+	}
 }
 
 // Called to bind functionality to input

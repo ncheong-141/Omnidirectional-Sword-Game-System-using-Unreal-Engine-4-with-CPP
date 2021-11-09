@@ -74,7 +74,7 @@ void SwordStance::MoveBack(float amount) {
 void SwordStance::MoveRight(float amount) {
 
 	// Dont enter the body ofthis function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->Controller && amount) {
+	if (avatarPtr->pController && amount) {
 
 		// Get current right movement (no left vector) 
 		FVector avatarRightVector = avatarPtr->GetActorRightVector();
@@ -186,16 +186,23 @@ void SwordStance::dodge() {
 void SwordStance::applyAnimationCurveCardinalMovement() {
 
 	// Get animation instance of the avatar (SPSAnimInstance)
-	UAnimInstance* avatarAnimInstance = avatarPtr->GetMesh()->GetAnimInstance(); 
+	//UAnimInstance* avatarAnimInstance = avatarPtr->GetMesh()->GetAnimInstance(); 
 
-	// Get the Animation montage (blended animation sequences currently playing)
-	UAnimMontage* currentAnimMontage = avatarAnimInstance->GetCurrentActiveMontage();
+	//
+	//// Get the Animation montage (blended animation sequences currently playing)
+	//UAnimMontage* currentAnimMontage = avatarAnimInstance->GetCurrentActiveMontage();
+	//bool getOut = false; 
 
-	if (currentAnimMontage == nullptr) {
+	//while (!(currentAnimMontage == nullptr) || getOut == false) {
 
-		UE_LOG(LogTemp, Display, TEXT("Shit"));
-		return;
-	}
+	//	UE_LOG(LogTemp, Display, TEXT("Null"));
+
+	//		
+	//	UE_LOG(LogTemp, Display, TEXT("Not Null"));
+	//	auto avatarAnimCurves = currentAnimMontage->GetCurveData().GetCurveData(0);
+	//	UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimCurves->Name.DisplayName.ToString()));
+	//	
+	//}
 
 	// Get curve smartNames and therefore ID to extract data from
 	//FSmartName avatarAnimForwardMovementCurve;
@@ -210,8 +217,6 @@ void SwordStance::applyAnimationCurveCardinalMovement() {
 	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimUpMovementCurve.DisplayName.ToString()));
 
 	// Get the curve data at corresponding curve ID
-	auto avatarAnimCurves = currentAnimMontage->GetCurveData().GetCurveData(0);
-	UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimCurves->Name.DisplayName.ToString()));
 
 	//// Get the corresponding float curve 
 	//TArray<const FFloatCurve*> avatarAnimFloatCurves;

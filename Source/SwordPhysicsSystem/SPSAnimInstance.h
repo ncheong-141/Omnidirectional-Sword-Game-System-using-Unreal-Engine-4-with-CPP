@@ -31,7 +31,8 @@ public:
 		AAvatar* animatedAvatar;
 
 	// Reference to current animation
-	UAnimMontage* currentAnimMontage; 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		UAnimMontage* currentAnimMontage; 
 
 	// Class functions
 	// Called at each animation tick
@@ -42,7 +43,7 @@ public:
 	// which are not made till after construction
 	// Unreal engine apparently makes the link even later after construction between this class and OwningActor
 	// So still doesnt work... 
-	//void PostInitProperties() override; 
+	// void PostInitProperties() override; 
 
 private:
 	// Internal class properties 
