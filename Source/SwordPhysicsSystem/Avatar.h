@@ -13,6 +13,7 @@
 #include "BlockSwordStance.h"
 #include "StabSwordStance.h"
 #include "MeleeWeapon.h"
+#include "OneHandedSword.h"
 #include "SPSPlayerController.h"
 #include "Avatar.generated.h"
 

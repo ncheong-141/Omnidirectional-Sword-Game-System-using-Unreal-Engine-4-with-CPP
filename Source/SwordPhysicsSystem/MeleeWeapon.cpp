@@ -7,8 +7,7 @@
 AMeleeWeapon::AMeleeWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	// Set class attributes 
-	attackDamage = 1; 
-	isSwinging = false; 
+	inAttackMotion = false;
 	weaponHolder = NULL;
 
 	// Create mesh and set as root compoonent
@@ -28,36 +27,6 @@ AMeleeWeapon::AMeleeWeapon(const FObjectInitializer& ObjectInitializer) : Super(
 	proximityBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 }
 
-int AMeleeWeapon::proximityCheck_Implementation(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
-
-	// Dont hit non-root components 
-	if (otherComp != otherActor->GetRootComponent()) {
-		return -1; 
-	}
-
-	// Dont hit things when conditions arent met
-	if (isSwinging && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
-
-		otherActor->TakeDamage(attackDamage, FDamageEvent(), NULL, this); 
-		targetsHit.Add(otherActor);
-	}
-
-	return 0; 
-}
-
-void AMeleeWeapon::swing() {
-
-	// Empty the target list for next swing
-	targetsHit.Empty(); 
-
-	isSwinging = true;
-}
-
-void AMeleeWeapon::rest() {
-	targetsHit.Empty(); 
-	isSwinging = false; 
-}
-
 
 // Called when the game starts or when spawned
 void AMeleeWeapon::BeginPlay()
@@ -73,3 +42,51 @@ void AMeleeWeapon::Tick(float DeltaTime)
 
 }
 
+
+int AMeleeWeapon::proximityCheck_Implementation(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
+
+	// Dont hit non-root components 
+	if (otherComp != otherActor->GetRootComponent()) {
+		return -1;
+	}
+
+	// Dont hit things when conditions arent met
+	if (inAttackMotion && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
+
+		otherActor->TakeDamage(attackDamage, FDamageEvent(), NULL, this);
+		targetsHit.Add(otherActor);
+	}
+
+	return 0;
+}
+
+
+void AMeleeWeapon::swing() {
+
+	// Empty the target list for next swing
+	targetsHit.Empty();
+	inAttackMotion = true;
+}
+
+void AMeleeWeapon::rest() {
+	targetsHit.Empty();
+	inAttackMotion = false;
+}
+
+
+// Getters and setters
+TArray<AActor*> AMeleeWeapon::getTargetsHit() {
+	return targetsHit;
+}
+
+bool AMeleeWeapon::isInAttackMotion() {
+	return inAttackMotion; 
+}
+
+AAvatar* AMeleeWeapon::getWeaponHolder() {
+	return weaponHolder;
+}
+
+void AMeleeWeapon::setWeaponHolder(AAvatar* avatar) {
+	weaponHolder = avatar;
+}

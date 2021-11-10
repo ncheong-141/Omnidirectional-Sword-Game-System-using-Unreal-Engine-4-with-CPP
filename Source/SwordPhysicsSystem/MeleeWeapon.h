@@ -11,31 +11,34 @@
 class AAvatar; 
 
 /*
-* Note, Uproprty declaration is to make it completely configurable by blueprints.
+* Abstract class used to define melee weapon implemenmtation
+* Onehanded sword derives from this. Can also give other weapon types similar functionality
 */
 
 UCLASS()
 class SWORDPHYSICSSYSTEM_API AMeleeWeapon : public AActor
 {
 	GENERATED_BODY()
-public:	
-	// Sets default values for this actor's properties
-	AMeleeWeapon(const FObjectInitializer& ObjectInitializer);
 
-	// The amount of damage attacks of this weapon can do
-	// CHANGE LATER 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MeleeWeapon)
-		float attackDamage; 
-
-	// A list of things the meleeweapon alrady hit this swing
+protected:
+	/* Abstract class variables */
+	// A list of things the meleeweapon already hit this swing
 	// Ensures target is only hit once per swing
 	TArray<AActor*> targetsHit; 
 
 	// Prevents damage from occuyring when sword is not swinging
-	bool isSwinging; 
+	bool inAttackMotion; 
 
 	// Reference to weapon holder to check ensure does not hit themselve
 	AAvatar* weaponHolder;
+
+	// UE4 functions 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	// Constructor: Sets default values for this actor's properties
+	AMeleeWeapon(const FObjectInitializer& ObjectInitializer);
 
 	// Bounding box for weapon collision 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
@@ -44,23 +47,32 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
 		UStaticMeshComponent* mesh; 
 
+	// The amount of damage attacks of this weapon can do (here as assuming all melee weapons do damage)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MeleeWeapon)
+		float attackDamage;
+
+
+
+	/* Class member functions/UE4 functions */
+	// Hit box detection 
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
-		void proximityCheck(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult); 
+		void proximityCheck(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
 	virtual int proximityCheck_Implementation(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
-	// Lets the weapon know what state the Avatar is in 
-	void swing();
-	void rest();
-
-
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Virtual functions which sub classes must implement
+	virtual void swing();
+	virtual void rest();
+
+
+	// Getters and Setters
+	TArray<AActor*> getTargetsHit();
+
+	bool isInAttackMotion();
+
+	AAvatar* getWeaponHolder();
+	void setWeaponHolder(AAvatar* avatar);
 };

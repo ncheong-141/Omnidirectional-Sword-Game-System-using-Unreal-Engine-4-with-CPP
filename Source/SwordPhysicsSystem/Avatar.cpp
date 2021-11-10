@@ -264,9 +264,10 @@ void AAvatar::PostInitializeComponents() {
 	// Instantiate the melee weapon if a BP was selected in UE4
 	if (BPMeleeWeapon) {
 
-		// Instantiate melee weapon
-		MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(BPMeleeWeapon, FVector(), FRotator());
+		// Instantiate melee weapon (Onehanded sword here, need a check for what is in BPMeleewapon)
+		MeleeWeapon = GetWorld()->SpawnActor<AOneHandedSword>(BPMeleeWeapon, FVector(), FRotator());
 
+		// If instantiation was successful, apply it to avatar
 		if (MeleeWeapon) {
 
 			// Get refence to the socket
@@ -275,7 +276,7 @@ void AAvatar::PostInitializeComponents() {
 			if (socket) {
 				// Attach meleeWeapon to socket
 				socket->AttachActor(MeleeWeapon, GetMesh());
-				MeleeWeapon->weaponHolder = this;
+				MeleeWeapon->setWeaponHolder(this);
 			}
 		}
 	}
