@@ -134,6 +134,7 @@ void AAvatar::Tick(float DeltaTime)
 	if (socket) {
 ;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
 	}
+
 }
 
 // Called to bind functionality to input
@@ -162,9 +163,15 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	// Sword stance change input
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
+	
 	PlayerInputComponent->BindAction("SlashSwordStance", IE_Pressed, this, &AAvatar::switch_SlashSwordStance);
+	PlayerInputComponent->BindAction("SlashSwordStance", IE_Released, this, &AAvatar::switch_DefaultSwordStance);
+	
 	PlayerInputComponent->BindAction("BlockSwordStance", IE_Pressed, this, &AAvatar::switch_BlockSwordStance);
+	PlayerInputComponent->BindAction("BlockSwordStance", IE_Released, this, &AAvatar::switch_DefaultSwordStance);
+	
 	PlayerInputComponent->BindAction("StabSwordStance", IE_Pressed, this, &AAvatar::switch_StabSwordStance);
+	PlayerInputComponent->BindAction("StabSwordStance", IE_Released, this, &AAvatar::switch_DefaultSwordStance);
 }
 
 
