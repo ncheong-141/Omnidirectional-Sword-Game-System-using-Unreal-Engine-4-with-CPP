@@ -59,6 +59,11 @@ AAvatar::AAvatar() {
 	resultantInputVelocity = 0.f;
 	inputVelocity_X = 0.f;
 	inputVelocity_Y = 0.f;
+	worldVelocity_X = 0.f;
+	worldVelocity_Y = 0.f;
+	localVelocity_X = 0.f;
+	localVelocity_Y = 0.f;
+
 	isInAir = false;
 	isInIframe = false;
 	isWalking = false;
@@ -99,7 +104,15 @@ void AAvatar::Tick(float DeltaTime)
 	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
 
-	// Calculate the normalised inputed velocity 
+	// Set world velocity
+	worldVelocity_X = avatarWorldVelocity.X; 
+	worldVelocity_Y = avatarWorldVelocity.Y;
+
+	// Set local/relative velocity
+	localVelocity_X = avatarLocalVelocity.X;
+	localVelocity_Y = avatarLocalVelocity.Y;
+	
+	// Calculate the normalised inputed velocity (this is currently wrong)
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	inputVelocity_X = avatarLocalVelocity.X/ avatarMaxSpeed;
 	inputVelocity_Y = avatarLocalVelocity.Y/ avatarMaxSpeed;
@@ -314,6 +327,69 @@ void AAvatar::PostInitializeComponents() {
 	}
 }
 
+
+// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
+// Functions use data from the custom Animation instance where the curve data is read at each animtion tick
+void AAvatar::applyAnimMovement_Dodge() {
+
+	// Get anim instance for curve values 
+	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+
+	// Check if animation instance exists 
+	if (animInstance != nullptr) {
+
+		// Cast to custom instance (set in UE4 game mode settings such that it creates this subclass on launch)
+		USPSAnimInstance* avatarAnimInstance = Cast<USPSAnimInstance>(animInstance); 
+		
+		// Check if cat was successful 
+		if (avatarAnimInstance) {
+
+			UE_LOG(LogTemp, Display, TEXT("----------------------"));
+
+			// Get current forward vector (Unit vector) 
+			FVector avatarFwdVector = GetActorForwardVector();
+			FVector avatarRightVector = GetActorRightVector(); 
+			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+
+			UE_LOG(LogTemp, Display, TEXT("Forward distance current: %f"), avatarAnimInstance -> fMovementDistanceCurveCurrentValue);
+			UE_LOG(LogTemp, Display, TEXT("Forward distance last frame: %f"), avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
+
+			// Apply the distance curves to the unit vectors (this gives the displacement)
+			avatarFwdVector = avatarFwdVector * (avatarAnimInstance -> fMovementDistanceCurveCurrentValue - avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
+			avatarRightVector = avatarRightVector* (avatarAnimInstance-> rMovementDistanceCurveCurrentValue - avatarAnimInstance->rMovementDistanceCurveLastFrameValue); 
+			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+
+			// Get current actor location 
+			FVector currentLocation = this->GetActorLocation();
+			UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
+
+			// Calculate new location
+			FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
+			UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
+
+			// Set the location
+			this->SetActorLocation(newLocation);
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("Failed to cast to SPSAnimInstance in applyAnimMovement_Dodge()"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Failed to retrieve Anim Instance in applyAnimMovement_Dodge()"));
+	}
+}
+
+
+void AAvatar::applyAnimMovement_GeneralAttacks() {
+
+}
+
+
+void AAvatar::applyAnimMovement_Parry() {
+
+}
+
+
 /* Internal class functions (helpers) */
 
 // Functins to check avatar state and set true/false to these varibles when neccessary
@@ -321,7 +397,7 @@ void AAvatar::cardinalMovementLockCheck() {
 
 	// List of conditions in which would lock cardinal movement (use ||)
 	if (isInDodge || isInAir) {
-		cardinalMovementLocked = true; 
+		cardinalMovementLocked = true;
 	}
 	else {
 		cardinalMovementLocked = false;

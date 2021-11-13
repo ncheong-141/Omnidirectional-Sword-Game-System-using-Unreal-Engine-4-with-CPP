@@ -32,14 +32,16 @@ public:
 
 	// Curve values (not using TArray for verbosity)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-		float forwardMovementCurveCurrentValue;
-	float forwardMovementCurveLastFrameValue;
+		float fMovementDistanceCurveCurrentValue;
+	float fMovementDistanceCurveLastFrameValue;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-		float rightMovementCurveCurrentValue;
+		float rMovementDistanceCurveCurrentValue;
+	float rMovementDistanceCurveLastFrameValue;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-		float upMovementCurveCurrentValue;
+		float upMovementDistanceCurveCurrentValue;
+	float upMovementDistanceCurveLastFrameValue;
 
 	// Class functions
 	// Called at each animation tick
@@ -53,6 +55,5 @@ public:
 	// void PostInitProperties() override; 
 
 private:
-	// Internal class properties 
 
 };

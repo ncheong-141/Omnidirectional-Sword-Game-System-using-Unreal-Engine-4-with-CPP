@@ -89,6 +89,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float inputVelocity_Y;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float worldVelocity_X;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float worldVelocity_Y;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float localVelocity_X;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float localVelocity_Y;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float avatarMaxSpeed; 
 
@@ -172,7 +184,15 @@ public:
 	AMeleeWeapon* MeleeWeapon; 
 
 	// Ths runs after the avatars constructor is complete. 
-	virtual void PostInitializeComponents() override; 
+	virtual void PostInitializeComponents() override;
+
+
+	/* Animation information to class function communcicators*/
+	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
+	// Functions use data from the custom Animation instance where the curve data is read at each animtion tick
+	void applyAnimMovement_Dodge();
+	void applyAnimMovement_GeneralAttacks();
+	void applyAnimMovement_Parry();
 
 private:
 
@@ -181,5 +201,4 @@ private:
 	// Functins to check avatar state and set true/false to these varibles when neccessary
 	void cardinalMovementLockCheck();
 	void actionAbilityLockCheck(); 
-
 };

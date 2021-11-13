@@ -133,13 +133,9 @@ void SwordStance::dodge() {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController) {
 
-		// Set WASD control to false 
-
-
 		// Determine the dodge key from the player controller
 		// Dodge action mappings (should be WASD and Lshift) (Should move the dodge action mapping to the SPSPlayer controller)
 		FKey dodgeKey = avatarPtr->pController->dodgeActionMappings[avatarPtr->pController->dodgeActionMappings.Num() - 1].Key; // Note, since the dodge key is specified first in the input UI section, this is its position
-
 
 		if (avatarPtr->pController->IsInputKeyDown(dodgeKey)) {
 
@@ -165,8 +161,6 @@ void SwordStance::dodge() {
 				UE_LOG(LogTemp, Display, TEXT("Dodge Forward"))
 				avatarPtr->isInDodge = true;
 				avatarPtr->dodgeDirection = 0;
-
-				applyAnimationCurveCardinalMovement(); 
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
@@ -176,18 +170,5 @@ void SwordStance::dodge() {
 				avatarPtr->dodgeDirection = 1;
 			}
 		}
-
-		// Get animation curve of dodge
 	}
-}
-
-
-
-/* Internal helper functions for all sword stance classes */
-void SwordStance::applyAnimationCurveCardinalMovement() {
-
-	// Get animation instance of the avatar (SPSAnimInstance)
-	//UAnimInstance* avatarAnimInstance = avatarPtr->GetMesh()->GetAnimInstance(); 
-	
-
 }
