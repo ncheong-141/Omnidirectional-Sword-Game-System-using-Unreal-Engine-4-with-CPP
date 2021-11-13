@@ -27,12 +27,19 @@ public:
 	~USPSAnimInstance(); 
 
 	// Class properties usable in blueprints. 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
 		AAvatar* animatedAvatar;
 
-	// Reference to current animation
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		UAnimMontage* currentAnimMontage; 
+	// Curve values (not using TArray for verbosity)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+		float forwardMovementCurveCurrentValue;
+	float forwardMovementCurveLastFrameValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+		float rightMovementCurveCurrentValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+		float upMovementCurveCurrentValue;
 
 	// Class functions
 	// Called at each animation tick

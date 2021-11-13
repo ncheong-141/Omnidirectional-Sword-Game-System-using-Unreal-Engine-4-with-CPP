@@ -117,6 +117,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		int dodgeDirection; 
 
+	// Avatar internal flow control conditions
+	bool cardinalMovementLocked;		// Stops WASD input
+	bool actionAbilityLocked;			// Stops any actions such as jump or dodge
 
 
 	/* Animation data for reference */
@@ -159,10 +162,6 @@ public:
 	void jump(); 
 	void dodge();
 
-	// Debug HUD test
-	void debugMessageOut();
-
-
 	/*
 	Adding weapon to Avatar, assuming a specific mesh is already set
 	*/
@@ -179,6 +178,8 @@ private:
 
 	/* Internal class functions (helpers) */
 
-	bool cardinalMovementDisabled();
+	// Functins to check avatar state and set true/false to these varibles when neccessary
+	void cardinalMovementLockCheck();
+	void actionAbilityLockCheck(); 
 
 };

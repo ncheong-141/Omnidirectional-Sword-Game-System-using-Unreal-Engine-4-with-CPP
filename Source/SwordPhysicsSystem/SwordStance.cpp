@@ -5,6 +5,7 @@
 // Game class files
 #include "Avatar.h"
 #include "SPSPlayerController.h"
+#include "SPSAnimInstance.h"
 
 // Debug file
 #include "DebugOutput.h"
@@ -187,64 +188,6 @@ void SwordStance::applyAnimationCurveCardinalMovement() {
 
 	// Get animation instance of the avatar (SPSAnimInstance)
 	//UAnimInstance* avatarAnimInstance = avatarPtr->GetMesh()->GetAnimInstance(); 
-
-	//
-	//// Get the Animation montage (blended animation sequences currently playing)
-	//UAnimMontage* currentAnimMontage = avatarAnimInstance->GetCurrentActiveMontage();
-	//bool getOut = false; 
-
-	//while (!(currentAnimMontage == nullptr) || getOut == false) {
-
-	//	UE_LOG(LogTemp, Display, TEXT("Null"));
-
-	//		
-	//	UE_LOG(LogTemp, Display, TEXT("Not Null"));
-	//	auto avatarAnimCurves = currentAnimMontage->GetCurveData().GetCurveData(0);
-	//	UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimCurves->Name.DisplayName.ToString()));
-	//	
-	//}
-
-	// Get curve smartNames and therefore ID to extract data from
-	//FSmartName avatarAnimForwardMovementCurve;
-	//FSmartName avatarAnimRightMovementCurve; 
-	//FSmartName avatarAnimUpMovementCurve;
-	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("ForwardMovement"), avatarAnimForwardMovementCurve);
-	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("RightMovement"), avatarAnimRightMovementCurve);
-	//currentAnimMontage->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("UpMovement"), avatarAnimUpMovementCurve);
-
-	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimForwardMovementCurve.DisplayName.ToString()));
-	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimRightMovementCurve.DisplayName.ToString()));
-	//UE_LOG(LogTemp, Display, TEXT("Curve name: %s"), *(avatarAnimUpMovementCurve.DisplayName.ToString()));
-
-	// Get the curve data at corresponding curve ID
-
-	//// Get the corresponding float curve 
-	//TArray<const FFloatCurve*> avatarAnimFloatCurves;
-	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimForwardMovementCurve.UID)));
-	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimRightMovementCurve.UID)));
-	//avatarAnimFloatCurves.Add(static_cast<const FFloatCurve*>(avatarAnimCurves.GetCurveData(avatarAnimUpMovementCurve.UID)));
-
-	//// Debug
-	//float minTime;
-	//float maxTime; 
-	//avatarAnimFloatCurves[0]->FloatCurve.GetTimeRange(minTime, maxTime);
-
-	//UE_LOG(LogTemp, Display, TEXT("Min time: %f"), minTime);
-	//UE_LOG(LogTemp, Display, TEXT("Max time: %f"), maxTime);
-
-	//float currentTime = minTime; 
-
-	//while (currentTime < maxTime) {
-
-	//	// Get data from curvve
-	//	float data = avatarAnimFloatCurves[0]->Evaluate(currentTime); 
-	//	UE_LOG(LogTemp, Display, TEXT("Time: %f"), currentTime);
-	//	UE_LOG(LogTemp, Display, TEXT("ForwardMovement: %f"), data);
-
-	//	// add to the current time
-	//	currentTime = currentTime + avatarPtr->GetWorld()->GetDeltaSeconds(); 
-	//}
-
-
+	
 
 }

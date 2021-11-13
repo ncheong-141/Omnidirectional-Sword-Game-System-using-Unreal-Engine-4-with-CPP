@@ -17,6 +17,9 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
 
+// Game imports
+#include "SPSAnimInstance.h"
+
 // General imports
 #include <cmath>
 #include <string>
@@ -24,9 +27,9 @@
 // Sets default values
 AAvatar::AAvatar() {
 
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// Set up player camera
 	// Instantiate spring arm and attach spring arm to the root component of avatar (the capsule)
 	cameraSpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("AvatarSpringArmComponent"));
@@ -39,16 +42,16 @@ AAvatar::AAvatar() {
 
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
-	defaultStance	= DefaultSwordStance(this,0); 
-	slashStance		= SlashSwordStance(this,1);
-	blockStance		= BlockSwordStance(this,2);
-	stabStance		= StabSwordStance(this,3);
+	defaultStance = DefaultSwordStance(this, 0);
+	slashStance = SlashSwordStance(this, 1);
+	blockStance = BlockSwordStance(this, 2);
+	stabStance = StabSwordStance(this, 3);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
 
 	// Set the current stance ID variable for reference
-	AAvatar::currentStanceID = currentStance->stanceID; 
+	AAvatar::currentStanceID = currentStance->stanceID;
 
 	// Initialise other variables and control flow
 	swordFocalPointPosition_X = 0.f;
@@ -56,15 +59,17 @@ AAvatar::AAvatar() {
 	resultantInputVelocity = 0.f;
 	inputVelocity_X = 0.f;
 	inputVelocity_Y = 0.f;
-	isInAir		= false;
-	isInIframe	= false;
-	isWalking	= false;
-	isInDodge	= false;
-	dodgeDirection = 0; 
+	isInAir = false;
+	isInIframe = false;
+	isWalking = false;
+	isInDodge = false;
+	dodgeDirection = 0;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	baseYawTurnSpeed = 45.f;
 	basePitchTurnSpeed = 5.f;
 
+	cardinalMovementLocked = false;
+	actionAbilityLocked = false; 
 
 }
 
@@ -78,7 +83,6 @@ void AAvatar::BeginPlay()
 	// Pointer/references to some commonly used avatar objects
 	// Get player controller reference and cast to custom player controller (which is the actual object set in gamemode BP)
 	pController = Cast<ASPSPlayerController>(GetWorld()->GetFirstPlayerController());
-
 }
 
 
@@ -118,14 +122,19 @@ void AAvatar::Tick(float DeltaTime)
 		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
 	}
 
+	// Check if cardinal movement or actions should be locked or not
+	cardinalMovementLockCheck();
+	actionAbilityLockCheck();
+
 	/* ------------------- Debug displaying ------------------------ */
 	// Show root component of Avatar
 	FVector avatarLocation = this->GetActorLocation(); 
 	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
+	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("AL X: %f, AL Y: %f, AL Z: %f"), avatarLocation.X, avatarLocation.Y, avatarLocation.Z));
 
 	// Show mouse position
-	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
-	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
+	GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
+	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
 
 
 	// Show right hand socket
@@ -134,6 +143,12 @@ void AAvatar::Tick(float DeltaTime)
 	if (socket) {
 ;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
 	}
+
+	// Show avatar flow control variables
+	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));
+	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
+	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
+	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
 
 }
 
@@ -155,9 +170,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Pitch", this, &AAvatar::Pitch);
 
 	// Action inputs 
-	PlayerInputComponent->BindAction("debugPrintTest", IE_Pressed, this, &AAvatar::debugMessageOut);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
-	// 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );this is possible to stop the jump input, can use this for other things 
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
 
 
@@ -219,22 +233,29 @@ void AAvatar::switch_StabSwordStance() {
 ======================== */
 void AAvatar::MoveForward(float amount) {
 
-	currentStance->MoveForward(amount);
+	if (!cardinalMovementLocked) {
+		currentStance->MoveForward(amount);
+	}
 }
 
 void AAvatar::MoveBack(float amount) {
-
-	currentStance->MoveBack(amount);
+	if (!cardinalMovementLocked) {
+		currentStance->MoveBack(amount);
+	}
 }
 
 void AAvatar::MoveRight(float amount) {
 
-	currentStance->MoveRight(amount);
+	if (!cardinalMovementLocked) {
+		currentStance->MoveRight(amount);
+	}
 }
 
 void AAvatar::MoveLeft(float amount) {
 
-	currentStance->MoveLeft(amount);
+	if (!cardinalMovementLocked) {
+		currentStance->MoveLeft(amount);
+	}
 }
 
 
@@ -256,12 +277,16 @@ void AAvatar::Pitch(float amount) {
 
 void AAvatar::jump() {
 
-	currentStance->jump();
+	if (!actionAbilityLocked) {
+		currentStance->jump();
+	}
 }
 
 void AAvatar::dodge()
 {
-	currentStance->dodge();
+	if (!actionAbilityLocked) {
+		currentStance->dodge();
+	}
 }
 
 void AAvatar::PostInitializeComponents() {
@@ -289,7 +314,28 @@ void AAvatar::PostInitializeComponents() {
 	}
 }
 
-void AAvatar::debugMessageOut() {
+/* Internal class functions (helpers) */
+
+// Functins to check avatar state and set true/false to these varibles when neccessary
+void AAvatar::cardinalMovementLockCheck() {
+
+	// List of conditions in which would lock cardinal movement (use ||)
+	if (isInDodge || isInAir) {
+		cardinalMovementLocked = true; 
+	}
+	else {
+		cardinalMovementLocked = false;
+	}
 
 }
 
+void AAvatar::actionAbilityLockCheck() {
+
+	// List of conditions in which would lock actions (use ||)
+	if (isInDodge || isInAir) {
+		actionAbilityLocked = true;
+	}
+	else {
+		actionAbilityLocked = false;
+	}
+}
