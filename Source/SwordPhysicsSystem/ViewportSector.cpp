@@ -19,8 +19,21 @@ ViewportSector::~ViewportSector()
 }
 
 // Sector operations 
-ViewportSector* ViewportSector::checkWithinSector(float swordFocalX, float swordFocalY) {
-	return this; 
+bool ViewportSector::checkWithinSector(float swordFocalX, float swordFocalY, ViewportSector*& sectorObj) {
+	
+	// Check within limits. Always using <= >= as to avoid any "Dead spots" which would result 
+	// in no sector being returned when checking the SF point position. (i.e. <0.33 or 0.33> would result in 0.33 returning nothing)
+	if (xlims[0] >= swordFocalX && swordFocalX <= xlims[1]) {
+
+		if (ylims[0] >= swordFocalY && swordFocalY <= ylims[1]) {
+
+			// If within limits
+			// Set viewportsector pointer reference to this object and return true
+			sectorObj = this;
+			return true;
+		}
+	}
+	return false; 
 }
 
 // Getters and Setters 
