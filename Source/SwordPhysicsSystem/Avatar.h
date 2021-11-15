@@ -15,6 +15,7 @@
 #include "MeleeWeapon.h"
 #include "OneHandedSword.h"
 #include "SPSPlayerController.h"
+#include "ViewportSector.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -133,11 +134,24 @@ public:
 	bool cardinalMovementLocked;		// Stops WASD input
 	bool actionAbilityLocked;			// Stops any actions such as jump or dodge
 
+	
+	// Adding weapon to Avatar, assuming a specific mesh is already set
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPMeleeWeapon;
+	AMeleeWeapon* MeleeWeapon;
 
-	/* Animation data for reference */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		UAnimSequenceBase* currentAnimationSequence; 
+	// Sector - This is a objject to indicate where the sword focal point is on the screen
+	// It has an ID and holds all sector data and operations which will be used on it
+	// 0 - TL, 1 - T, 2 - TR, 3 - L, 4 - M, 5 - R, 6 - BR, 7 - B, 8 - BL
+	ViewportSector* currentViewportSector;
+	
+	// Discretised viewport 
+	TArray<ViewportSector> viewportGrid; 
 
+	// Number of sectors on X and Y axis
+	// Hardcoding cardinal segments as 3 atm as to simplify it to top left, top, top right etc. 
+	// This can be expanded on in the future however in the generViewportGrid() function
+	const float cardinalSegmentNo = 3; 
 
 	/* Unreal engine 4 class functions */
 
@@ -147,10 +161,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Ths runs after the avatars constructor is complete. 
+	virtual void PostInitializeComponents() override;
+
 
 	/* Class member functions */
 
-	// Stance setting
+	// Stance functions
+	// Setting the stance
 	SwordStance*	getStance();
 	void			setStance(SwordStance& newStance);
 	void			switch_DefaultSwordStance(); 
@@ -158,9 +176,14 @@ public:
 	void			switch_BlockSwordStance();
 	void			switch_StabSwordStance(); 
 
+	// Generate the viewport grid datastructure (called in constructor)
+	void generateViewportGrid(); 
 
-	/* Player input */
+	// Sets the current viewport sector based on sword focal point position
+	void setCurrentViewportSector(); 
 
+
+	// Player input 
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
 	// Functions for input are required in Avatar since UE4 framework requires Avatar function pointers
 	void MoveForward(float amount);
@@ -173,19 +196,6 @@ public:
 	// Player action inputs
 	void jump(); 
 	void dodge();
-
-	/*
-	Adding weapon to Avatar, assuming a specific mesh is already set
-	*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
-		UClass* BPMeleeWeapon; 
-
-	AMeleeWeapon* MeleeWeapon; 
-
-	// Ths runs after the avatars constructor is complete. 
-	virtual void PostInitializeComponents() override;
-
 
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)

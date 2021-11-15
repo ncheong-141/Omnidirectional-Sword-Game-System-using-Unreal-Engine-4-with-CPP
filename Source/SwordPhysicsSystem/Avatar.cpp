@@ -54,8 +54,8 @@ AAvatar::AAvatar() {
 	AAvatar::currentStanceID = currentStance->stanceID;
 
 	// Initialise other variables and control flow
-	swordFocalPointPosition_X = 0.f;
-	swordFocalPointPosition_Y = 0.f;
+	swordFocalPointPosition_X = 0.5f;
+	swordFocalPointPosition_Y = 0.5f;
 	resultantInputVelocity = 0.f;
 	inputVelocity_X = 0.f;
 	inputVelocity_Y = 0.f;
@@ -63,7 +63,6 @@ AAvatar::AAvatar() {
 	worldVelocity_Y = 0.f;
 	localVelocity_X = 0.f;
 	localVelocity_Y = 0.f;
-
 	isInAir = false;
 	isInIframe = false;
 	isWalking = false;
@@ -72,10 +71,16 @@ AAvatar::AAvatar() {
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	baseYawTurnSpeed = 45.f;
 	basePitchTurnSpeed = 5.f;
-
 	cardinalMovementLocked = false;
 	actionAbilityLocked = false; 
 
+	// Generate the viewport sector grid
+	viewportGrid = TArray<ViewportSector>(); 
+	generateViewportGrid(); 
+
+	// Instantiate currentViewpointSector  (will set it according to 
+	//setCurrentViewportSector(); 
+	currentViewportSector = nullptr;
 }
 
 
@@ -123,6 +128,7 @@ void AAvatar::Tick(float DeltaTime)
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
 
+
 	// Mouse position update
 	// Top left is (0,0), bottom right is (1,1)
 	FVector2D mouse;
@@ -135,9 +141,14 @@ void AAvatar::Tick(float DeltaTime)
 		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
 	}
 
+	// Set the current viewport sector to where the sword position is currently 
+	setCurrentViewportSector(); 
+
 	// Check if cardinal movement or actions should be locked or not
 	cardinalMovementLockCheck();
 	actionAbilityLockCheck();
+
+
 
 	/* ------------------- Debug displaying ------------------------ */
 	// Show root component of Avatar
@@ -146,7 +157,7 @@ void AAvatar::Tick(float DeltaTime)
 	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("AL X: %f, AL Y: %f, AL Z: %f"), avatarLocation.X, avatarLocation.Y, avatarLocation.Z));
 
 	// Show mouse position
-	GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
+	//GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
 	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
 
 
@@ -162,7 +173,6 @@ void AAvatar::Tick(float DeltaTime)
 	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
 	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
-
 }
 
 // Called to bind functionality to input
@@ -239,6 +249,89 @@ void AAvatar::switch_StabSwordStance() {
 	currentStanceID = currentStance->stanceID;
 	currentStance->displayStance(); 
 }
+
+// Generate the viewport grid datastructure (called in constructor)
+void AAvatar::generateViewportGrid() {
+
+	// Generate the grid based on cardinal segments 
+	float dx = 1 / cardinalSegmentNo;
+	float dy = 1 / cardinalSegmentNo; 
+
+	// Generate grid; loop over x and y, starting with y as want this structure: 
+	// 0 1 2
+	// 3 4 5
+	// 6 7 8
+	// For IDs. 
+	// Hardcoding cardinal segments as 3 atm as to simplify it to top left, top, top right etc. 
+	// This can be expanded on in the future however. 
+	
+	// ID setter variable
+	int currentID = 0; 
+	float currentX = 0.f;
+	float currentY = 0.f; 
+	
+	// Loop over y direction 
+	for (int j = 0; j < cardinalSegmentNo; j++) {
+
+		// Get upper and lower Y limits 
+		float ylimLower = currentY;
+		float ylimUpper = currentY + dy;
+
+		// Round limits to 2 decimal places (want to avoid 0.99999999) 
+		ylimLower = (std::round(100 * ylimLower)) / 100.f;
+		ylimUpper = (std::round(100 * ylimUpper)) / 100.f;
+
+		// Loop over X direction
+		for (int i = 0; i < cardinalSegmentNo; i++) {
+
+			// Get upper and lower X limits 
+			float xlimLower = currentX; 
+			float xlimUpper = currentX + dx; 
+			
+			// Round limits to 2 decimal places (want to avoid 0.99999999) 
+			xlimLower = (std::round(100.f * xlimLower)) / 100.f; 
+			xlimUpper = (std::round(100.f * xlimUpper)) / 100.f;
+
+			// Create ViewportSector object and put in grid  (emplace creates object already inside array)
+			viewportGrid.Emplace(currentID, xlimLower, xlimUpper, ylimLower, ylimUpper);
+			
+			// Increment ID
+			currentID++; 
+
+			// Increment current X 
+			currentX = currentX + dx;
+		}
+
+		// Reset Current X for next iteration
+		currentX = 0.f; 
+
+		// Increment currentY
+		currentY = currentY + dy;
+	}
+}
+
+void AAvatar::setCurrentViewportSector() {
+	
+
+	// Iterate over grid and check for where focal point is 
+	// (Probably a more efficient way of doing this) 
+	bool sectorFound = false;
+	for (TArray<ViewportSector>::TIterator it = viewportGrid.CreateIterator(); it; ++it) {
+
+		//it->printInfoToLog();
+		// Check if its within this sectors limits, if so, set the current sector pointer to this sector
+		sectorFound = it->checkWithinSector(swordFocalPointPosition_X, swordFocalPointPosition_Y, currentViewportSector);
+
+		if (sectorFound) {
+			return; 
+		}
+	}
+
+	if (!sectorFound) {
+		UE_LOG(LogTemp, Error, TEXT("ERROR: No viewpoint sector found!"));
+	}
+}
+
 
 /* ======================== 
 	Player input functions 
