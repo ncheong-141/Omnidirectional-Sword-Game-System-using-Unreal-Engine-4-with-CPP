@@ -75,7 +75,7 @@ AAvatar::AAvatar() {
 	actionAbilityLocked = false; 
 
 	// Generate the viewport sector grid
-	viewportGrid = TArray<ViewportSector>(); 
+	viewportGrid = TArray<UViewportSector*>(); 
 	generateViewportGrid(); 
 
 	// Instantiate currentViewpointSector  (will set it according to 
@@ -293,8 +293,11 @@ void AAvatar::generateViewportGrid() {
 			xlimUpper = (std::round(100.f * xlimUpper)) / 100.f;
 
 			// Create ViewportSector object and put in grid  (emplace creates object already inside array)
-			viewportGrid.Emplace(currentID, xlimLower, xlimUpper, ylimLower, ylimUpper);
-			
+			UViewportSector* sector;
+			sector = NewObject<UViewportSector>();
+			sector->populate(currentID, xlimLower, xlimUpper, ylimLower, ylimUpper);
+			viewportGrid.Add(sector); 
+
 			// Increment ID
 			currentID++; 
 
@@ -316,11 +319,16 @@ void AAvatar::setCurrentViewportSector() {
 	// Iterate over grid and check for where focal point is 
 	// (Probably a more efficient way of doing this) 
 	bool sectorFound = false;
-	for (TArray<ViewportSector>::TIterator it = viewportGrid.CreateIterator(); it; ++it) {
+	for (int i = 0; i < viewportGrid.Num(); i++) {
 
 		//it->printInfoToLog();
 		// Check if its within this sectors limits, if so, set the current sector pointer to this sector
-		sectorFound = it->checkWithinSector(swordFocalPointPosition_X, swordFocalPointPosition_Y, currentViewportSector);
+		if (viewportGrid[i] != nullptr) {
+			sectorFound = viewportGrid[i]->checkWithinSector(swordFocalPointPosition_X, swordFocalPointPosition_Y, currentViewportSector);
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("Viewportgrid[i] == nullptr"));
+		}
 
 		if (sectorFound) {
 			return; 

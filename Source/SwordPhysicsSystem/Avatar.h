@@ -143,10 +143,11 @@ public:
 	// Sector - This is a objject to indicate where the sword focal point is on the screen
 	// It has an ID and holds all sector data and operations which will be used on it
 	// 0 - TL, 1 - T, 2 - TR, 3 - L, 4 - M, 5 - R, 6 - BR, 7 - B, 8 - BL
-	ViewportSector* currentViewportSector;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+	UViewportSector* currentViewportSector;
 	
 	// Discretised viewport 
-	TArray<ViewportSector> viewportGrid; 
+	TArray<UViewportSector*> viewportGrid;
 
 	// Number of sectors on X and Y axis
 	// Hardcoding cardinal segments as 3 atm as to simplify it to top left, top, top right etc. 

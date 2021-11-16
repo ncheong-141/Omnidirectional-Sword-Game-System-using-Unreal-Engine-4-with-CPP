@@ -3,23 +3,20 @@
 
 #include "ViewportSector.h"
 
-ViewportSector::ViewportSector(int sectorID_, float xlimLower, float xlimUpper, float ylimLower, float ylimUpper)
-{
+
+void UViewportSector::populate(int sectorID_, float xlimLower, float xlimUpper, float ylimLower, float ylimUpper) {
+	
 	// Instantiate variables to constructor inputted
-	sectorID = sectorID_; 
-	xlims[0] = xlimLower; 
+	sectorID = sectorID_;
+	xlims[0] = xlimLower;
 	xlims[1] = xlimUpper;
 	ylims[0] = ylimLower;
 	ylims[1] = ylimUpper;
 }
 
-ViewportSector::~ViewportSector()
-{
-}
-
 // Sector operations 
-bool ViewportSector::checkWithinSector(float swordFocalX, float swordFocalY, ViewportSector*& sectorObj) {
-	
+bool UViewportSector::checkWithinSector(float swordFocalX, float swordFocalY, UViewportSector*& sectorObj) {
+
 	// Check within limits. Always using <= >= as to avoid any "Dead spots" which would result 
 	// in no sector being returned when checking the SF point position. (i.e. <0.33 or 0.33> would result in 0.33 returning nothing)
 	if (xlims[0] <= swordFocalX && swordFocalX <= xlims[1]) {
@@ -29,34 +26,37 @@ bool ViewportSector::checkWithinSector(float swordFocalX, float swordFocalY, Vie
 			// If within limits
 			// Set viewportsector pointer reference to this object (if object isnt already) and return true
 			if (sectorObj != this) {
-				
+
 				sectorObj = this;
-				
+
 				// Print debug info
-				printInfoToLog(); 
+				printInfoToLog();
 			}
 
 			return true;
 		}
 	}
-	return false; 
+	return false;
 }
 
 // Getters and Setters 
-float ViewportSector::getXlimLower() {
+int UViewportSector::getSectorID() {
+	return sectorID;
+}
+float UViewportSector::getXlimLower() {
 	return xlims[0];
 }
-float ViewportSector::getXlimUpper() {
+float UViewportSector::getXlimUpper() {
 	return xlims[1];
 }
-float ViewportSector::getYlimLower() {
+float UViewportSector::getYlimLower() {
 	return ylims[0];
 }
-float ViewportSector::getYlimUpper() {
+float UViewportSector::getYlimUpper() {
 	return ylims[1];
 }
 
 
-void ViewportSector::printInfoToLog() {
+void UViewportSector::printInfoToLog() {
 	UE_LOG(LogTemp, Display, TEXT("Sector ID: %d | xlim/ylim: (%f, %f) (%f, %f)"), sectorID, xlims[0], xlims[1], ylims[0], ylims[1]);
 }
