@@ -126,6 +126,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInDodge; 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isInAttackMotion;
+
+
 	// Dodge direction (0 = forward, 1 = backwards, 2 = left, 3 = right
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		int dodgeDirection; 
@@ -143,8 +147,8 @@ public:
 	// Sector - This is a objject to indicate where the sword focal point is on the screen
 	// It has an ID and holds all sector data and operations which will be used on it
 	// 0 - TL, 1 - T, 2 - TR, 3 - L, 4 - M, 5 - R, 6 - BR, 7 - B, 8 - BL
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
-	UViewportSector* currentViewportSector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AvatarProperties)
+		UViewportSector* currentViewportSector;
 	
 	// Discretised viewport 
 	TArray<UViewportSector*> viewportGrid;
@@ -197,6 +201,10 @@ public:
 	// Player action inputs
 	void jump(); 
 	void dodge();
+	
+	// Used for switching a boolean variable for communicating with animation blueprint
+	void activateAttackMotion();
+	void deactivateAttackMotion(); 
 
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)

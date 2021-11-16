@@ -67,6 +67,7 @@ AAvatar::AAvatar() {
 	isInIframe = false;
 	isWalking = false;
 	isInDodge = false;
+	isInAttackMotion = false;
 	dodgeDirection = 0;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	baseYawTurnSpeed = 45.f;
@@ -173,6 +174,8 @@ void AAvatar::Tick(float DeltaTime)
 	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
 	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
+	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
+
 }
 
 // Called to bind functionality to input
@@ -196,6 +199,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
+	PlayerInputComponent->BindAction("ActivateAttack", IE_Pressed, this, &AAvatar::activateAttackMotion);
+	PlayerInputComponent->BindAction("ActivateAttack", IE_Released, this, &AAvatar::deactivateAttackMotion);
 
 
 	// Sword stance change input
@@ -401,6 +406,14 @@ void AAvatar::dodge()
 	if (!actionAbilityLocked) {
 		currentStance->dodge();
 	}
+}
+
+void AAvatar::activateAttackMotion() {
+	isInAttackMotion = true;
+}
+
+void AAvatar::deactivateAttackMotion() {
+	isInAttackMotion = false;
 }
 
 void AAvatar::PostInitializeComponents() {

@@ -14,13 +14,15 @@ class SWORDPHYSICSSYSTEM_API UViewportSector : public UObject
 {
 	GENERATED_BODY()
 
-public:
-	int		sectorID;
+private:
 	float	xlims[2];
 	float	ylims[2];
+public:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AvatarProperties)
+		int		sectorID;
 
 	// Constructor and destructor
-public:
 	UViewportSector(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer){};
 
 	// Instantiate object with bvalues
