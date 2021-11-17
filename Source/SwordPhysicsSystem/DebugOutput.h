@@ -18,7 +18,8 @@ class SWORDPHYSICSSYSTEM_API DebugOutput {
 private: 
 
 	// Class attributes
-	ADebugHUD* debugHUD; 
+	UPROPERTY()
+		ADebugHUD* debugHUD; 
 
 public:
 

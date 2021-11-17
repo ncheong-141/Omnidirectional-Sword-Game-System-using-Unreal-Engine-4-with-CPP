@@ -55,7 +55,7 @@ public:
 
 	// The font used to render the text in the HUD
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUDFont)
-	UFont* hudFont;
+		UFont* hudFont;
 
 	// List of messages to display 
 	TArray<DebugMessage> messages;

@@ -41,10 +41,12 @@ public:
 	/* Public class attributes used in Sword/Avatar methods for input informations */
 	
 	// Reference to input settings
-	UInputSettings* inputSettings;
+	UPROPERTY()	
+		UInputSettings* inputSettings;
 
 	// Input mappings for reference
-	TArray<FInputActionKeyMapping> dodgeActionMappings;
+	UPROPERTY()
+		TArray<FInputActionKeyMapping> dodgeActionMappings;
 
 
 	// Constructors. Note, super constructor required to be called in order to set up the controller. 

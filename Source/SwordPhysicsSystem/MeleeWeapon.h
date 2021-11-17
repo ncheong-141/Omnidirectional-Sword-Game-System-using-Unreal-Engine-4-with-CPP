@@ -24,13 +24,15 @@ protected:
 	/* Abstract class variables */
 	// A list of things the meleeweapon already hit this swing
 	// Ensures target is only hit once per swing
-	TArray<AActor*> targetsHit; 
+	UPROPERTY()
+		TArray<AActor*> targetsHit; 
 
 	// Prevents damage from occuyring when sword is not swinging
 	bool inAttackMotion; 
 
 	// Reference to weapon holder to check ensure does not hit themselve
-	AAvatar* weaponHolder;
+	UPROPERTY()
+		AAvatar* weaponHolder;
 
 	// UE4 functions 
 	// Called when the game starts or when spawned

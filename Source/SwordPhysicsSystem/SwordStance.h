@@ -27,7 +27,8 @@ protected:
 	/* Protected class attributes usable by sub-classes  */
 	
 	//  Avatar pointer 
-	AAvatar* avatarPtr;
+	UPROPERTY()
+		AAvatar* avatarPtr;
 
 	// Pointers/references to some commonly used Avatar objects to avoid function calls
 	// and/or reads from memory

@@ -43,7 +43,8 @@ public:
 
 	// Pointers/references to some commonly used Avatar objects to avoid function calls
 	// and/or reads from memory
-	ASPSPlayerController* pController;
+	UPROPERTY()
+		ASPSPlayerController* pController;
 
 protected:
 	// Called when the game starts or when spawned
@@ -142,7 +143,9 @@ public:
 	// Adding weapon to Avatar, assuming a specific mesh is already set
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		UClass* BPMeleeWeapon;
-	AMeleeWeapon* MeleeWeapon;
+	
+	UPROPERTY()
+		AMeleeWeapon* MeleeWeapon;
 
 	// Sector - This is a objject to indicate where the sword focal point is on the screen
 	// It has an ID and holds all sector data and operations which will be used on it
@@ -151,7 +154,8 @@ public:
 		UViewportSector* currentViewportSector;
 	
 	// Discretised viewport 
-	TArray<UViewportSector*> viewportGrid;
+	UPROPERTY()
+		TArray<UViewportSector*> viewportGrid;
 
 	// Number of sectors on X and Y axis
 	// Hardcoding cardinal segments as 3 atm as to simplify it to top left, top, top right etc. 
