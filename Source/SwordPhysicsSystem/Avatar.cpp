@@ -68,6 +68,7 @@ AAvatar::AAvatar() {
 	isWalking = false;
 	isInDodge = false;
 	isInAttackMotion = false;
+	attackMotionStartingSector = 0; 
 	dodgeDirection = 0;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	baseYawTurnSpeed = 45.f;
@@ -410,6 +411,7 @@ void AAvatar::dodge()
 
 void AAvatar::activateAttackMotion() {
 	isInAttackMotion = true;
+	attackMotionStartingSector = currentViewportSector->getSectorID();
 }
 
 void AAvatar::deactivateAttackMotion() {

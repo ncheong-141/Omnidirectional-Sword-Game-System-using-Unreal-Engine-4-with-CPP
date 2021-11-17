@@ -130,6 +130,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAttackMotion;
 
+	// The sector the attack was initiated from (used to define which blendspace/animation is played)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		int attackMotionStartingSector; 
 
 	// Dodge direction (0 = forward, 1 = backwards, 2 = left, 3 = right
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
