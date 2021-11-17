@@ -81,6 +81,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float swordFocalPointPosition_Y;
 
+	// Sword position focal point when sword is in motion, this is to interface together
+	// two states of attack, initial attack and attack during motion. 
+	// e.g. if you activate an attack at the top, sector 2, to complete the downward attack you need to leave your cursor at sector 2
+	//		However, if you move your foocal point down, to the direction of the motion, it will have the opposite effect
+	// These variables communicate with the blendspaces. Note, cannot invert blend space axes as this will alter the initial direction too
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float swordInMotionFocalPointPosition_X;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float swordInMotionFocalPointPosition_Y;
+
+
 	// Avatar properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float resultantInputVelocity; 
@@ -194,6 +206,8 @@ public:
 	// Sets the current viewport sector based on sword focal point position
 	void setCurrentViewportSector(); 
 
+	// Calculation motion sword focal points
+	void calculateSwordMotionFocalPoints(); 
 
 	// Player input 
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
