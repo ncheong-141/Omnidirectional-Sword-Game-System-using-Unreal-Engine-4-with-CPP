@@ -125,7 +125,6 @@ public:
 		float basePitchTurnSpeed;
 
 
-
 	// Avatar flow control conditions 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAir; 

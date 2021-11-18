@@ -54,9 +54,6 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		upMovementDistanceCurveCurrentValue = this->GetCurveValue(FName("UpMovement"));
 
 	
-		// Apply movemnets 
-		if (animatedAvatar->isInDodge) {
-			animatedAvatar->applyAnimMovement_Dodge();
-		}
+
 	}
 }

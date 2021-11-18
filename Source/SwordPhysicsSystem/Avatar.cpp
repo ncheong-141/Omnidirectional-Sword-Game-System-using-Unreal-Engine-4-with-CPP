@@ -80,9 +80,9 @@ AAvatar::AAvatar() {
 	viewportGrid = TArray<UViewportSector*>(); 
 	generateViewportGrid(); 
 
-	// Instantiate currentViewpointSector  (will set it according to 
-	//setCurrentViewportSector(); 
+	// Instantiate currentViewpointSector 
 	currentViewportSector = nullptr;
+
 }
 
 
@@ -106,42 +106,10 @@ void AAvatar::Tick(float DeltaTime)
 	/* Key physics */
 
 	// Velocity update
-	// Calculate the local velocity of the avatar from the World velocity
-	FVector avatarWorldVelocity = this->GetVelocity();
-	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
-	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
+	velocityUpdate();
 
-	// Set world velocity
-	worldVelocity_X = avatarWorldVelocity.X; 
-	worldVelocity_Y = avatarWorldVelocity.Y;
-
-	// Set local/relative velocity
-	localVelocity_X = avatarLocalVelocity.X;
-	localVelocity_Y = avatarLocalVelocity.Y;
-	
-	// Calculate the normalised inputed velocity (this is currently wrong)
-	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
-	inputVelocity_X = avatarLocalVelocity.X/ avatarMaxSpeed;
-	inputVelocity_Y = avatarLocalVelocity.Y/ avatarMaxSpeed;
-	
-	// Calculate resultant velocity (change later)
-	resultantInputVelocity = GetVelocity().Size();
-
-	// Check if avatar is in the air for physics and animation flow
-	isInAir = this->GetCharacterMovement()->IsFalling();
-
-
-	// Mouse position update
-	// Top left is (0,0), bottom right is (1,1)
-	FVector2D mouse;
-	pController->GetMousePosition(mouse.X, mouse.Y);
-
-	if (GEngine) {
-		const FVector2D viewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-		swordFocalPointPosition_X = mouse.X / viewportSize.X;
-		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
-	}
+	// Sword focal point update 
+	swordFocalPtUpdate(); 
 
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
@@ -150,33 +118,16 @@ void AAvatar::Tick(float DeltaTime)
 	cardinalMovementLockCheck();
 	actionAbilityLockCheck();
 
-
-
-	/* ------------------- Debug displaying ------------------------ */
-	// Show root component of Avatar
-	FVector avatarLocation = this->GetActorLocation(); 
-	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
-	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("AL X: %f, AL Y: %f, AL Z: %f"), avatarLocation.X, avatarLocation.Y, avatarLocation.Z));
-
-	// Show mouse position
-	//GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
-	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
-
-
-	// Show right hand socket
-	const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
-
-	if (socket) {
-;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
+	// Apply movemnets 
+	if (isInDodge) {
+		applyAnimMovement_Dodge();
 	}
 
-	// Show avatar flow control variables
-	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));
-	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
-	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
-	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
-	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
+	// Check if avatar is in the air for physics and animation flow
+	isInAir = this->GetCharacterMovement()->IsFalling();
 
+	// Debug output helper function
+	debugOutput(); 
 }
 
 // Called to bind functionality to input
@@ -476,12 +427,13 @@ void AAvatar::applyAnimMovement_Dodge() {
 			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
 			// Get current actor location 
-			FVector currentLocation = this->GetActorLocation();
+			FVector currentLocation = GetActorLocation();
 			UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
 
 			// Calculate new location
 			FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
 			UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
+
 
 			// Set the location
 			this->SetActorLocation(newLocation);
@@ -530,4 +482,74 @@ void AAvatar::actionAbilityLockCheck() {
 	else {
 		actionAbilityLocked = false;
 	}
+}
+
+
+/* Internal class helpers */
+void AAvatar::velocityUpdate() {
+
+	// Calculate the local velocity of the avatar from the World velocity
+	FVector avatarWorldVelocity = this->GetVelocity();
+	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
+	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
+
+	// Set world velocity
+	worldVelocity_X = avatarWorldVelocity.X;
+	worldVelocity_Y = avatarWorldVelocity.Y;
+
+	// Set local/relative velocity
+	localVelocity_X = avatarLocalVelocity.X;
+	localVelocity_Y = avatarLocalVelocity.Y;
+
+	// Calculate the normalised inputed velocity (this is currently wrong)
+	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
+	inputVelocity_X = avatarLocalVelocity.X / avatarMaxSpeed;
+	inputVelocity_Y = avatarLocalVelocity.Y / avatarMaxSpeed;
+
+	// Calculate resultant velocity (change later)
+	resultantInputVelocity = GetVelocity().Size();
+}
+
+void AAvatar::swordFocalPtUpdate() {
+	
+	// Mouse position update
+	// Top left is (0,0), bottom right is (1,1)
+	FVector2D mouse;
+	pController->GetMousePosition(mouse.X, mouse.Y);
+	if (GEngine) {
+		const FVector2D viewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+		swordFocalPointPosition_X = mouse.X / viewportSize.X;
+		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
+	}
+
+}
+
+void AAvatar::debugOutput() {
+	/* ------------------- Debug displaying ------------------------ */
+	// Show root component of Avatar
+	FVector avatarLocation = this->GetActorLocation();
+	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
+	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("AL X: %f, AL Y: %f, AL Z: %f"), avatarLocation.X, avatarLocation.Y, avatarLocation.Z));
+
+	// Show mouse position
+	//GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
+	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
+
+
+	// Show right hand socket
+	const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
+
+	if (socket) {
+		;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
+	}
+
+	// Show avatar flow control variables
+	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));
+	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
+	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
+	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
+	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
+
+
 }
