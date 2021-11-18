@@ -51,14 +51,7 @@ public:
 
 	// Constructors. Note, super constructor required to be called in order to set up the controller. 
 	ASPSPlayerController();
-	ASPSPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
-
-		// Get input settings for reference
-		inputSettings = UInputSettings::GetInputSettings();
-
-		// Set up dodge action mappings
-		inputSettings->GetActionMappingByName("Dodge", dodgeActionMappings);
-	}
+	ASPSPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	/**
 	* Processes player input (immediately after PlayerInput gets ticked) and calls UpdateRotation().

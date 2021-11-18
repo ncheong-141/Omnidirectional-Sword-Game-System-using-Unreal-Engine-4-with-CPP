@@ -12,17 +12,14 @@
 #include "Components/InputComponent.h"
 
 
-ASPSPlayerController::ASPSPlayerController() {
-
+ASPSPlayerController::ASPSPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
 	// Get input settings for reference
 	inputSettings = UInputSettings::GetInputSettings();
 
 	// Set up dodge action mappings
 	inputSettings->GetActionMappingByName("Dodge", dodgeActionMappings);
-};
-
-
+}
 
 
 void ASPSPlayerController::PlayerTick(float DeltaTime) {

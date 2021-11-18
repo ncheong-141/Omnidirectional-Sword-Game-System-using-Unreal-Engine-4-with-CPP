@@ -54,8 +54,6 @@ AAvatar::AAvatar() {
 	AAvatar::currentStanceID = currentStance->stanceID;
 
 	// Initialise other variables and control flow
-	swordFocalPointPosition_X = 0.5f;
-	swordFocalPointPosition_Y = 0.5f;
 	resultantInputVelocity = 0.f;
 	inputVelocity_X = 0.f;
 	inputVelocity_Y = 0.f;
@@ -83,6 +81,9 @@ AAvatar::AAvatar() {
 	// Instantiate currentViewpointSector 
 	currentViewportSector = nullptr;
 
+	// Initiate swordFocalPoint object
+	swordFocalPoint = NewObject<USwordFocalPoint>();
+
 }
 
 
@@ -109,7 +110,7 @@ void AAvatar::Tick(float DeltaTime)
 	velocityUpdate();
 
 	// Sword focal point update 
-	swordFocalPtUpdate(); 
+	swordFocalPoint->update(pController);
 
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
@@ -281,7 +282,7 @@ void AAvatar::setCurrentViewportSector() {
 		//it->printInfoToLog();
 		// Check if its within this sectors limits, if so, set the current sector pointer to this sector
 		if (viewportGrid[i] != nullptr) {
-			sectorFound = viewportGrid[i]->checkWithinSector(swordFocalPointPosition_X, swordFocalPointPosition_Y, currentViewportSector);
+			sectorFound = viewportGrid[i]->checkWithinSector(swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y, currentViewportSector);
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("Viewportgrid[i] == nullptr"));
@@ -510,20 +511,6 @@ void AAvatar::velocityUpdate() {
 	resultantInputVelocity = GetVelocity().Size();
 }
 
-void AAvatar::swordFocalPtUpdate() {
-	
-	// Mouse position update
-	// Top left is (0,0), bottom right is (1,1)
-	FVector2D mouse;
-	pController->GetMousePosition(mouse.X, mouse.Y);
-	if (GEngine) {
-		const FVector2D viewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-		swordFocalPointPosition_X = mouse.X / viewportSize.X;
-		swordFocalPointPosition_Y = mouse.Y / viewportSize.Y;
-	}
-
-}
 
 void AAvatar::debugOutput() {
 	/* ------------------- Debug displaying ------------------------ */
@@ -534,14 +521,14 @@ void AAvatar::debugOutput() {
 
 	// Show mouse position
 	//GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
-	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPointPosition_X, swordFocalPointPosition_Y));
+	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y));
 
 
 	// Show right hand socket
 	const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
 
 	if (socket) {
-		;		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
+		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
 	}
 
 	// Show avatar flow control variables
@@ -550,6 +537,12 @@ void AAvatar::debugOutput() {
 	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
 	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
+
+	// show pitch
+	FRotator actorRotation = pController->GetControlRotation(); 
+
+	GEngine->AddOnScreenDebugMessage(9, 100.f, FColor::White, FString::Printf(TEXT("Pitch: %f"), actorRotation.Pitch));
+	GEngine->AddOnScreenDebugMessage(10, 100.f, FColor::White, FString::Printf(TEXT("Yaw: %f"), actorRotation.Yaw));
 
 
 }

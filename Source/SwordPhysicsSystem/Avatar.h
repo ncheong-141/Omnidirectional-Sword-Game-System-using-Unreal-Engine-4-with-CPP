@@ -16,6 +16,7 @@
 #include "OneHandedSword.h"
 #include "SPSPlayerController.h"
 #include "ViewportSector.h"
+#include "SwordFocalPoint.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -29,8 +30,6 @@ class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Constructor: Sets default values for this character's properties
-	AAvatar();
 
 	/* Game set up avatar variables*/
 	// Avatar camera set up. Doing in C++ to give more control over the camera 
@@ -68,7 +67,6 @@ private:
 public:
 
 	/* Class attributes */
-	/* Unreal engine class attributes to be used in BPs */
 
 	// Current stance ID, this variable is used to denote which stance the avatar is in
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
@@ -76,24 +74,10 @@ public:
 
 	// Sword position focal point. This is the mouse position on the screen where the sword will zone to. 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float swordFocalPointPosition_X; 
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float swordFocalPointPosition_Y;
-
-	// Sword position focal point when sword is in motion, this is to interface together
-	// two states of attack, initial attack and attack during motion. 
-	// e.g. if you activate an attack at the top, sector 2, to complete the downward attack you need to leave your cursor at sector 2
-	//		However, if you move your foocal point down, to the direction of the motion, it will have the opposite effect
-	// These variables communicate with the blendspaces. Note, cannot invert blend space axes as this will alter the initial direction too
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float swordInMotionFocalPointPosition_X;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float swordInMotionFocalPointPosition_Y;
+		USwordFocalPoint* swordFocalPoint;
 
 
-	// Avatar properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
+	// Avatar velocity properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float resultantInputVelocity; 
 
@@ -115,6 +99,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float localVelocity_Y;
 
+
+	// Avatar control properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float avatarMaxSpeed; 
 
@@ -153,13 +139,6 @@ public:
 	bool cardinalMovementLocked;		// Stops WASD input
 	bool actionAbilityLocked;			// Stops any actions such as jump or dodge
 
-	
-	// Adding weapon to Avatar, assuming a specific mesh is already set
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
-		UClass* BPMeleeWeapon;
-	
-	UPROPERTY()
-		AMeleeWeapon* MeleeWeapon;
 
 	// Sector - This is a objject to indicate where the sword focal point is on the screen
 	// It has an ID and holds all sector data and operations which will be used on it
@@ -176,7 +155,17 @@ public:
 	// This can be expanded on in the future however in the generViewportGrid() function
 	const float cardinalSegmentNo = 3; 
 
+	// Adding weapon to Avatar, assuming a specific mesh is already set
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPMeleeWeapon;
+
+	UPROPERTY()
+		AMeleeWeapon* MeleeWeapon;
+
+
 	/* Unreal engine 4 class functions */
+	// Constructor: Sets default values for this character's properties
+	AAvatar();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -205,8 +194,6 @@ public:
 	// Sets the current viewport sector based on sword focal point position
 	void setCurrentViewportSector(); 
 
-	// Calculation motion sword focal points
-	void calculateSwordMotionFocalPoints(); 
 
 	// Player input 
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
@@ -228,16 +215,20 @@ public:
 
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
-	// Functions use data from the custom Animation instance where the curve data is read at each animtion tick
+	// Functions use data from the custom Animation instance where the curve data is read at each animation tick
 	void applyAnimMovement_Dodge();
 	void applyAnimMovement_GeneralAttacks();
 	void applyAnimMovement_Parry();
 
 private:
-
-	/* Internal class functions (helpers) */
+	/* Internal class functions */
 
 	// Functins to check avatar state and set true/false to these varibles when neccessary
 	void cardinalMovementLockCheck();
 	void actionAbilityLockCheck(); 
+
+	// Helpers
+	void velocityUpdate();
+	void swordFocalPtUpdate();
+	void debugOutput();
 };
