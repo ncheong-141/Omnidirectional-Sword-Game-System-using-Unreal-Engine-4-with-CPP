@@ -20,13 +20,24 @@ class SWORDPHYSICSSYSTEM_API USwordFocalPoint : public UObject
 private:
 
 	// Class internal attributes
-	FVector2D oldMousePosition; 
-	FVector2D currentMousePositon;
-	FVector2D viewportSize; 
-	FVector2D referenceViewportSize; 
+	UPROPERTY()
+		FVector2D oldMousePosition; 
+	UPROPERTY()
+		FVector2D currentMousePositon;
+	UPROPERTY()
+		FVector2D viewportSize; 
 
 	// Required as normalised mouse position is never (1,1) for some reason
-	float viewportSizeCheckRelaxationFactor; 
+	// The scaler is the proportion of the total viewport which the reference is scaled too
+	float viewportNormalisedBCMaxsize; 
+	float lowerPBC_X;
+	float upperPBC_X;
+	float lowerPBC_Y;
+	float upperPBC_Y;
+	bool activatedPBC_X; 
+	bool activatedPBC_Y; 
+
+	float sensitivity; 
 
 public:
 
