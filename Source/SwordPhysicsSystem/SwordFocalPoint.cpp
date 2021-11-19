@@ -67,7 +67,7 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 	if (activatedPBC_X == false) {
 		SFPX = position2D.X + sensitivity*(currentMousePositon.X - oldMousePosition.X);
-		UE_LOG(LogTemp, Display, TEXT("Normal SFPX: %f"), SFPX)
+		//UE_LOG(LogTemp, Display, TEXT("Normal SFPX: %f"), SFPX)
 	}
 	else {
 		// If difference is negative => crossed right boundary
@@ -75,12 +75,12 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
 			SFPX = position2D.X + sensitivity*((currentMousePositon.X - lowerPBC_X) + (upperPBC_X - oldMousePosition.X));
-			UE_LOG(LogTemp, Display, TEXT("Right boundary SFPX: %f"), SFPX)
+			//UE_LOG(LogTemp, Display, TEXT("Right boundary SFPX: %f"), SFPX)
 		}
 		else { // Else difference is positve => crossed left boundary
 
 			SFPX = position2D.X + sensitivity*((oldMousePosition.X - lowerPBC_X) + (upperPBC_X - currentMousePositon.X));
-			UE_LOG(LogTemp, Display, TEXT("Left boundary SFPX: %f"), SFPX)
+			//UE_LOG(LogTemp, Display, TEXT("Left boundary SFPX: %f"), SFPX)
 		}
 
 		// Deactivate the boundary bool 
@@ -90,14 +90,14 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	if (SFPX >= 0.f && SFPX <= 1.f) {
 		position2D.X = SFPX;
 	}
-	UE_LOG(LogTemp, Display, TEXT("position2D.X: %f"), position2D.X)
+	//UE_LOG(LogTemp, Display, TEXT("position2D.X: %f"), position2D.X)
 
 
 
 	float SFPY = position2D.Y;
 	if (activatedPBC_Y == false) {
 		SFPY = position2D.Y + sensitivity*(currentMousePositon.Y - oldMousePosition.Y);
-		UE_LOG(LogTemp, Display, TEXT("Normal SFPY: %f"), SFPY)
+		//UE_LOG(LogTemp, Display, TEXT("Normal SFPY: %f"), SFPY)
 	}
 	else {
 		// If difference is negative => crossed top boundary
@@ -105,12 +105,12 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
 			SFPY = position2D.Y + sensitivity*((currentMousePositon.Y - lowerPBC_Y) + (upperPBC_Y - oldMousePosition.Y));
-			UE_LOG(LogTemp, Display, TEXT("Top boundary SFPY: %f"), SFPY)
+			//UE_LOG(LogTemp, Display, TEXT("Top boundary SFPY: %f"), SFPY)
 		}
 		else { // Else difference is positve => crossed bot boundary
 
 			SFPY = position2D.Y + sensitivity*((oldMousePosition.Y - lowerPBC_Y) + (upperPBC_Y - currentMousePositon.Y));
-			UE_LOG(LogTemp, Display, TEXT("Bottom boundary SFPY: %f"), SFPY)
+			//UE_LOG(LogTemp, Display, TEXT("Bottom boundary SFPY: %f"), SFPY)
 		}
 
 		// Deactivate the boundary bool 
@@ -120,7 +120,7 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	if (SFPY >= 0.f && SFPY <= 1.f) {
 		position2D.Y = SFPY;
 	}
-	UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
+	//UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
 
 
 
