@@ -30,3 +30,17 @@ void SlashSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
+
+void SlashSwordStance::swordStanceActivation() {
+	
+	// Activate attack for slash sword stance
+	avatarPtr->isInAttackMotion = true; 
+	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
+}
+
+
+void SlashSwordStance::swordStanceDeactivation() {
+
+	// Deactivate
+	avatarPtr->isInAttackMotion = false;
+}

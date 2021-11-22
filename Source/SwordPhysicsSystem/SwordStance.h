@@ -67,6 +67,8 @@ public:
 	virtual void dodge(); 
 
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
+	virtual void swordStanceActivation() = 0; 
+	virtual void swordStanceDeactivation() = 0; 
 
 	/* Internal helper functions for all sword stance classes */
 };

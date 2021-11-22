@@ -211,8 +211,8 @@ public:
 	void dodge();
 	
 	// Used for switching a boolean variable for communicating with animation blueprint
-	void activateAttackMotion();
-	void deactivateAttackMotion(); 
+	void activateSwordStanceActivation();
+	void deactivateSwordStanceActivation();
 
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)

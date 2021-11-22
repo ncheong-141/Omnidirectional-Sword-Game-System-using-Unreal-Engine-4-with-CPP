@@ -35,4 +35,8 @@ public:
 	// Mouse motion override functions for this specific stance
 	virtual void Yaw(float amount) override;
 	virtual void Pitch(float amount) override;
+
+	// Pure virtual function impl.
+	virtual void swordStanceActivation() override; 
+	virtual void swordStanceDeactivation() override;
 };

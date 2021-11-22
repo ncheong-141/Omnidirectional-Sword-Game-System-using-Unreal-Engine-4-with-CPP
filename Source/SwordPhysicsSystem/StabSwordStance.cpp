@@ -42,3 +42,16 @@ void StabSwordStance::Pitch(float amount) {
 		avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 	}
 }
+
+void StabSwordStance::swordStanceActivation() {
+
+	// Activate attack for stab sword stance
+	avatarPtr->isInAttackMotion = true;
+	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
+}
+
+void StabSwordStance::swordStanceDeactivation() {
+
+	// Deactivate
+	avatarPtr->isInAttackMotion = false; 
+}

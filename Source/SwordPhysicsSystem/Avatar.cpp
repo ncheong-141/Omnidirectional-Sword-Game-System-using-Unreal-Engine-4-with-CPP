@@ -148,8 +148,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
-	PlayerInputComponent->BindAction("ActivateAttack", IE_Pressed, this, &AAvatar::activateAttackMotion);
-	PlayerInputComponent->BindAction("ActivateAttack", IE_Released, this, &AAvatar::deactivateAttackMotion);
+	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Pressed, this, &AAvatar::activateSwordStanceActivation);
+	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Released, this, &AAvatar::deactivateSwordStanceActivation);
 
 
 	// Sword stance change input
@@ -369,19 +369,19 @@ void AAvatar::dodge()
 	}
 }
 
-void AAvatar::activateAttackMotion() {
+void AAvatar::activateSwordStanceActivation() {
 	
 	if (!actionAbilityLocked) {
-		// Set is attacking to true and find the viewport sector the attack was initiated
-		isInAttackMotion = true;
-		attackMotionStartingSector = currentViewportSector->getSectorID();
+		
+		// Call stance function (cant activate stances when doing an action)
+		currentStance->swordStanceActivation(); 
 	}
 }
 
-void AAvatar::deactivateAttackMotion() {
+void AAvatar::deactivateSwordStanceActivation() {
 
-	// Activated when attack button is released
-	isInAttackMotion = false;
+	// Call stance function
+	currentStance->swordStanceDeactivation(); 
 }
 
 void AAvatar::PostInitializeComponents() {

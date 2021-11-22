@@ -16,3 +16,14 @@ void DefaultSwordStance::displayStance() {
 	
 	output.toHUD(FString("Default Stance"), 2.f, false);
 }
+
+void DefaultSwordStance::swordStanceActivation() {
+
+	// Nothing just yet
+}
+
+
+void DefaultSwordStance::swordStanceDeactivation() {
+
+	// Nothing just yet
+}

@@ -29,4 +29,8 @@ public:
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class
 	virtual void displayStance() override;
+
+	// Pure virtual function impl.
+	virtual void swordStanceActivation() override;
+	virtual void swordStanceDeactivation() override;
 };

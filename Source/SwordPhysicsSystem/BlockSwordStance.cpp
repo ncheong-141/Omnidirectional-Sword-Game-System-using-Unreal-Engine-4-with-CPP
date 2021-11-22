@@ -7,6 +7,12 @@
 // Debug output file
 #include "DebugOutput.h"
 
+BlockSwordStance::BlockSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {
+
+	// Instantiate class attributes
+	canTurnCamera = false;
+}
+
 BlockSwordStance::~BlockSwordStance()
 {
 }
@@ -92,9 +98,38 @@ void BlockSwordStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+
+	// If sword stance is activated (can turn camera)
+	if (canTurnCamera) {
+		
+		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+		if (avatarPtr->pController && amount) {
+			avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		}
+	}
 }
 
 void BlockSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+
+	if (canTurnCamera) {
+
+		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+		if (avatarPtr->pController && amount) {
+			avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		}
+	}
+}
+
+void BlockSwordStance::swordStanceActivation() {
+
+	// For block stance, activating the sword stance allows the user to turn their camera while blocking
+	canTurnCamera = true; 
+}
+
+void BlockSwordStance::swordStanceDeactivation() {
+
+	// Turn off ability to turn camera
+	canTurnCamera = false;
 }
