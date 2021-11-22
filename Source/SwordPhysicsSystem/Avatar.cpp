@@ -119,11 +119,6 @@ void AAvatar::Tick(float DeltaTime)
 	cardinalMovementLockCheck();
 	actionAbilityLockCheck();
 
-	// Apply movemnets 
-	if (isInDodge) {
-		applyAnimMovement_Dodge();
-	}
-
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
 
@@ -428,16 +423,18 @@ void AAvatar::applyAnimMovement_Dodge() {
 			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
 			// Get current actor location 
-			FVector currentLocation = GetActorLocation();
+			FVector currentLocation = GetActorLocation(); 
+
 			UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
 
 			// Calculate new location
 			FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
 			UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
 
-
 			// Set the location
-			this->SetActorLocation(newLocation);
+			this->SetActorLocation(newLocation, true);
+			UE_LOG(LogTemp, Display, TEXT("----------------------"));
+
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("Failed to cast to SPSAnimInstance in applyAnimMovement_Dodge()"));

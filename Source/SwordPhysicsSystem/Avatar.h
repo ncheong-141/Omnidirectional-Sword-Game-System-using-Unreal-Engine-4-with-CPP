@@ -229,6 +229,5 @@ private:
 
 	// Helpers
 	void velocityUpdate();
-	void swordFocalPtUpdate();
 	void debugOutput();
 };

@@ -31,17 +31,29 @@ public:
 		AAvatar* animatedAvatar;
 
 	// Curve values (not using TArray for verbosity)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float fMovementDistanceCurveCurrentValue;
-	float fMovementDistanceCurveLastFrameValue;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float fMovementDistanceCurveLastFrameValue;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float rMovementDistanceCurveCurrentValue;
-	float rMovementDistanceCurveLastFrameValue;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float rMovementDistanceCurveLastFrameValue;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float upMovementDistanceCurveCurrentValue;
-	float upMovementDistanceCurveLastFrameValue;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float upMovementDistanceCurveLastFrameValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		bool allowReadingOfAnimationCurve;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		bool resetReadingOfAnimationCurve;
 
 	// Class functions
 	// Called at each animation tick

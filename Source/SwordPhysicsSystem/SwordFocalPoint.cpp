@@ -99,7 +99,7 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	float SFPY = position2D.Y;
 	if (activatedPBC_Y == false) {
 		SFPY = position2D.Y + sensitivity*(currentMousePositon.Y - oldMousePosition.Y);
-		UE_LOG(LogTemp, Display, TEXT("Normal SFPY: %f"), SFPY)
+		//UE_LOG(LogTemp, Display, TEXT("Normal SFPY: %f"), SFPY)
 	}
 	else {
 		// If difference is negative => crossed top boundary
@@ -107,12 +107,12 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
 			SFPY = position2D.Y + sensitivity*((currentMousePositon.Y - lowerPBC_Y) + (oldMousePosition.Y - upperPBC_Y));
-			UE_LOG(LogTemp, Display, TEXT("Top boundary SFPY: %f"), SFPY)
+			//UE_LOG(LogTemp, Display, TEXT("Top boundary SFPY: %f"), SFPY)
 		}
 		else { // Else difference is positve => crossed bot boundary
 
 			SFPY = position2D.Y + sensitivity*((oldMousePosition.Y - lowerPBC_Y) + (currentMousePositon.Y - upperPBC_Y));
-			UE_LOG(LogTemp, Display, TEXT("Bottom boundary SFPY: %f"), SFPY)
+			//UE_LOG(LogTemp, Display, TEXT("Bottom boundary SFPY: %f"), SFPY)
 		}
 
 		// Deactivate the boundary bool 
@@ -121,12 +121,9 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	// Enforce 0 or 1 boundary
 	if (SFPY >= 0.f && SFPY <= 1.f) {
 		position2D.Y = SFPY;
-		UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
+		//UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
 	}
 	
-
-	// zone either sfpy or position2D to borders to stabalise it 
-
 	/* Process mouse positon for next check, ensure periodic BCs*/
 	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
 	// Note, the activated booleans are used to branch into a different calculation on how to calculate the mouse difference
