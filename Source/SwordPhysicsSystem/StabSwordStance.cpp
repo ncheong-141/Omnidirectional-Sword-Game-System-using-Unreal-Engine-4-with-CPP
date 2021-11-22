@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "StabSwordStance.h"
+#include "Avatar.h"
 
 // Debug output file
 #include "DebugOutput.h"
@@ -22,10 +22,10 @@ void StabSwordStance::displayStance() {
 void StabSwordStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
 void StabSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }

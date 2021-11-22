@@ -15,6 +15,7 @@
 #include "MeleeWeapon.h"
 #include "OneHandedSword.h"
 #include "SPSPlayerController.h"
+#include "SPSAnimInstance.h"
 #include "ViewportSector.h"
 #include "SwordFocalPoint.h"
 #include "Avatar.generated.h"
@@ -136,7 +137,7 @@ public:
 		int dodgeDirection; 
 
 	// Avatar internal flow control conditions
-	bool cardinalMovementLocked;		// Stops WASD input
+	bool inputMovementLocked;		// Stops WASD input
 	bool actionAbilityLocked;			// Stops any actions such as jump or dodge
 
 
@@ -151,9 +152,9 @@ public:
 		TArray<UViewportSector*> viewportGrid;
 
 	// Number of sectors on X and Y axis
-	// Hardcoding cardinal segments as 3 atm as to simplify it to top left, top, top right etc. 
+	// Hardcoding segments as 3 atm as to simplify it to top left, top, top right etc. 
 	// This can be expanded on in the future however in the generViewportGrid() function
-	const float cardinalSegmentNo = 3; 
+	const float axesSegmentNo = 3; 
 
 	// Adding weapon to Avatar, assuming a specific mesh is already set
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
@@ -216,7 +217,7 @@ public:
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
 	// Functions use data from the custom Animation instance where the curve data is read at each animation tick
-	void applyAnimMovement_Dodge();
+	void applyAnimMovement_Dodge(USPSAnimInstance* avatarAnimInstance);
 	void applyAnimMovement_GeneralAttacks();
 	void applyAnimMovement_Parry();
 
@@ -224,7 +225,7 @@ private:
 	/* Internal class functions */
 
 	// Functins to check avatar state and set true/false to these varibles when neccessary
-	void cardinalMovementLockCheck();
+	void inputMovementLockCheck();
 	void actionAbilityLockCheck(); 
 
 	// Helpers

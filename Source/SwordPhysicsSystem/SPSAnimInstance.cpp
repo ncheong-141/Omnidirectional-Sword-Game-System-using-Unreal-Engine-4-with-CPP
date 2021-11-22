@@ -81,7 +81,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 		// Apply animation curve values
 		if (animatedAvatar->isInDodge) {
-			animatedAvatar->applyAnimMovement_Dodge();
+			animatedAvatar->applyAnimMovement_Dodge(this);
 		}
 	}
 }

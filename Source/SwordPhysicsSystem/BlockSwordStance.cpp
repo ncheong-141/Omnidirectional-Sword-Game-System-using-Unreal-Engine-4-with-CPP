@@ -91,10 +91,10 @@ void BlockSwordStance::MoveLeft(float amount) {
 void BlockSwordStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
 void BlockSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }

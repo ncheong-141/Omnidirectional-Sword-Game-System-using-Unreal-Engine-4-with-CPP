@@ -18,7 +18,6 @@
 #include "GameFramework/Controller.h"
 
 // Game imports
-#include "SPSAnimInstance.h"
 
 // General imports
 #include <cmath>
@@ -71,7 +70,7 @@ AAvatar::AAvatar() {
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
 	baseYawTurnSpeed = 45.f;
 	basePitchTurnSpeed = 5.f;
-	cardinalMovementLocked = false;
+	inputMovementLocked = false;
 	actionAbilityLocked = false; 
 
 	// Generate the viewport sector grid
@@ -109,14 +108,11 @@ void AAvatar::Tick(float DeltaTime)
 	// Velocity update
 	velocityUpdate();
 
-	// Sword focal point update 
-	swordFocalPoint->update(pController);
-
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
 
 	// Check if cardinal movement or actions should be locked or not
-	cardinalMovementLockCheck();
+	inputMovementLockCheck();
 	actionAbilityLockCheck();
 
 	// Check if avatar is in the air for physics and animation flow
@@ -207,8 +203,8 @@ void AAvatar::switch_StabSwordStance() {
 void AAvatar::generateViewportGrid() {
 
 	// Generate the grid based on cardinal segments 
-	float dx = 1 / cardinalSegmentNo;
-	float dy = 1 / cardinalSegmentNo; 
+	float dx = 1 / axesSegmentNo;
+	float dy = 1 / axesSegmentNo; 
 
 	// Generate grid; loop over x and y, starting with y as want this structure: 
 	// 0 1 2
@@ -224,7 +220,7 @@ void AAvatar::generateViewportGrid() {
 	float currentY = 0.f; 
 	
 	// Loop over y direction 
-	for (int j = 0; j < cardinalSegmentNo; j++) {
+	for (int j = 0; j < axesSegmentNo; j++) {
 
 		// Get upper and lower Y limits 
 		float ylimLower = currentY;
@@ -235,7 +231,7 @@ void AAvatar::generateViewportGrid() {
 		ylimUpper = (std::round(100 * ylimUpper)) / 100.f;
 
 		// Loop over X direction
-		for (int i = 0; i < cardinalSegmentNo; i++) {
+		for (int i = 0; i < axesSegmentNo; i++) {
 
 			// Get upper and lower X limits 
 			float xlimLower = currentX; 
@@ -300,27 +296,27 @@ void AAvatar::setCurrentViewportSector() {
 ======================== */
 void AAvatar::MoveForward(float amount) {
 
-	if (!cardinalMovementLocked) {
+	if (!inputMovementLocked) {
 		currentStance->MoveForward(amount);
 	}
 }
 
 void AAvatar::MoveBack(float amount) {
-	if (!cardinalMovementLocked) {
+	if (!inputMovementLocked) {
 		currentStance->MoveBack(amount);
 	}
 }
 
 void AAvatar::MoveRight(float amount) {
 
-	if (!cardinalMovementLocked) {
+	if (!inputMovementLocked) {
 		currentStance->MoveRight(amount);
 	}
 }
 
 void AAvatar::MoveLeft(float amount) {
 
-	if (!cardinalMovementLocked) {
+	if (!inputMovementLocked) {
 		currentStance->MoveLeft(amount);
 	}
 }
@@ -393,55 +389,43 @@ void AAvatar::PostInitializeComponents() {
 
 // Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
 // Functions use data from the custom Animation instance where the curve data is read at each animtion tick
-void AAvatar::applyAnimMovement_Dodge() {
+void AAvatar::applyAnimMovement_Dodge(USPSAnimInstance* avatarAnimInstance) {
 
-	// Get anim instance for curve values 
-	UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
 
-	// Check if animation instance exists 
-	if (animInstance != nullptr) {
+	// Check if cat was successful 
+	if (avatarAnimInstance) {
 
-		// Cast to custom instance (set in UE4 game mode settings such that it creates this subclass on launch)
-		USPSAnimInstance* avatarAnimInstance = Cast<USPSAnimInstance>(animInstance); 
-		
-		// Check if cat was successful 
-		if (avatarAnimInstance) {
+		UE_LOG(LogTemp, Display, TEXT("----------------------"));
 
-			UE_LOG(LogTemp, Display, TEXT("----------------------"));
+		// Get current forward vector (Unit vector) 
+		FVector avatarFwdVector = GetActorForwardVector();
+		FVector avatarRightVector = GetActorRightVector(); 
+		UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
-			// Get current forward vector (Unit vector) 
-			FVector avatarFwdVector = GetActorForwardVector();
-			FVector avatarRightVector = GetActorRightVector(); 
-			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+		UE_LOG(LogTemp, Display, TEXT("Forward distance current: %f"), avatarAnimInstance -> fMovementDistanceCurveCurrentValue);
+		UE_LOG(LogTemp, Display, TEXT("Forward distance last frame: %f"), avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
 
-			UE_LOG(LogTemp, Display, TEXT("Forward distance current: %f"), avatarAnimInstance -> fMovementDistanceCurveCurrentValue);
-			UE_LOG(LogTemp, Display, TEXT("Forward distance last frame: %f"), avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
+		// Apply the distance curves to the unit vectors (this gives the displacement)
+		avatarFwdVector = avatarFwdVector * (avatarAnimInstance -> fMovementDistanceCurveCurrentValue - avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
+		avatarRightVector = avatarRightVector* (avatarAnimInstance-> rMovementDistanceCurveCurrentValue - avatarAnimInstance->rMovementDistanceCurveLastFrameValue); 
+		UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
-			// Apply the distance curves to the unit vectors (this gives the displacement)
-			avatarFwdVector = avatarFwdVector * (avatarAnimInstance -> fMovementDistanceCurveCurrentValue - avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
-			avatarRightVector = avatarRightVector* (avatarAnimInstance-> rMovementDistanceCurveCurrentValue - avatarAnimInstance->rMovementDistanceCurveLastFrameValue); 
-			UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+		// Get current actor location 
+		FVector currentLocation = GetActorLocation(); 
 
-			// Get current actor location 
-			FVector currentLocation = GetActorLocation(); 
+		UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
 
-			UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
+		// Calculate new location
+		FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
+		UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
 
-			// Calculate new location
-			FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
-			UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
+		// Set the location
+		SetActorLocation(newLocation, true);
+		UE_LOG(LogTemp, Display, TEXT("----------------------"));
 
-			// Set the location
-			this->SetActorLocation(newLocation, true);
-			UE_LOG(LogTemp, Display, TEXT("----------------------"));
-
-		}
-		else {
-			UE_LOG(LogTemp, Error, TEXT("Failed to cast to SPSAnimInstance in applyAnimMovement_Dodge()"));
-		}
 	}
 	else {
-		UE_LOG(LogTemp, Error, TEXT("Failed to retrieve Anim Instance in applyAnimMovement_Dodge()"));
+		UE_LOG(LogTemp, Error, TEXT("Failed to cast to SPSAnimInstance in applyAnimMovement_Dodge()"));
 	}
 }
 
@@ -459,14 +443,14 @@ void AAvatar::applyAnimMovement_Parry() {
 /* Internal class functions (helpers) */
 
 // Functins to check avatar state and set true/false to these varibles when neccessary
-void AAvatar::cardinalMovementLockCheck() {
+void AAvatar::inputMovementLockCheck() {
 
 	// List of conditions in which would lock cardinal movement (use ||)
 	if (isInDodge || isInAir) {
-		cardinalMovementLocked = true;
+		inputMovementLocked = true;
 	}
 	else {
-		cardinalMovementLocked = false;
+		inputMovementLocked = false;
 	}
 
 }
@@ -531,7 +515,7 @@ void AAvatar::debugOutput() {
 	// Show avatar flow control variables
 	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));
 	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
-	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), cardinalMovementLocked));
+	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), inputMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
 	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
 

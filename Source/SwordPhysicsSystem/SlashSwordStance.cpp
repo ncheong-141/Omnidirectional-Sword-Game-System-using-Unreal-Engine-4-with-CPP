@@ -2,6 +2,7 @@
 
 
 #include "SlashSwordStance.h"
+#include "Avatar.h"
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation
@@ -22,10 +23,10 @@ void SlashSwordStance::displayStance() {
 void SlashSwordStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
 void SlashSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
-
+	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
