@@ -39,7 +39,7 @@ public:
 
 	/* Class attributes */
 	int stanceID;			// Used to reference the stance as an integer
-	
+
 	// Constructors
 	SwordStance();	// NMeed to remove i think
 	SwordStance(AAvatar* avatar, int stance_ID);

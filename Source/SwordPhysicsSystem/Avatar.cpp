@@ -108,6 +108,11 @@ void AAvatar::Tick(float DeltaTime)
 	// Velocity update
 	velocityUpdate();
 
+	// Update focal point (!= 0 => not the default stance)
+	if (currentStanceID != 0) {
+		swordFocalPoint->update(pController);
+	}
+
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
 
@@ -176,27 +181,39 @@ void AAvatar::setStance(SwordStance& newStance) {
 }
 
 void AAvatar::switch_DefaultSwordStance() {
-	currentStance = &defaultStance;
-	currentStanceID = currentStance->stanceID;
-	currentStance->displayStance();
+
+	if (!actionAbilityLocked) {
+		currentStance = &defaultStance;
+		currentStanceID = currentStance->stanceID;
+		currentStance->displayStance();
+	}
 }
 
 void AAvatar::switch_SlashSwordStance() {
-	currentStance = &slashStance;
-	currentStanceID = currentStance->stanceID;
-	currentStance->displayStance();
+
+	if (!actionAbilityLocked) {
+		currentStance = &slashStance;
+		currentStanceID = currentStance->stanceID;
+		currentStance->displayStance();
+	}
 }
 
 void AAvatar::switch_BlockSwordStance() {
-	currentStance = &blockStance; 
-	currentStanceID = currentStance->stanceID;
-	currentStance->displayStance(); 
+
+	if (!actionAbilityLocked) {
+		currentStance = &blockStance;
+		currentStanceID = currentStance->stanceID;
+		currentStance->displayStance();
+	}
 }
 
 void AAvatar::switch_StabSwordStance() {
-	currentStance = &stabStance; 
-	currentStanceID = currentStance->stanceID;
-	currentStance->displayStance(); 
+
+	if (!actionAbilityLocked) {
+		currentStance = &stabStance;
+		currentStanceID = currentStance->stanceID;
+		currentStance->displayStance();
+	}
 }
 
 // Generate the viewport grid datastructure (called in constructor)
@@ -353,11 +370,17 @@ void AAvatar::dodge()
 }
 
 void AAvatar::activateAttackMotion() {
-	isInAttackMotion = true;
-	attackMotionStartingSector = currentViewportSector->getSectorID();
+	
+	if (!actionAbilityLocked) {
+		// Set is attacking to true and find the viewport sector the attack was initiated
+		isInAttackMotion = true;
+		attackMotionStartingSector = currentViewportSector->getSectorID();
+	}
 }
 
 void AAvatar::deactivateAttackMotion() {
+
+	// Activated when attack button is released
 	isInAttackMotion = false;
 }
 
@@ -446,13 +469,12 @@ void AAvatar::applyAnimMovement_Parry() {
 void AAvatar::inputMovementLockCheck() {
 
 	// List of conditions in which would lock cardinal movement (use ||)
-	if (isInDodge || isInAir) {
+	if (isInDodge || isInAir || isInAttackMotion) {
 		inputMovementLocked = true;
 	}
 	else {
 		inputMovementLocked = false;
 	}
-
 }
 
 void AAvatar::actionAbilityLockCheck() {

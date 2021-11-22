@@ -22,10 +22,10 @@ void StabSwordStance::displayStance() {
 void StabSwordStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
-	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
 void StabSwordStance::Pitch(float amount) {
 	// Change sword position based on mouse position
-	avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
