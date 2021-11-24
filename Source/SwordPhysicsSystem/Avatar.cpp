@@ -422,7 +422,7 @@ void AAvatar::PostInitializeComponents() {
 
 // Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
 // Functions use data from the custom Animation instance where the curve data is read at each animtion tick
-void AAvatar::applyAnimMovement_Dodge(USPSAnimInstance* avatarAnimInstance) {
+void AAvatar::applyAnimMovement(USPSAnimInstance* avatarAnimInstance) {
 
 
 	// Check if cat was successful 

@@ -123,13 +123,24 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		// The curve current values are updated in the animation notification states
 		// Animations are applied in this class as it makes sense to apply the animation movement per animation tick
 		if (animatedAvatar->isInDodge) {
-			animatedAvatar->applyAnimMovement_Dodge(this);
+
+			// Apply animation curve movement
+			animatedAvatar->applyAnimMovement(this);
+		}
+
+		if (animatedAvatar->isInAttackMotion) {
+
+			// Apply animation curve movement
+			animatedAvatar->applyAnimMovement(this);
+
+			// Set the right hand speed 
+
 		}
 	}
 }
 
 
-void USPSAnimInstance::setFloatCurvePointers(UAnimSequenceBase* Animation) {
+void USPSAnimInstance::setMovementFloatCurvePointers(UAnimSequenceBase* Animation) {
 
 	if (Animation != nullptr) {
 		// Get the curve data reference from the animation
@@ -152,4 +163,23 @@ void USPSAnimInstance::setFloatCurvePointers(UAnimSequenceBase* Animation) {
 		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
 	}
 
+}
+
+void USPSAnimInstance::setAttackFloatCurvePointers(UAnimSequenceBase* Animation) {
+
+	if (Animation != nullptr) {
+		// Get the curve data reference from the animation
+		const FRawCurveTracks& curves = Animation->GetCurveData();
+
+		// Establish the variable for curve name
+		FSmartName curveName;
+
+		// Get data for right hand movement speed
+		Animation->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("thumb_01_r_MovementSpeed"), curveName);
+		RightHandMovementSpeedFloatCurve = static_cast<const FFloatCurve*>(curves.GetCurveData(curveName.UID));
+
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
+	}
 }

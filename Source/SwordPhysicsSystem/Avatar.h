@@ -219,7 +219,7 @@ public:
 	/* Animation information to class function communcicators*/
 	// Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
 	// Functions use data from the custom Animation instance where the curve data is read at each animation tick
-	void applyAnimMovement_Dodge(USPSAnimInstance* avatarAnimInstance);
+	void applyAnimMovement(USPSAnimInstance* avatarAnimInstance);
 	void applyAnimMovement_GeneralAttacks();
 	void applyAnimMovement_Parry();
 
