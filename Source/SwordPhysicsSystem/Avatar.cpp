@@ -60,6 +60,7 @@ AAvatar::AAvatar() {
 	worldVelocity_Y = 0.f;
 	localVelocity_X = 0.f;
 	localVelocity_Y = 0.f;
+	righthandResultantSpeed = 0.f; 
 	isInAir = false;
 	isInIframe = false;
 	isWalking = false;
@@ -109,6 +110,7 @@ void AAvatar::Tick(float DeltaTime)
 	velocityUpdate();
 
 	// Update focal point (!= 0 => not the default stance)
+	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	if (currentStanceID != 0) {
 		swordFocalPoint->update(pController);
 	}
@@ -183,6 +185,10 @@ void AAvatar::setStance(SwordStance& newStance) {
 void AAvatar::switch_DefaultSwordStance() {
 
 	if (!actionAbilityLocked) {
+
+		// Interrpt attack if in motion (before switching)
+		deactivateSwordStanceActivation();
+
 		currentStance = &defaultStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
@@ -201,6 +207,10 @@ void AAvatar::switch_SlashSwordStance() {
 void AAvatar::switch_BlockSwordStance() {
 
 	if (!actionAbilityLocked) {
+	
+		// Interrpt attack if in motion (before switching)
+		deactivateSwordStanceActivation();
+
 		currentStance = &blockStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
@@ -393,7 +403,7 @@ void AAvatar::PostInitializeComponents() {
 
 		// Instantiate melee weapon (Onehanded sword here, need a check for what is in BPMeleewapon)
 		MeleeWeapon = GetWorld()->SpawnActor<AOneHandedSword>(BPMeleeWeapon, FVector(), FRotator());
-
+		
 		// If instantiation was successful, apply it to avatar
 		if (MeleeWeapon) {
 
@@ -418,33 +428,30 @@ void AAvatar::applyAnimMovement_Dodge(USPSAnimInstance* avatarAnimInstance) {
 	// Check if cat was successful 
 	if (avatarAnimInstance) {
 
-		UE_LOG(LogTemp, Display, TEXT("----------------------"));
+		//UE_LOG(LogTemp, Display, TEXT("----------------------"));
 
 		// Get current forward vector (Unit vector) 
 		FVector avatarFwdVector = GetActorForwardVector();
 		FVector avatarRightVector = GetActorRightVector(); 
-		UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
-
-		UE_LOG(LogTemp, Display, TEXT("Forward distance current: %f"), avatarAnimInstance -> fMovementDistanceCurveCurrentValue);
-		UE_LOG(LogTemp, Display, TEXT("Forward distance last frame: %f"), avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
+		//UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
 		// Apply the distance curves to the unit vectors (this gives the displacement)
 		avatarFwdVector = avatarFwdVector * (avatarAnimInstance -> fMovementDistanceCurveCurrentValue - avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
 		avatarRightVector = avatarRightVector* (avatarAnimInstance-> rMovementDistanceCurveCurrentValue - avatarAnimInstance->rMovementDistanceCurveLastFrameValue); 
-		UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+		//UE_LOG(LogTemp, Display, TEXT("After curves applied FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
 		// Get current actor location 
 		FVector currentLocation = GetActorLocation(); 
 
-		UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
+		//UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
 
 		// Calculate new location
 		FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
-		UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
+		//UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
 
 		// Set the location
 		SetActorLocation(newLocation, true);
-		UE_LOG(LogTemp, Display, TEXT("----------------------"));
+		//UE_LOG(LogTemp, Display, TEXT("----------------------"));
 
 	}
 	else {
@@ -537,7 +544,7 @@ void AAvatar::debugOutput() {
 	// Show avatar flow control variables
 	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));
 	GEngine->AddOnScreenDebugMessage(5, 100.f, FColor::White, FString::Printf(TEXT("isInDodge: %d"), isInDodge));
-	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("CML: %d"), inputMovementLocked));
+	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("IML: %d"), inputMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
 	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
 

@@ -48,10 +48,16 @@ void StabSwordStance::swordStanceActivation() {
 	// Activate attack for stab sword stance
 	avatarPtr->isInAttackMotion = true;
 	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
+
+	// Let weapon know its now attacking
+	avatarPtr->MeleeWeapon->startAttackMotion();
 }
 
 void StabSwordStance::swordStanceDeactivation() {
 
 	// Deactivate
 	avatarPtr->isInAttackMotion = false; 
+
+	// Let weapon know its not attacking
+	avatarPtr->MeleeWeapon->endAttackMotion();
 }

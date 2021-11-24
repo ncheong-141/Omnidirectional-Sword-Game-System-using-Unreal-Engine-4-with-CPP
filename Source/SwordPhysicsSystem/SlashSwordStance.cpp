@@ -36,11 +36,17 @@ void SlashSwordStance::swordStanceActivation() {
 	// Activate attack for slash sword stance
 	avatarPtr->isInAttackMotion = true; 
 	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
+
+	// Let weapon know its now attacking
+	avatarPtr->MeleeWeapon->startAttackMotion(); 
 }
 
 
 void SlashSwordStance::swordStanceDeactivation() {
 
-	// Deactivate
+	// Deactivate attack motion 
 	avatarPtr->isInAttackMotion = false;
+
+	// Let weapon know its not attacking
+	avatarPtr->MeleeWeapon->endAttackMotion();
 }

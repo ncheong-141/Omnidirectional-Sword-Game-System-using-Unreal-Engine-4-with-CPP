@@ -100,6 +100,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float localVelocity_Y;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float righthandResultantSpeed;
 
 	// Avatar control properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
