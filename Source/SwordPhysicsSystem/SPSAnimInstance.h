@@ -49,23 +49,32 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float upMovementDistanceCurveLastFrameValue;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		bool allowReadingOfAnimationCurve;
 
+	// Float curve data of current animation
+	const FFloatCurve* ForwardMovementDistanceFloatCurve;
+	const FFloatCurve* RightMovementDistanceFloatCurve;
+	const FFloatCurve* UpMovementDistanceFloatCurve;
+
+	// Current time and Total animation duration for reference
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float currentTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float totalAnimationDuration;
+
+	// Flow control parameters altered by animation notification
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		bool resetReadingOfAnimationCurve;
 
-	// Class functions
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		bool animationCurrentlyPlaying;
+
+
+	/* Class functions */ 
+
 	// Called at each animation tick
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
-
-	// Post initalisation. Used to initialise memory references 
-	// which are not made till after construction
-	// Unreal engine apparently makes the link even later after construction between this class and OwningActor
-	// So still doesnt work... 
-	// void PostInitProperties() override; 
-
-private:
-
+	// Get the movement distance curve values. Called in Anim Notifcation states when appropiate
+	void setFloatCurvePointers(UAnimSequenceBase* Animation); 
 };
