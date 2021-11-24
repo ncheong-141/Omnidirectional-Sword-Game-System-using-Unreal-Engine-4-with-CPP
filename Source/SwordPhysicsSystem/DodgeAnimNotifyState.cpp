@@ -91,10 +91,10 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 
 void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: Tick"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: Tick"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 
 	// Check if avatar and animation instance cast was successful 
@@ -110,15 +110,22 @@ void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) {
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
+	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
+	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+
 
 
 	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
 		
 		// Set dodge to false as it has ended
-		avatar->isInDodge = false;
+		if (avatar) {
+			avatar->isInDodge = false;
+		}
 
 		// Set playing animation to false after finishing animation
-		avatarAnimInstance->animationCurrentlyPlaying = false;
+		if (avatarAnimInstance) {
+			avatarAnimInstance->animationCurrentlyPlaying = false;
+		}
 	}
 
 

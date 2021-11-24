@@ -49,7 +49,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		/* Reading of curve data */
 		
 		// Reset the distnace readings when appropiate (required for animation transitions)
-		UE_LOG(LogTemp, Display, TEXT("resetReadingOfAnimationCurve: %d"), resetReadingOfAnimationCurve);
+		//UE_LOG(LogTemp, Display, TEXT("resetReadingOfAnimationCurve: %d"), resetReadingOfAnimationCurve);
 		if (resetReadingOfAnimationCurve) {
 
 			// Reset current and last frame curve calues
@@ -64,6 +64,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 			// Toggle reset switch
 			resetReadingOfAnimationCurve = false;
+			UE_LOG(LogTemp, Display, TEXT("resetReadingOfAnimationCurve: %d"), resetReadingOfAnimationCurve);
 		}
 
 		// If there is an animation currently playing
@@ -72,7 +73,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			// Calculate the current time
 			if (currentTime + DeltaSeconds < totalAnimationDuration) {
 				currentTime += DeltaSeconds;
-				UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
+				//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Going over total time"));
@@ -114,9 +115,9 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 		// Debug
 		FVector currentLocation = animatedAvatar->GetActorLocation();
-		UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
-		UE_LOG(LogTemp, Display, TEXT("Current forward movement in SPS anim: %f"), fMovementDistanceCurveCurrentValue)
-		UE_LOG(LogTemp, Display, TEXT("Current right movement in SPS anim: %f"), rMovementDistanceCurveCurrentValue);
+		//UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
+		//UE_LOG(LogTemp, Display, TEXT("Current forward movement in SPS anim: %f"), fMovementDistanceCurveCurrentValue)
+		//UE_LOG(LogTemp, Display, TEXT("Current right movement in SPS anim: %f"), rMovementDistanceCurveCurrentValue);
 		
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states
