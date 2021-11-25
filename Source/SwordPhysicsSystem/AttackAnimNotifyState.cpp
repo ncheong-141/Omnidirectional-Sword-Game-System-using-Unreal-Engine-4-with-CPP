@@ -87,6 +87,4 @@ void UAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 			avatarAnimInstance->animationCurrentlyPlaying = false;
 		}
 	}
-
-
 }

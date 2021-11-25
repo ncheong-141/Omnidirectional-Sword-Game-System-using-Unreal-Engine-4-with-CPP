@@ -11,7 +11,6 @@
 AOneHandedSword::AOneHandedSword(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 	name = FString(); 
 	mass = 0.f; 
-	currentSpeed = 1.f;
 	dynamicDamage = 0.f;
 
 	// Create mesh and set as root compoonent
@@ -73,5 +72,6 @@ void AOneHandedSword::endAttackMotion() {
 // Calculate damage based on sword movementspeed and weigt
 float AOneHandedSword::calculateDynamicDamage() {
 
-	return mass * currentSpeed * AMeleeWeapon::canDamage;
+	// Change right hand resultant speed to + movement speed later
+	return mass * weaponHolder->righthandResultantSpeed * AMeleeWeapon::canDamage;
 }

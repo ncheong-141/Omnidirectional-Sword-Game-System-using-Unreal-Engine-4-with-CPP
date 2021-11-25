@@ -434,37 +434,28 @@ void AAvatar::PostInitializeComponents() {
 
 // Functions which apply the avatar animation curve values (e.g. for movement/location changes due to animations)
 // Functions use data from the custom Animation instance where the curve data is read at each animtion tick
-void AAvatar::applyAnimMovement(USPSAnimInstance* avatarAnimInstance) {
+void AAvatar::applyAnimMovement() {
 
 
 	// Check if cat was successful 
-	if (avatarAnimInstance) {
-
-		//UE_LOG(LogTemp, Display, TEXT("----------------------"));
+	if (animationInstance) {
 
 		// Get current forward vector (Unit vector) 
 		FVector avatarFwdVector = GetActorForwardVector();
 		FVector avatarRightVector = GetActorRightVector(); 
-		//UE_LOG(LogTemp, Display, TEXT("FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
 
 		// Apply the distance curves to the unit vectors (this gives the displacement)
-		avatarFwdVector = avatarFwdVector * (avatarAnimInstance -> fMovementDistanceCurveCurrentValue - avatarAnimInstance -> fMovementDistanceCurveLastFrameValue);
-		avatarRightVector = avatarRightVector* (avatarAnimInstance-> rMovementDistanceCurveCurrentValue - avatarAnimInstance->rMovementDistanceCurveLastFrameValue); 
-		//UE_LOG(LogTemp, Display, TEXT("After curves applied FV X: %f, FV Y: %f, FV Z: %f"), avatarFwdVector.X, avatarFwdVector.Y, avatarFwdVector.Z);
+		avatarFwdVector = avatarFwdVector * (animationInstance-> fMovementDistanceCurveCurrentValue - animationInstance-> fMovementDistanceCurveLastFrameValue);
+		avatarRightVector = avatarRightVector* (animationInstance-> rMovementDistanceCurveCurrentValue - animationInstance->rMovementDistanceCurveLastFrameValue);
 
 		// Get current actor location 
 		FVector currentLocation = GetActorLocation(); 
 
-		//UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
-
 		// Calculate new location
 		FVector newLocation = currentLocation + avatarFwdVector + avatarRightVector;
-		//UE_LOG(LogTemp, Display, TEXT("NLV X: %f, NLV Y: %f, NLV Z: %f"), newLocation.X, newLocation.Y, newLocation.Z);
 
 		// Set the location
 		SetActorLocation(newLocation, true);
-		//UE_LOG(LogTemp, Display, TEXT("----------------------"));
-
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Failed to cast to SPSAnimInstance in applyAnimMovement_Dodge()"));
@@ -472,14 +463,12 @@ void AAvatar::applyAnimMovement(USPSAnimInstance* avatarAnimInstance) {
 }
 
 
-void AAvatar::applyAnimMovement_GeneralAttacks() {
+void AAvatar::setAttackAnimInformation() {
 
+	// Set right hand speed
+	righthandResultantSpeed = animationInstance->righthandMovementCurveCurrentValue; 
 }
 
-
-void AAvatar::applyAnimMovement_Parry() {
-
-}
 
 
 /* Internal class functions (helpers) */

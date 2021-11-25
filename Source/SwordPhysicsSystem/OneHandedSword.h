@@ -19,7 +19,6 @@ public:
 	/* Sword attributes */
 	FString name; 
 	float mass; 
-	float currentSpeed; 
 	float dynamicDamage;
 
 	// Bounding box for weapon collision 

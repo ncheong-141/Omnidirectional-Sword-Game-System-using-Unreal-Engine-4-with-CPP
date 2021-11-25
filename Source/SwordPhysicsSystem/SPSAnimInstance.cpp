@@ -26,7 +26,7 @@ USPSAnimInstance::USPSAnimInstance() {
 	upMovementDistanceCurveCurrentValue = 0.f;
 	upMovementDistanceCurveLastFrameValue = 0.f;
 
-	//righthandMovementCurveCUrrentFrameValue = 0.f;
+	righthandMovementCurveCurrentValue = 0.f;
 	animationCurrentlyPlaying = false;
 
 	currentTime = 0.f;
@@ -92,12 +92,13 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			else {
 				UE_LOG(LogTemp, Error, TEXT("UpdMovement curve nullptr in %s"), __FUNCTION__);
 			}
+		
+			// Right hand movement speed
+			if (RightHandMovementSpeedFloatCurve != nullptr) {
+				righthandMovementCurveCurrentValue = RightHandMovementSpeedFloatCurve->Evaluate(currentTime);
+			}
+
 		}
-
-
-		// Debug
-		//UE_LOG(LogTemp, Display, TEXT("CanDamage: %d"), animatedAvatar->MeleeWeapon->canDamage);
-		//UE_LOG(LogTemp, Display, TEXT("IsInAttackMotion: %d"), animatedAvatar->isInAttackMotion);
 
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states
@@ -105,13 +106,13 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		if (animatedAvatar->isInDodge) {
 
 			// Apply animation curve movement
-			animatedAvatar->applyAnimMovement(this);
+			animatedAvatar->applyAnimMovement();
 		}
 
 		if (animatedAvatar->isInAttackMotion) {
 
 			// Apply animation curve movement
-			animatedAvatar->applyAnimMovement(this);
+			animatedAvatar->applyAnimMovement();
 
 			// Set the right hand speed 
 

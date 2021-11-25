@@ -49,6 +49,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float upMovementDistanceCurveLastFrameValue;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float righthandMovementCurveCurrentValue;
+
+
 
 	// Float curve data of current animation
 	const FFloatCurve* ForwardMovementDistanceFloatCurve;
