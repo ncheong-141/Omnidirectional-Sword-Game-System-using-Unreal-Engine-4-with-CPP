@@ -7,12 +7,15 @@
 // Sets default values
 ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
+	// Initialise variables
 	proximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Proximity Sphere"));
 	proximitySphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 	proximitySphere->SetSphereRadius(32.f);
 
 	// Code to make ANMPC::proc() run when this proximity sphere overlaps another actor
 	proximitySphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::proximityCheck);
+	
+	hasBeenHit = false;
 }
 
 // Note, although this was eclared in the header as NPC::Prox() it is now NPC::Prox_Implementaiton here
