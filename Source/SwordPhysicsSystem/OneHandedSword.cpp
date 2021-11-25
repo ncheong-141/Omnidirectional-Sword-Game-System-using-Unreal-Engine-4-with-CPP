@@ -4,6 +4,7 @@
 #include "OneHandedSword.h"
 #include "Avatar.h"
 #include "Components/BoxComponent.h"
+#include "NPC.h"
 
 
 // Constructor
@@ -49,9 +50,21 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	// Dont hit things when conditions arent met
 	if (weaponHolder->isInAttackMotion && canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
 
+		// Damage actor
 		otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
+		
+		// Add to hit list so do not strike more than once with one swing
 		targetsHit.Add(otherActor);
+
+		// Set staggared if target is a NPC 
+		ANPC* npc = Cast<ANPC>(otherActor); 
+
+		// Check if cast successful
+		if (npc != nullptr) {
+
+			npc->hasBeenHit = true; 
+		}
 	}
 
 	return 0;
