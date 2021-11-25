@@ -26,16 +26,10 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 			// Check if cast is successful 
 			if (avatar != nullptr) {
 				
-				// Set flag to true
-				avatarCastSuccessFlag = true;
-
 				// Begin notifcation code for avatar
 				// Not required to set isInDodge for avatar as done in input command
 			}
 			else {
-
-				// Cast failed set flag to false so it does not run in tick function
-				avatarCastSuccessFlag = false;
 				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
 			}
 		}
@@ -53,9 +47,6 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 			// Check if cast is successful
 			if (avatarAnimInstance != nullptr) {
 
-				// Set flag to true for tick function
-				avatarAnimInstanceCastSuccessFlag = true; 
-
 				// Set the time stats
 				avatarAnimInstance->currentTime = 0;
 				avatarAnimInstance->totalAnimationDuration = TotalDuration;
@@ -66,15 +57,12 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 				}
 			}
 			else {
-				// Set flag to false for tick function
-				avatarAnimInstanceCastSuccessFlag = false;
 				UE_LOG(LogTemp, Error, TEXT("SPSAnimInstance cast unsuccessful in %s"), __FUNCTION__);
 			}
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("MeshComp->GetAnimInstance() is nullptr in %s"), __FUNCTION__)
 		}
-
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("MechComp is nullptr in %s"), __FUNCTION__)
@@ -89,37 +77,31 @@ void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
 
 	// Check if avatar and animation instance cast was successful 
-	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
-		// Perform code
-		// Can perform audio cues here too 
 
-		// Set animation playing to true
-		if (avatarAnimInstance) {
-			avatarAnimInstance->animationCurrentlyPlaying = true;
-		}
-	}
+	// Perform code
+	// Can perform audio cues here too 
 
+	// Set animation playing to true
+	if (avatarAnimInstance) {
+		avatarAnimInstance->animationCurrentlyPlaying = true;
+	}	
 }
 
 
 void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) {
+	
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
 	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
 	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
+	// Set dodge to false as it has ended
+	if (avatar) {
+		avatar->isInDodge = false;
+	}
 
-
-	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
-		
-		// Set dodge to false as it has ended
-		if (avatar) {
-			avatar->isInDodge = false;
-		}
-
-		// Set playing animation to false after finishing animation
-		if (avatarAnimInstance) {
-			avatarAnimInstance->animationCurrentlyPlaying = false;
-		}
+	// Set playing animation to false after finishing animation
+	if (avatarAnimInstance) {
+		avatarAnimInstance->animationCurrentlyPlaying = false;
 	}
 }

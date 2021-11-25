@@ -21,7 +21,6 @@ private:
 	// Reference to avatar, set up in Begin andFlag to check that avatar cast was succesful for Tick function
 	UPROPERTY()
 		AAvatar* avatar;
-	bool avatarCastSuccessFlag;
 
 public:
 

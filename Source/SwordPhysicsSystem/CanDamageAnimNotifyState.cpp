@@ -26,9 +26,6 @@ void UCanDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 			// Check if cast is successful 
 			if (avatar != nullptr) {
 
-				// Set flag to true
-				avatarCastSuccessFlag = true;
-
 				// Begin notifcation code for avatar
 				//Check if inAttackMOtion
 				if (avatar->isInAttackMotion) {
@@ -39,8 +36,6 @@ void UCanDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 			}
 			else {
 
-				// Cast failed set flag to false so it does not run in tick function
-				avatarCastSuccessFlag = false;
 				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
 			}
 		}
@@ -56,23 +51,22 @@ void UCanDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 void UCanDamageAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 
-	// Check if avatar and animation instance cast was successful 
-	if (avatarCastSuccessFlag) {
-		// Perform code
-		// Can perform audio cues here too 
 
-		// Constantly setting to true as animation may change/blend, this would invoke 
-		// the NotifyEnd() method of another canDamageState and thus this needs to be updated regularly
-		if (avatar) {
+	// Perform code
+	// Can perform audio cues here too 
 
-			//Check if inAttackMOtion
-			if (avatar->isInAttackMotion) {
+	// Constantly setting to true as animation may change/blend, this would invoke 
+	// the NotifyEnd() method of another canDamageState and thus this needs to be updated regularly
+	if (avatar) {
 
-				// Set melee weapon can damage to true
-				avatar->MeleeWeapon->canDamage = true;
-			}
+		//Check if inAttackMOtion
+		if (avatar->isInAttackMotion) {
+
+			// Set melee weapon can damage to true
+			avatar->MeleeWeapon->canDamage = true;
 		}
 	}
+	
 }
 
 
@@ -83,12 +77,11 @@ void UCanDamageAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAni
 	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
 	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
-	if (avatarCastSuccessFlag) {
 
-		// Set melee weapon can damage to false since ending canDamage state
-		if (avatar) {
-			avatar->MeleeWeapon->canDamage = false;
-		}
+	// Set melee weapon can damage to false since ending canDamage state
+	if (avatar) {
+		avatar->MeleeWeapon->canDamage = false;
 	}
+	
 }
 
