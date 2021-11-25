@@ -48,7 +48,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	}
 
 	// Dont hit things when conditions arent met
-	if (weaponHolder->isInAttackMotion && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
+	if (weaponHolder->isInAttackMotion && canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
 
 		otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
@@ -73,5 +73,5 @@ void AOneHandedSword::endAttackMotion() {
 // Calculate damage based on sword movementspeed and weigt
 float AOneHandedSword::calculateDynamicDamage() {
 
-	return mass * currentSpeed; 
+	return mass * currentSpeed * AMeleeWeapon::canDamage;
 }

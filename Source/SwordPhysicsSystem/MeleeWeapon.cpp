@@ -12,6 +12,7 @@ AMeleeWeapon::AMeleeWeapon(const FObjectInitializer& ObjectInitializer) : Super(
 	// Set class attributes 
 	weaponHolder = NULL;
 	targetsHit = TSet<AActor*>();
+	canDamage = false;
 }
 
 
