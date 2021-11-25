@@ -19,11 +19,6 @@ class SWORDPHYSICSSYSTEM_API UAttackAnimNotifyState : public UAnimNotifyState
 
 private:
 	/* Class attributes */
-	// Reference to avatar, set up in Begin andFlag to check that avatar cast was succesful for Tick function
-	UPROPERTY()
-		AAvatar* avatar;
-	bool avatarCastSuccessFlag;
-
 	// Reference to the anim instance and Flag to check that cast was succesful for Tick function
 	UPROPERTY()
 		USPSAnimInstance* avatarAnimInstance;

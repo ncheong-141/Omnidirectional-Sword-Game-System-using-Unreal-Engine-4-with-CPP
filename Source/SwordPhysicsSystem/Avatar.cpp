@@ -553,6 +553,4 @@ void AAvatar::debugOutput() {
 
 	GEngine->AddOnScreenDebugMessage(9, 100.f, FColor::White, FString::Printf(TEXT("Pitch: %f"), actorRotation.Pitch));
 	GEngine->AddOnScreenDebugMessage(10, 100.f, FColor::White, FString::Printf(TEXT("Yaw: %f"), actorRotation.Yaw));
-
-
 }

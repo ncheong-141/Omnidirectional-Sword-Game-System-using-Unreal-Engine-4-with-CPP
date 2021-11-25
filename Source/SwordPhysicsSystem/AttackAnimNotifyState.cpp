@@ -17,33 +17,6 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 	// Initial checks
 	if (MeshComp != nullptr) {
 
-		// Check for owner
-		if (MeshComp->GetOwner() != nullptr) {
-
-			// Cast to avatar and set up class variable
-			avatar = Cast<AAvatar>(MeshComp->GetOwner());
-
-			// Check if cast is successful 
-			if (avatar != nullptr) {
-
-				// Set flag to true
-				avatarCastSuccessFlag = true;
-
-				// Begin notifcation code for avatar
-				// Not required to set isInDodge for avatar as done in input command
-			}
-			else {
-
-				// Cast failed set flag to false so it does not run in tick function
-				avatarCastSuccessFlag = false;
-				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
-			}
-		}
-		else {
-			UE_LOG(LogTemp, Error, TEXT("MechComp->GetOwner() is nullptr in %s"), __FUNCTION__)
-		}
-
-
 		// Check for animation instance
 		if (MeshComp->GetAnimInstance() != nullptr) {
 
@@ -59,10 +32,7 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 				// Reset the readings in AnimInstance for this animation
 				avatarAnimInstance->resetReadingOfAnimationCurve = true;
 
-				// Set animation playing to true
-				avatarAnimInstance->animationCurrentlyPlaying = true;
-
-				// Set the time stats
+				// Reet the time stats
 				avatarAnimInstance->currentTime = 0;
 				avatarAnimInstance->totalAnimationDuration = TotalDuration;
 
@@ -95,9 +65,14 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 void UAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 
 	// Check if avatar and animation instance cast was successful 
-	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
+	if (avatarAnimInstanceCastSuccessFlag) {
 		// Perform code
 		// Can perform audio cues here too 
+
+		// Set animation playing to true
+		if (avatarAnimInstance) {
+			avatarAnimInstance->animationCurrentlyPlaying = true;
+		}
 	}
 }
 
@@ -109,7 +84,7 @@ void UAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
 	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
-	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
+	if (avatarAnimInstanceCastSuccessFlag) {
 
 		// Set playing animation to false after finishing animation
 		if (avatarAnimInstance) {

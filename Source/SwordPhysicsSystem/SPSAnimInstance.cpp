@@ -114,11 +114,9 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 
 		// Debug
-		FVector currentLocation = animatedAvatar->GetActorLocation();
-		//UE_LOG(LogTemp, Display, TEXT("CLV X: %f, CLV Y: %f, CLV Z: %f"), currentLocation.X, currentLocation.Y, currentLocation.Z);
-		//UE_LOG(LogTemp, Display, TEXT("Current forward movement in SPS anim: %f"), fMovementDistanceCurveCurrentValue)
-		//UE_LOG(LogTemp, Display, TEXT("Current right movement in SPS anim: %f"), rMovementDistanceCurveCurrentValue);
-		
+		UE_LOG(LogTemp, Display, TEXT("CanDamage: %d"), animatedAvatar->MeleeWeapon->canDamage);
+		UE_LOG(LogTemp, Display, TEXT("IsInAttackMotion: %d"), animatedAvatar->isInAttackMotion);
+
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states
 		// Animations are applied in this class as it makes sense to apply the animation movement per animation tick

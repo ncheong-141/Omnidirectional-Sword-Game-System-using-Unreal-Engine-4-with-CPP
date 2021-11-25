@@ -59,9 +59,6 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 				// Reset the readings in AnimInstance for this animation
 				avatarAnimInstance->resetReadingOfAnimationCurve = true;
 
-				// Set animation playing to true
-				avatarAnimInstance->animationCurrentlyPlaying = true;
-
 				// Set the time stats
 				avatarAnimInstance->currentTime = 0;
 				avatarAnimInstance->totalAnimationDuration = TotalDuration;
@@ -93,17 +90,18 @@ void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 	
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	//UE_LOG(LogTemp, Display, TEXT("Notification function: Tick"));
-	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
-
 
 	// Check if avatar and animation instance cast was successful 
 	if (avatarCastSuccessFlag && avatarAnimInstanceCastSuccessFlag) {
 		// Perform code
 		// Can perform audio cues here too 
+
+		// Set animation playing to true
+		if (avatarAnimInstance) {
+			avatarAnimInstance->animationCurrentlyPlaying = true;
+		}
 	}
 
-	// No need for error message as it will be thrown in NotifyBegin()
 }
 
 
@@ -127,6 +125,4 @@ void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeq
 			avatarAnimInstance->animationCurrentlyPlaying = false;
 		}
 	}
-
-
 }
