@@ -27,9 +27,10 @@ USPSAnimInstance::USPSAnimInstance() {
 	upMovementDistanceCurveLastFrameValue = 0.f;
 
 	//righthandMovementCurveCUrrentFrameValue = 0.f;
-
-	resetReadingOfAnimationCurve = false;
 	animationCurrentlyPlaying = false;
+
+	currentTime = 0.f;
+	lastFrameTime = 0.f;
 }
 
 USPSAnimInstance::~USPSAnimInstance() {
@@ -45,56 +46,38 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	// Check if actor exists so to not crash if not
 	if (animatedAvatar != nullptr) {
 
-
-		/* Reading of curve data */
-		
-		// Reset the distnace readings when appropiate (required for animation transitions)
-		//UE_LOG(LogTemp, Display, TEXT("resetReadingOfAnimationCurve: %d"), resetReadingOfAnimationCurve);
-		if (resetReadingOfAnimationCurve) {
-
-			// Reset current and last frame curve calues
-			fMovementDistanceCurveLastFrameValue = 0;
-			fMovementDistanceCurveCurrentValue = 0;
-
-			rMovementDistanceCurveLastFrameValue = 0;
-			rMovementDistanceCurveCurrentValue = 0;
-
-			upMovementDistanceCurveLastFrameValue = 0;
-			upMovementDistanceCurveCurrentValue = 0;
-
-			// Toggle reset switch
-			resetReadingOfAnimationCurve = false;
-			UE_LOG(LogTemp, Display, TEXT("resetReadingOfAnimationCurve: %d"), resetReadingOfAnimationCurve);
-		}
-
 		// If there is an animation currently playing
 		if (animationCurrentlyPlaying) {
 
+			UE_LOG(LogTemp, Display, TEXT("Anim total dura time: %f"), totalAnimationDuration);
+
 			// Calculate the current time
 			if (currentTime + DeltaSeconds < totalAnimationDuration) {
+				lastFrameTime = currentTime;
 				currentTime += DeltaSeconds;
-				//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Going over total time"));
 			}
+			UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 
+
+			/* Reading of curve data */
 			// Set curve current and last frame values
-			
+			// Note last frame value is obtained from the curve as the curves can switch depending on anim playing
+
 			// ForwardMovement distance
-			fMovementDistanceCurveLastFrameValue = fMovementDistanceCurveCurrentValue;
-			
 			if (ForwardMovementDistanceFloatCurve != nullptr) {
+				fMovementDistanceCurveLastFrameValue = ForwardMovementDistanceFloatCurve->Evaluate(lastFrameTime);;
 				fMovementDistanceCurveCurrentValue = ForwardMovementDistanceFloatCurve->Evaluate(currentTime);
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("ForwardMovement curve nullptr in %s"), __FUNCTION__);
 			}
 
-			// Right movement distance
-			rMovementDistanceCurveLastFrameValue = rMovementDistanceCurveCurrentValue;
-			
+			// Right movement distance			
 			if (RightMovementDistanceFloatCurve != nullptr) {
+				rMovementDistanceCurveLastFrameValue = RightMovementDistanceFloatCurve->Evaluate(lastFrameTime);
 				rMovementDistanceCurveCurrentValue = RightMovementDistanceFloatCurve->Evaluate(currentTime);
 			}
 			else {
@@ -102,9 +85,8 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			}
 
 			// Up movement distance
-			upMovementDistanceCurveLastFrameValue = upMovementDistanceCurveCurrentValue;
-			
 			if (UpMovementDistanceFloatCurve != nullptr) {
+				upMovementDistanceCurveLastFrameValue = UpMovementDistanceFloatCurve->Evaluate(lastFrameTime);;
 				upMovementDistanceCurveCurrentValue = UpMovementDistanceFloatCurve->Evaluate(currentTime);
 			}
 			else {
@@ -114,8 +96,8 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 
 		// Debug
-		UE_LOG(LogTemp, Display, TEXT("CanDamage: %d"), animatedAvatar->MeleeWeapon->canDamage);
-		UE_LOG(LogTemp, Display, TEXT("IsInAttackMotion: %d"), animatedAvatar->isInAttackMotion);
+		//UE_LOG(LogTemp, Display, TEXT("CanDamage: %d"), animatedAvatar->MeleeWeapon->canDamage);
+		//UE_LOG(LogTemp, Display, TEXT("IsInAttackMotion: %d"), animatedAvatar->isInAttackMotion);
 
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states

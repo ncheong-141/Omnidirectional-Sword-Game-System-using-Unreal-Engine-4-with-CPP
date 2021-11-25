@@ -29,11 +29,7 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 				// Set flag to true for tick function
 				avatarAnimInstanceCastSuccessFlag = true;
 
-				// Reset the readings in AnimInstance for this animation
-				avatarAnimInstance->resetReadingOfAnimationCurve = true;
-
 				// Reet the time stats
-				avatarAnimInstance->currentTime = 0;
 				avatarAnimInstance->totalAnimationDuration = TotalDuration;
 
 				// Set the float curve data to anim instance

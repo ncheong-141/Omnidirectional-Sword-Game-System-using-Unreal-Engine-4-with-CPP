@@ -61,12 +61,12 @@ public:
 		float currentTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
+		float lastFrameTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float totalAnimationDuration;
 
 	// Flow control parameters altered by animation notification
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		bool resetReadingOfAnimationCurve;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		bool animationCurrentlyPlaying;
 

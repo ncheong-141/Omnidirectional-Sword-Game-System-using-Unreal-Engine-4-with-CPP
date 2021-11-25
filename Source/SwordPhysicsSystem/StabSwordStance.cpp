@@ -58,6 +58,9 @@ void StabSwordStance::swordStanceActivation() {
 	avatarPtr->isInAttackMotion = true;
 	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
 
+	// Set current animation time to 0 
+	avatarPtr->animationInstance->currentTime = 0; 
+
 	// Let weapon know its now attacking
 	avatarPtr->MeleeWeapon->startAttackMotion();
 }

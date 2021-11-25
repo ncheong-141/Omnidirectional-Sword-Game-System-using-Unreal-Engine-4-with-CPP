@@ -45,6 +45,8 @@ public:
 	// and/or reads from memory
 	UPROPERTY()
 		ASPSPlayerController* pController;
+	UPROPERTY()
+		USPSAnimInstance* animationInstance; 
 
 protected:
 	// Called when the game starts or when spawned

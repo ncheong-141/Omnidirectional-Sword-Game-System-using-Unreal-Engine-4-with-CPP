@@ -96,6 +96,18 @@ void AAvatar::BeginPlay()
 	// Pointer/references to some commonly used avatar objects
 	// Get player controller reference and cast to custom player controller (which is the actual object set in gamemode BP)
 	pController = Cast<ASPSPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	// Get anim instance for refernce
+	animationInstance = Cast<USPSAnimInstance>(GetMesh()->GetAnimInstance());
+
+	// Checks 
+	if (pController == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("pController is null in %s"), __FUNCTION__);
+	}
+
+	if (animationInstance == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("animationInstance is null in %s"), __FUNCTION__);
+	}
 }
 
 
