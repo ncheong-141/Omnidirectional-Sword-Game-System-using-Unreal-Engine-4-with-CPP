@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
+//#include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Animation/AnimNotifies/AnimNotifyState_Trail.h"
 #include "CanDamageAnimNotifyState.generated.h"
 
 class AAvatar;
@@ -12,7 +13,7 @@ class USPSAnimInstance;
  * 
  */
 UCLASS()
-class SWORDPHYSICSSYSTEM_API UCanDamageAnimNotifyState : public UAnimNotifyState
+class SWORDPHYSICSSYSTEM_API UCanDamageAnimNotifyState : public UAnimNotifyState_Trail//UAnimNotifyState
 {
 	GENERATED_BODY()
 
