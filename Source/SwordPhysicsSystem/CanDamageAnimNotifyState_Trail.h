@@ -3,19 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimNotifies/AnimNotifyState.h"
-#include "CanDamageAnimNotifyState.generated.h"
+#include "Animation/AnimNotifies/AnimNotifyState_Trail.h"
+#include "CanDamageAnimNotifyState_Trail.generated.h"
 
 class AAvatar;
-class USPSAnimInstance;
 /**
  * 
  */
-UCLASS()
-class SWORDPHYSICSSYSTEM_API UCanDamageAnimNotifyState : public UAnimNotifyState
+UCLASS(transient, Blueprintable, BlueprintType)
+class SWORDPHYSICSSYSTEM_API UCanDamageAnimNotifyState_Trail : public UAnimNotifyState_Trail
 {
 	GENERATED_BODY()
-
+	
 private:
 	/* Class attributes */
 	// Reference to avatar, set up in Begin andFlag to check that avatar cast was succesful for Tick function
