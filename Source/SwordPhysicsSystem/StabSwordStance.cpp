@@ -25,10 +25,14 @@ void StabSwordStance::Yaw(float amount) {
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 
 	// Allow for camera angling when attacking
-	if (avatarPtr->pController && amount && avatarPtr->isInAttackMotion) {
+	if (avatarPtr->pController && amount) {
 
-		avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		if (avatarPtr->MeleeWeapon != nullptr) {
 
+			if (avatarPtr->MeleeWeapon->canDamage) {
+				avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			}
+		}
 	}
 }
 
@@ -37,9 +41,14 @@ void StabSwordStance::Pitch(float amount) {
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
-	if (avatarPtr->pController && amount && avatarPtr->isInAttackMotion) {
+	if (avatarPtr->pController && amount) {
 
-		avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		if (avatarPtr->MeleeWeapon != nullptr) {
+
+			if (avatarPtr->MeleeWeapon->canDamage) {
+				avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			}
+		}
 	}
 }
 
