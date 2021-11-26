@@ -59,7 +59,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Going over total time"));
 			}
-			UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
+			//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 
 
 			/* Reading of curve data */
@@ -97,8 +97,9 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			if (RightHandMovementSpeedFloatCurve != nullptr) {
 				righthandMovementCurveCurrentValue = RightHandMovementSpeedFloatCurve->Evaluate(currentTime);
 			}
-
 		}
+
+		UE_LOG(LogTemp, Display, TEXT("CanDamage %d"), animatedAvatar->MeleeWeapon->canDamage);
 
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states
