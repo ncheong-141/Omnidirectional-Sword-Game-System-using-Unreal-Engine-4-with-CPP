@@ -10,7 +10,7 @@ class AAvatar;
 /**
  * 
  */
-UCLASS(transient, Blueprintable, BlueprintType)
+UCLASS()
 class SWORDPHYSICSSYSTEM_API UCanDamageAnimNotifyState_Trail : public UAnimNotifyState_Trail
 {
 	GENERATED_BODY()
