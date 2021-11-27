@@ -106,7 +106,18 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 	
 	// Enforce 0 or 1 boundary
 	if (position2D.X + dx >= 0.f && position2D.X + dx <= 1.f) {
-		position2D.X = position2D.X + dx;
+
+		// Check for allowable sword positions 
+		// West = -ve, East = +ve
+		if (allowableSwordDirections->canMoveEast && dx > 0.f) {
+			position2D.X = position2D.X + dx;
+		}
+		else if (allowableSwordDirections->canMoveWest && dx < 0.f) {
+			position2D.X = position2D.X + dx;
+		}
+		else if (dx != 0.f) {
+			UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in X!"));
+		}
 	}
 
 	// Y Axis
@@ -131,7 +142,18 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 	}
 	// Enforce 0 or 1 boundary
 	if (position2D.Y + dy >= 0.f && position2D.Y + dy <= 1.f) {
-		position2D.Y = position2D.Y + dy;
+
+		// Check for allowable sword positions 
+		// North -ve, south +ve
+		if (allowableSwordDirections->canMoveNorth && dy < 0.f) {
+			position2D.Y = position2D.Y + dy;
+		}
+		else if (allowableSwordDirections->canMoveSouth && dy > 0.f) {
+			position2D.Y = position2D.Y + dy;
+		}
+		else if (dy != 0.f) {
+			UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in Y!"));
+		}
 	}
 
 	/* Calculate Mouse direciton and distances for reference*/
