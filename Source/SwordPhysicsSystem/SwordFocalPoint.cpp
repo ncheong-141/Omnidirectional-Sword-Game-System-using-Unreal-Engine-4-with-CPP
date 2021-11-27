@@ -82,58 +82,56 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	// This is based on differnce between old and new focal positons and also a sensitivity factor
 	// Note, 
 	// - these cannot exceed 0 or 1 
-	// - sword can only move in allowable sword directions. These directions are in format
-	// [NorthorSouth, WestorEast] => 1 = North, West, 0 = any, -1 = South, East
-
+	// - sword can only move in allowable sword directions. 
+	
 	// X Axis
+	float dx = 0.f; 
 	float SFPX = position2D.X;
 	if (activatedPBC_X == false) {
-		SFPX = position2D.X + sensitivity*(currentMousePositon.X - oldMousePosition.X);
-		//UE_LOG(LogTemp, Display, TEXT("Normal SFPX: %f"), SFPX)
+		dx = sensitivity * (currentMousePositon.X - oldMousePosition.X);
+		SFPX = position2D.X + dx;
 	}
 	else {
 		// If difference is negative => crossed right boundary
 		if (currentMousePositon.X - oldMousePosition.X < 0) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
-			//SFPX = position2D.X + sensitivity*((currentMousePositon.X - lowerPBC_X) + (upperPBC_X - oldMousePosition.X));
-			SFPX = position2D.X + sensitivity * ((currentMousePositon.X - lowerPBC_X) + (oldMousePosition.X - upperPBC_X));
-			//UE_LOG(LogTemp, Display, TEXT("Right boundary SFPX: %f"), SFPX)
+			dx = sensitivity * ((currentMousePositon.X - lowerPBC_X) + (oldMousePosition.X - upperPBC_X));
+			SFPX = position2D.X + dx;
 		}
 		else { // Else difference is positve => crossed left boundary
 
-			//SFPX = position2D.X + sensitivity*((oldMousePosition.X - lowerPBC_X) + (upperPBC_X - currentMousePositon.X));
-			SFPX = position2D.X + sensitivity * ((oldMousePosition.X - lowerPBC_X) + (currentMousePositon.X - upperPBC_X));
-			//UE_LOG(LogTemp, Display, TEXT("Left boundary SFPX: %f"), SFPX)
+			dx = sensitivity * ((oldMousePosition.X - lowerPBC_X) + (currentMousePositon.X - upperPBC_X));
+			SFPX = position2D.X + dx;
 		}
-
 		// Deactivate the boundary bool 
 		activatedPBC_X = false;
 	}
+	
 	// Enforce 0 or 1 boundary
 	if (SFPX >= 0.f && SFPX <= 1.f) {
 		position2D.X = SFPX;
-		//UE_LOG(LogTemp, Display, TEXT("New position2D.X: %f"), position2D.X)
 	}
 
 	// Y Axis
+	float dy = 0.f; 
 	float SFPY = position2D.Y;
 	if (activatedPBC_Y == false) {
-		SFPY = position2D.Y + sensitivity*(currentMousePositon.Y - oldMousePosition.Y);
-		//UE_LOG(LogTemp, Display, TEXT("Normal SFPY: %f"), SFPY)
+		dy = sensitivity * (currentMousePositon.Y - oldMousePosition.Y);
+		SFPY = position2D.Y + dy;
 	}
 	else {
 		// If difference is negative => crossed top boundary
 		if (currentMousePositon.Y - oldMousePosition.Y < 0) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
-			SFPY = position2D.Y + sensitivity*((currentMousePositon.Y - lowerPBC_Y) + (oldMousePosition.Y - upperPBC_Y));
-			//UE_LOG(LogTemp, Display, TEXT("Top boundary SFPY: %f"), SFPY)
+			dy = sensitivity * ((currentMousePositon.Y - lowerPBC_Y) + (oldMousePosition.Y - upperPBC_Y));
+			SFPY = position2D.Y + dy;
 		}
 		else { // Else difference is positve => crossed bot boundary
 
-			SFPY = position2D.Y + sensitivity*((oldMousePosition.Y - lowerPBC_Y) + (currentMousePositon.Y - upperPBC_Y));
-			//UE_LOG(LogTemp, Display, TEXT("Bottom boundary SFPY: %f"), SFPY)
+			dy = sensitivity * ((oldMousePosition.Y - lowerPBC_Y) + (currentMousePositon.Y - upperPBC_Y));
+			SFPY = position2D.Y + dy;
 		}
 
 		// Deactivate the boundary bool 
@@ -142,14 +140,23 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	// Enforce 0 or 1 boundary
 	if (SFPY >= 0.f && SFPY <= 1.f) {
 		position2D.Y = SFPY;
-		//UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
 	}
-	
-	/* Calculate Mouse direciton and distances for reference*/
-	calculateMouseDirectionAndDistances(pController);
 
-	/* Calculate predom distances */
-	calculatePredominatingDistance(); 
+	/* Calculate Mouse direciton and distances for reference*/
+	calculateMouseDirection(pController);
+
+	UE_LOG(LogTemp, Display, TEXT("DIrection: %f"), mouseDirection);
+
+	// Record and calculate mouyse distances and directions when necessary
+	// e.g. when in slash stance activation (attack)
+	if (recordMouseDeltaDistances) {
+
+		// Set distance cache
+		setCachedDistances(dx, dy);
+
+		/* Calculate predom distances */
+		calculatePredominatingDistance();
+	}
 
 	/* Process mouse positon for next check, ensure periodic BCs*/
 	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
@@ -162,26 +169,52 @@ float USwordFocalPoint::getSwordDirectionSensitivity() {
 	return sensitivity;
 }
 
-void USwordFocalPoint::setSwordDirectionSensitivity(float amount) {
-	sensitivity = amount;
-}
-
 float USwordFocalPoint::getSwordDirection() {
 	return mouseDirection;
 }
 
+bool USwordFocalPoint::isDominantDirectionNorth() {
+	return dominatingDirection_North; 
+}
+
+bool USwordFocalPoint::isDominantDirectionSouth() {
+	return dominatingDirection_South;
+}
+
+bool USwordFocalPoint::isDominantDirectionWest() {
+	return dominatingDirection_West;
+}
+
+bool USwordFocalPoint::isDominantDirectionEast() {
+	return dominatingDirection_East;
+}
+
+bool USwordFocalPoint::isRecordingMouseDeltaDistances() {
+	return recordMouseDeltaDistances; 
+}
+
+void USwordFocalPoint::setSwordDirectionSensitivity(float amount) {
+	sensitivity = amount;
+}
+
+void USwordFocalPoint::setRecordMouseDeltaDistances(bool value) {
+	recordMouseDeltaDistances = value;
+
+	// Reset distance cache 
+	resetDistanceCache();
+}
+
+
 
 /* Internal helper functions */
-void USwordFocalPoint::calculateMouseDirectionAndDistances(ASPSPlayerController* pController) {
-
+void USwordFocalPoint::calculateMouseDirection(ASPSPlayerController* pController) {
 
 	// New vector 
 	FVector2D MP_D = FVector2D(0.f);
-
-	// Use pController function as current and old is dependent on periodic boundaries
+	
+	// Gets mouse input deltas based on user perspective (i.e. 1,1 in top right corner)
 	pController->GetInputMouseDelta(MP_D.X, MP_D.Y);
 
-	// KEEP IN MIND, 0,0 is top left, 1,1 is bottom right
 	// Check if the difference fvector is non 0. Only calculate direction based on a change of focal point
 	if (!MP_D.IsNearlyZero()) {
 
@@ -203,28 +236,31 @@ void USwordFocalPoint::calculateMouseDirectionAndDistances(ASPSPlayerController*
 			else if (MP_D.X < 0 && MP_D.Y < 0) {
 				mouseDirection = 180.f + (atan(vectorSideRatio) * 180.f / PI);
 			}
-			// if X +ve and Y -ve
+			// if X +ve and Y -ve 
 			else if (MP_D.X > 0 && MP_D.Y < 0) {
 				mouseDirection = 360.f + (atan(vectorSideRatio) * 180.f / PI);
 			}
 		}
 	}
 
+
+}
+
+void USwordFocalPoint::setCachedDistances(float dx, float dy) {
+	
 	/* Cache the delta distances */
 
 	//  Ensure index stays within static array bounds (start overwriting old values)
 	if (cachedDeltaDistances_Index + 1 == numCachedDeltaDistance) {
-		
-		// Reset index 
-		cachedDeltaDistances_Index = 0;
+		cachedDeltaDistances_Index = 0; 	// Reset index 
 	}
 
-	// Store the direction data
-	cachedDeltaDistances_X[cachedDeltaDistances_Index] = MP_D.X/viewportSize.X;
-	cachedDeltaDistances_Y[cachedDeltaDistances_Index] = MP_D.Y/viewportSize.Y;
-	
+	// Store the direction data, note also times by sensitivity to keep alligned with sword focal point
+	cachedDeltaDistances_X[cachedDeltaDistances_Index] = dx;
+	cachedDeltaDistances_Y[cachedDeltaDistances_Index] = dy;
+
 	// Increment index
-	cachedDeltaDistances_Index++; 
+	cachedDeltaDistances_Index++;
 }
 
 void USwordFocalPoint::applyPeriodicBoundary(ASPSPlayerController* pController) {
@@ -255,64 +291,68 @@ void USwordFocalPoint::calculatePredominatingDistance() {
 	// If the cached distances > normalisedDistanceTillPredominating, set as predominating in 
 	// the passed data structure 
 
-
 	// sum distances 
 	float sumX = 0.f;
 	float sumY = 0.f; 
-
 	for (int i = 0; i < numCachedDeltaDistance; i++) {
-
 		sumX += cachedDeltaDistances_X[i];
 		sumY += cachedDeltaDistances_Y[i];
+	}
 
-		//UE_LOG(LogTemp, Display, TEXT("sumX: %f"), sumX);
+	// Check each iteration if the predominating distance is found
+	// note, this is in the unreal coordinate system 0,0 = top left, 1,1 = bottom right
+	
+	// X dir so West or East
+	if (sumX >= normalisedDistanceTillPredominating) {
 
-		// Check each iteration if the predominating distance is found
-			
-		// X dir so West or East
-		if (sumX >= normalisedDistanceTillPredominating) {
+		// Moving dominantly east 
+		dominatingDirection_West = false;
+		dominatingDirection_East = true;
+	}
+	else if (sumX <= -1 * normalisedDistanceTillPredominating) {
 
-			// Moving dominantly east 
-			dominatingDirection_West = false;
-			dominatingDirection_East = true;
-		}
-		else if (sumX <= -1 * normalisedDistanceTillPredominating) {
-
-			// Moving dominantly west
-			dominatingDirection_West = true;
-			dominatingDirection_East = false;
-		}
-		else {
-			// Dominant direction not found
-			dominatingDirection_West = true;
-			dominatingDirection_East = true;
-		}
-
-
-
-		// Y dir so North or south
-		if (sumY >= normalisedDistanceTillPredominating) {
-
-			// Moving dominantly North 
-			dominatingDirection_South = false;
-			dominatingDirection_North = true;
-		}
-		else if (sumY <= -1 * normalisedDistanceTillPredominating) {
-
-			// Moving dominantly south
-			dominatingDirection_South = true;
-			dominatingDirection_North = false;
-		}
-		else {
-			// Dominant direction not found
-			dominatingDirection_South = true;
-			dominatingDirection_North = true;
-		}
+		// Moving dominantly west
+		dominatingDirection_West = true;
+		dominatingDirection_East = false;
+	}
+	else {
+		// Dominant direction not found
+		dominatingDirection_West = true;
+		dominatingDirection_East = true;
 	}
 
 
-	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_North: %d"), dominatingDirection_North);
-	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_South: %d"), dominatingDirection_South);
-	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_West: %d"), dominatingDirection_West);
-	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_East: %d"), dominatingDirection_East);
+	// Y dir so North or south (recall 1,1) is bottom right corner)
+	if (sumY <= -1 * normalisedDistanceTillPredominating) {
+
+		// Moving dominantly North 
+		dominatingDirection_South = false;
+		dominatingDirection_North = true;
+	}
+	else if (sumY >= normalisedDistanceTillPredominating) {
+
+		// Moving dominantly south
+		dominatingDirection_South = true;
+		dominatingDirection_North = false;
+	}
+	else {
+		// Dominant direction not found
+		dominatingDirection_South = true;
+		dominatingDirection_North = true;
+	}
+
+	//UE_LOG(LogTemp, Display, TEXT("dominatingDirection_North: %d"), dominatingDirection_North);
+	//UE_LOG(LogTemp, Display, TEXT("dominatingDirection_South: %d"), dominatingDirection_South);
+	//UE_LOG(LogTemp, Display, TEXT("dominatingDirection_West: %d"), dominatingDirection_West);
+	//UE_LOG(LogTemp, Display, TEXT("dominatingDirection_East: %d"), dominatingDirection_East);
+}
+
+
+void USwordFocalPoint::resetDistanceCache() {
+
+	// Reset to zero 
+	for (int i = 0; i < numCachedDeltaDistance; i++) {
+		cachedDeltaDistances_X[i] = 0.f;
+		cachedDeltaDistances_Y[i] = 0.f; 
+	}
 }

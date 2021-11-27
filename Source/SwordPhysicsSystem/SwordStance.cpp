@@ -171,14 +171,10 @@ void SwordStance::dodge() {
 
 void SwordStance::calculateAllowableSwordDirections() {
 
-	// By default, let all sword directions be possible
-	allowableSwordDirections.canMoveEast = true;
-	allowableSwordDirections.canMoveNorth = true;
-	allowableSwordDirections.canMoveSouth = true;
-	allowableSwordDirections.canMoveWest = true;
+	// By default, do not change what is allowable (they are all initially true)
 }
 
 // Getters and setters
-AllowableSwordDirectionInformation SwordStance::getAllowableSwordDirections() {
-	return allowableSwordDirections;
+const AllowableSwordDirectionInformation* SwordStance::getAllowableSwordDirections() {
+	return &allowableSwordDirections;
 }

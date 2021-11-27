@@ -81,6 +81,12 @@ void UAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	// Perform code
 	// Can perform audio cues here too 
 
+	// Calculate allowable sword directions (this is stance dependent and is called polymorphicaly)
+	if (avatar) {
+		avatar->getStance()->calculateAllowableSwordDirections();
+		UE_LOG(LogTemp, Display, TEXT("Calling FN"))
+	}
+
 	// Set animation playing to true
 	if (avatarAnimInstance) {
 		avatarAnimInstance->animationCurrentlyPlaying = true;

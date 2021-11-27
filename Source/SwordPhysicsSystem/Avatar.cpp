@@ -126,7 +126,14 @@ void AAvatar::Tick(float DeltaTime)
 	if (currentStanceID != 0) {
 		swordFocalPoint->update(pController);
 	}
-
+	
+	if (swordFocalPoint->isRecordingMouseDeltaDistances()) {
+		UE_LOG(LogTemp, Display, TEXT("SwordFocalPt: %f, %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y);
+		UE_LOG(LogTemp, Display, TEXT("Can Slash North: %d"), currentStance->getAllowableSwordDirections()->canMoveNorth);
+		UE_LOG(LogTemp, Display, TEXT("Can Slash South: %d"), currentStance->getAllowableSwordDirections()->canMoveSouth);
+		UE_LOG(LogTemp, Display, TEXT("Can Slash West: %d"), currentStance->getAllowableSwordDirections()->canMoveWest);
+		UE_LOG(LogTemp, Display, TEXT("Can Slash East: %d"), currentStance->getAllowableSwordDirections()->canMoveEast);
+	}
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
 

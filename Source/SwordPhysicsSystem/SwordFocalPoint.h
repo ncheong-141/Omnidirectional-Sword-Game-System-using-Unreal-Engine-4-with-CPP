@@ -58,10 +58,10 @@ private:
 	/* Direction and distance variables */
 
 	// Mouse direction currently
-	float				mouseDirection;
+	float mouseDirection;
 
 	// Normalised distance till dominating: 
-	float				normalisedDistanceTillPredominating; 
+	float normalisedDistanceTillPredominating; 
 	
 	// Booleans for flagging which distance is currently dominating
 	bool dominatingDirection_North;
@@ -76,7 +76,10 @@ private:
 	static const int	numCachedDeltaDistance = 50; 
 	float				cachedDeltaDistances_X[numCachedDeltaDistance] = { 0 };
 	float				cachedDeltaDistances_Y[numCachedDeltaDistance] = { 0 };
-	int					cachedDeltaDistances_Index; 
+	int					cachedDeltaDistances_Index;
+
+	// Should only record when attacking (for now, maybe other features used this)
+	bool				recordMouseDeltaDistances; 
 
 	
 public:
@@ -98,14 +101,25 @@ public:
 
 	// Getters and setters
 	float getSwordDirectionSensitivity();
-	void setSwordDirectionSensitivity(float amount); 
-
 	float getSwordDirection(); 
+	bool isDominantDirectionNorth();
+	bool isDominantDirectionSouth(); 
+	bool isDominantDirectionWest(); 
+	bool isDominantDirectionEast(); 
+	bool isRecordingMouseDeltaDistances();
+
+	void setSwordDirectionSensitivity(float amount);
+	void setRecordMouseDeltaDistances(bool value); 
+
+
 
 private: 
 	/* Internal helper functions */
 	// Calculate mouse direciton
-	void calculateMouseDirectionAndDistances(ASPSPlayerController* pController);
+	void calculateMouseDirection(ASPSPlayerController* pController);
+	void setCachedDistances(float dx, float dy);
 	void applyPeriodicBoundary(ASPSPlayerController* pController);
 	void calculatePredominatingDistance();
+
+	void resetDistanceCache(); 
 };

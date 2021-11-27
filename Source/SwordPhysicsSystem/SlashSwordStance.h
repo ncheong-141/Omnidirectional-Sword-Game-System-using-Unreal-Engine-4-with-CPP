@@ -22,6 +22,7 @@ class SWORDPHYSICSSYSTEM_API SlashSwordStance : public SwordStance
 {
 private:
 	/* Class attributes */
+
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs

@@ -78,7 +78,7 @@ public:
 	virtual void swordStanceDeactivation() = 0; 
 
 	// Getters and setters
-	AllowableSwordDirectionInformation getAllowableSwordDirections();
+	const AllowableSwordDirectionInformation* getAllowableSwordDirections();
 
 private:
 	/* Internal helper functions for all sword stance classes */
