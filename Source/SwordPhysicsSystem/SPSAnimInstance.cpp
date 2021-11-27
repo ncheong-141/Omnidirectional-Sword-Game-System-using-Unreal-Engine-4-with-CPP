@@ -104,13 +104,13 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states
 		// Animations are applied in this class as it makes sense to apply the animation movement per animation tick
-		if (animatedAvatar->isInDodge) {
+		if (animatedAvatar->avatarIsInDodge()) {
 
 			// Apply animation curve movement
 			animatedAvatar->applyAnimMovement();
 		}
 
-		if (animatedAvatar->isInAttackMotion) {
+		if (animatedAvatar->avatarIsInAttackMotion()) {
 
 			// Apply animation curve movement
 			animatedAvatar->applyAnimMovement();

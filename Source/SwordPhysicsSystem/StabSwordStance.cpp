@@ -27,10 +27,10 @@ void StabSwordStance::Yaw(float amount) {
 	// Allow for camera angling when attacking
 	if (avatarPtr->pController && amount) {
 
-		if (avatarPtr->MeleeWeapon != nullptr) {
+		if (avatarPtr->getMeleeWeapon() != nullptr) {
 
-			if (avatarPtr->MeleeWeapon->canDamage) {
-				avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			if (avatarPtr->getMeleeWeapon()->canDamage) {
+				avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 		}
 	}
@@ -43,10 +43,10 @@ void StabSwordStance::Pitch(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController && amount) {
 
-		if (avatarPtr->MeleeWeapon != nullptr) {
+		if (avatarPtr->getMeleeWeapon() != nullptr) {
 
-			if (avatarPtr->MeleeWeapon->canDamage) {
-				avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			if (avatarPtr->getMeleeWeapon()->canDamage) {
+				avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 		}
 	}
@@ -55,21 +55,21 @@ void StabSwordStance::Pitch(float amount) {
 void StabSwordStance::swordStanceActivation() {
 
 	// Activate attack for stab sword stance
-	avatarPtr->isInAttackMotion = true;
-	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
-
+	avatarPtr->setAvatarIsInAttackMotion(true);
+	avatarPtr->setAttackMotionStartingSector(avatarPtr->getCurrentViewportSector()->getSectorID());
+	
 	// Set current animation time to 0 
 	avatarPtr->animationInstance->currentTime = 0; 
 
 	// Let weapon know its now attacking
-	avatarPtr->MeleeWeapon->startAttackMotion();
+	avatarPtr->getMeleeWeapon()->startAttackMotion();
 }
 
 void StabSwordStance::swordStanceDeactivation() {
 
 	// Deactivate
-	avatarPtr->isInAttackMotion = false; 
+	avatarPtr->setAvatarIsInAttackMotion(false);
 
 	// Let weapon know its not attacking
-	avatarPtr->MeleeWeapon->endAttackMotion();
+	avatarPtr->getMeleeWeapon()->endAttackMotion();
 }

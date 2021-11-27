@@ -28,10 +28,10 @@ void UCanDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 				// Begin notifcation code for avatar
 				//Check if inAttackMOtion
-				if (avatar->isInAttackMotion) {
+				if (avatar->avatarIsInAttackMotion()) {
 
 					// Set melee weapon can damage to true
-					avatar->MeleeWeapon->canDamage = true;
+					avatar->getMeleeWeapon()->canDamage = true;
 				}
 			}
 			else {
@@ -60,10 +60,10 @@ void UCanDamageAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 	if (avatar) {
 
 		//Check if inAttackMOtion
-		if (avatar->isInAttackMotion) {
+		if (avatar->avatarIsInAttackMotion()) {
 
 			// Set melee weapon can damage to true
-			avatar->MeleeWeapon->canDamage = true;
+			avatar->getMeleeWeapon()->canDamage = true;
 		}
 	}
 	
@@ -80,7 +80,7 @@ void UCanDamageAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAni
 
 	// Set melee weapon can damage to false since ending canDamage state
 	if (avatar) {
-		avatar->MeleeWeapon->canDamage = false;
+		avatar->getMeleeWeapon()->canDamage = false;
 	}
 	
 }

@@ -30,31 +30,20 @@ class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-
-	/* Game set up avatar variables*/
-	// Avatar camera set up. Doing in C++ to give more control over the camera 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
-		USpringArmComponent* cameraSpringArmComponent; 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
-		UCameraComponent* cameraComponent; 
-
-
-	// Pointers/references to some commonly used Avatar objects to avoid function calls
-	// and/or reads from memory
-	UPROPERTY()
-		ASPSPlayerController* pController;
-	UPROPERTY()
-		USPSAnimInstance* animationInstance; 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
-	
-	/* Internal class attributes */
+	/* Game set up avatar variables*/
+	// Avatar camera set up. Doing in C++ to give more control over the camera 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
+		USpringArmComponent* cameraSpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
+		UCameraComponent* cameraComponent;
+
+
+	/* ---------------- Internal class attributes ----------------------- */
 
 	// SwordStance parent class pointer, used for polymorphic referenceing of other Stance classes (concrete class in state pattern)
 	SwordStance*		currentStance;
@@ -67,43 +56,27 @@ private:
 	BlockSwordStance	blockStance;		// ID = 2
 	StabSwordStance		stabStance;			// ID = 3 
 
-public:
-
-	/* Class attributes */
-
 	// Current stance ID, this variable is used to denote which stance the avatar is in
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float currentStanceID;
+		int currentStanceID;
 
 	// Sword position focal point. This is the mouse position on the screen where the sword will zone to. 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		USwordFocalPoint* swordFocalPoint;
 
+	// Avatar velocity properties
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		FVector2D inputVelocity;
 
-	// Avatar velocity properties (Using primitive types and not FVector as FVector doesnt allow X,Y,Z values to be accessed in BP or i missed it)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float resultantInputVelocity; 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		FVector2D worldVelocity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float inputVelocity_X; 
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float inputVelocity_Y;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float worldVelocity_X;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float worldVelocity_Y;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float localVelocity_X;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		float localVelocity_Y;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		FVector2D localVelocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float righthandResultantSpeed;
+
 
 	// Avatar control properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
@@ -115,22 +88,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		float basePitchTurnSpeed;
 
-
 	// Avatar flow control conditions 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool isInAir; 
+		bool isInAir;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool isInIframe; 
+		bool isInIframe;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool isWalking; 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
-		bool isInDodge; 
+		bool isInDodge;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAttackMotion;
+
+
+	// Avatar internal flow control conditions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool inputMovementLocked;		// Stops WASD input
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool actionAbilityLocked;		// Stops any actions such as jump or dodge
 
 	// The sector the attack was initiated from (used to define which blendspace/animation is played)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
@@ -139,11 +116,6 @@ public:
 	// Dodge direction (0 = forward, 1 = backwards, 2 = left, 3 = right
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		int dodgeDirection; 
-
-	// Avatar internal flow control conditions
-	bool inputMovementLocked;		// Stops WASD input
-	bool actionAbilityLocked;			// Stops any actions such as jump or dodge
-
 
 	// Sector - This is a objject to indicate where the sword focal point is on the screen
 	// It has an ID and holds all sector data and operations which will be used on it
@@ -164,9 +136,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		UClass* BPMeleeWeapon;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		AMeleeWeapon* MeleeWeapon;
 
+public:
+	
+	/* Public attributes */
+
+	// Pointers/references to some commonly used Avatar objects to avoid function calls
+	// and/or reads from memory
+	UPROPERTY()
+		ASPSPlayerController* pController;
+	UPROPERTY()
+		USPSAnimInstance* animationInstance;
 
 	/* Unreal engine 4 class functions */
 	// Constructor: Sets default values for this character's properties
@@ -193,13 +175,6 @@ public:
 	void			switch_BlockSwordStance();
 	void			switch_StabSwordStance(); 
 
-	// Generate the viewport grid datastructure (called in constructor)
-	void generateViewportGrid(); 
-
-	// Sets the current viewport sector based on sword focal point position
-	void setCurrentViewportSector(); 
-
-
 	// Player input 
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
 	// Functions for input are required in Avatar since UE4 framework requires Avatar function pointers
@@ -224,7 +199,8 @@ public:
 	void applyAnimMovement();
 	void setAttackAnimInformation();
 
-private:
+protected:
+
 	/* Internal class functions */
 
 	// Functins to check avatar state and set true/false to these varibles when neccessary
@@ -234,4 +210,49 @@ private:
 	// Helpers
 	void velocityUpdate();
 	void debugOutput();
-};
+
+	// Generate the viewport grid datastructure (called in constructor)
+	void generateViewportGrid();
+
+	// Sets the current viewport sector based on sword focal point position
+	void setCurrentViewportSector();
+
+
+public:
+
+	/* Getters and setters */
+
+	int getCurrentStanceID();
+	USwordFocalPoint* const getSwordFocalPoint();
+	FVector2D getInputVelocity();
+	FVector2D getWorldVelocity();
+	FVector2D getLocalVelocity();
+	float getRighthandResultantSpeed();
+	float getAvatarMaxSpeed();
+	float getBaseYawTurnSpeed();
+	float getBasePitchTurnSpeed();
+	bool avatarIsInAir();
+	bool avatarIsInIframe();
+	bool avatarIsInDodge();
+	bool avatarIsInAttackMotion();
+	bool isInputMovementLocked();
+	bool isActionAbilityLocked();
+	int getAttackMotionStartingSector();
+	int getDodgeDirection();
+	UViewportSector* const getCurrentViewportSector();
+	TArray<UViewportSector*> const getViewportGrid();
+	const float getNumAxesSegments();
+	AMeleeWeapon* const getMeleeWeapon();
+
+	void setRighthandResultantSpeed(float amount);
+	void setAvatarMaxSpeed(float amount);
+	void setBaseYawTurnSpeed(float amount);
+	void setPitchYawTurnSpeed(float amount);
+	void setAvatarIsInAir(bool value);
+	void setAvatarIsInIframe(bool value);
+	void setAvatarIsInDodge(bool value);
+	void setAvatarIsInAttackMotion(bool value);
+	void setAttackMotionStartingSector(int sectorID); 
+	void setDodgeDirection(int directionID);
+
+}; 

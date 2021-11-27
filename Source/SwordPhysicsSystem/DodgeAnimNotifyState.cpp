@@ -97,7 +97,7 @@ void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeq
 
 	// Set dodge to false as it has ended
 	if (avatar) {
-		avatar->isInDodge = false;
+		avatar->setAvatarIsInDodge(false);
 	}
 
 	// Set playing animation to false after finishing animation

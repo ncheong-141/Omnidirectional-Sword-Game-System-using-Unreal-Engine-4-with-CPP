@@ -53,17 +53,12 @@ AAvatar::AAvatar() {
 	AAvatar::currentStanceID = currentStance->stanceID;
 
 	// Initialise other variables and control flow
-	resultantInputVelocity = 0.f;
-	inputVelocity_X = 0.f;
-	inputVelocity_Y = 0.f;
-	worldVelocity_X = 0.f;
-	worldVelocity_Y = 0.f;
-	localVelocity_X = 0.f;
-	localVelocity_Y = 0.f;
+	inputVelocity = FVector2D(0.f);
+	worldVelocity = FVector2D(0.f);
+	localVelocity = FVector2D(0.f);
 	righthandResultantSpeed = 0.f; 
 	isInAir = false;
 	isInIframe = false;
-	isWalking = false;
 	isInDodge = false;
 	isInAttackMotion = false;
 	attackMotionStartingSector = 0; 
@@ -513,20 +508,17 @@ void AAvatar::velocityUpdate() {
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
 
 	// Set world velocity
-	worldVelocity_X = avatarWorldVelocity.X;
-	worldVelocity_Y = avatarWorldVelocity.Y;
+	worldVelocity.X = avatarWorldVelocity.X;
+	worldVelocity.Y = avatarWorldVelocity.Y;
 
 	// Set local/relative velocity
-	localVelocity_X = avatarLocalVelocity.X;
-	localVelocity_Y = avatarLocalVelocity.Y;
+	localVelocity.X = avatarLocalVelocity.X;
+	localVelocity.Y = avatarLocalVelocity.Y;
 
 	// Calculate the normalised inputed velocity (this is currently wrong)
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
-	inputVelocity_X = avatarLocalVelocity.X / avatarMaxSpeed;
-	inputVelocity_Y = avatarLocalVelocity.Y / avatarMaxSpeed;
-
-	// Calculate resultant velocity (change later)
-	resultantInputVelocity = GetVelocity().Size();
+	inputVelocity.X = avatarLocalVelocity.X / avatarMaxSpeed;
+	inputVelocity.Y = avatarLocalVelocity.Y / avatarMaxSpeed;
 }
 
 
@@ -561,4 +553,111 @@ void AAvatar::debugOutput() {
 
 	GEngine->AddOnScreenDebugMessage(9, 100.f, FColor::White, FString::Printf(TEXT("Pitch: %f"), actorRotation.Pitch));
 	GEngine->AddOnScreenDebugMessage(10, 100.f, FColor::White, FString::Printf(TEXT("Yaw: %f"), actorRotation.Yaw));
+}
+
+
+/* Getters and setters */
+int AAvatar::getCurrentStanceID() {
+	return currentStanceID;
+}
+
+USwordFocalPoint* const AAvatar::getSwordFocalPoint() {
+	return swordFocalPoint;
+}
+
+ FVector2D AAvatar::getInputVelocity() {
+	 return inputVelocity;
+ }
+
+ FVector2D AAvatar::getWorldVelocity() {
+	 return worldVelocity;
+ }
+ FVector2D AAvatar::getLocalVelocity() {
+	 return localVelocity;
+ }
+
+float AAvatar::getRighthandResultantSpeed() {
+	return righthandResultantSpeed;
+}
+
+float AAvatar::getAvatarMaxSpeed() {
+	return avatarMaxSpeed;
+}
+
+float AAvatar::getBaseYawTurnSpeed() {
+	return baseYawTurnSpeed;
+}
+
+float AAvatar::getBasePitchTurnSpeed() {
+	return basePitchTurnSpeed;
+}
+bool AAvatar::avatarIsInAir() {
+	return isInAir;
+}
+bool AAvatar::avatarIsInIframe() {
+	return isInIframe; 
+}
+bool AAvatar::avatarIsInDodge() {
+	return isInDodge; 
+}
+bool AAvatar::avatarIsInAttackMotion() {
+	return isInAttackMotion; 
+}
+
+bool AAvatar::isInputMovementLocked() {
+	return inputMovementLocked;
+}
+bool AAvatar::isActionAbilityLocked() {
+	return actionAbilityLocked;
+}
+int AAvatar::getAttackMotionStartingSector() {
+	return attackMotionStartingSector;
+}
+int AAvatar::getDodgeDirection() {
+	return dodgeDirection;
+}
+UViewportSector* const AAvatar::getCurrentViewportSector() {
+	return currentViewportSector;
+}
+TArray<UViewportSector*> const AAvatar::getViewportGrid() {
+	return viewportGrid;
+}
+const float AAvatar::getNumAxesSegments() {
+	return axesSegmentNo;
+}
+AMeleeWeapon* const AAvatar::getMeleeWeapon() {
+	return MeleeWeapon;
+}
+
+void AAvatar::setRighthandResultantSpeed(float amount) {
+	righthandResultantSpeed = amount;
+}
+void AAvatar::setAvatarMaxSpeed(float amount) {
+	avatarMaxSpeed = amount;
+}
+void AAvatar::setBaseYawTurnSpeed(float amount) {
+	baseYawTurnSpeed = amount;
+}
+void AAvatar::setPitchYawTurnSpeed(float amount) {
+	basePitchTurnSpeed = amount;
+}
+void AAvatar::setAvatarIsInAir(bool value) {
+	isInAir = value;
+}
+void AAvatar::setAvatarIsInIframe(bool value) {
+	isInIframe = value;
+}
+void AAvatar::setAvatarIsInDodge(bool value) {
+	isInDodge = value;
+}
+void AAvatar::setAvatarIsInAttackMotion(bool value) {
+	isInAttackMotion = value;
+}
+
+void AAvatar::setAttackMotionStartingSector(int sectorID) {
+	attackMotionStartingSector = sectorID; 
+}
+
+void AAvatar::setDodgeDirection(int directionID) {
+	dodgeDirection = directionID; 
 }

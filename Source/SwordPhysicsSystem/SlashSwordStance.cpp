@@ -43,16 +43,16 @@ void SlashSwordStance::calculateAllowableSwordDirections() {
 	if (allowableSwordDirections.canMoveEast && allowableSwordDirections.canMoveWest) {
 
 		// Refer to swordfocalpoint object  
-		allowableSwordDirections.canMoveEast = avatarPtr->swordFocalPoint->isDominantDirectionEast();
-		allowableSwordDirections.canMoveWest = avatarPtr->swordFocalPoint->isDominantDirectionWest();
+		allowableSwordDirections.canMoveEast = avatarPtr->getSwordFocalPoint()->isDominantDirectionEast();
+		allowableSwordDirections.canMoveWest = avatarPtr->getSwordFocalPoint()->isDominantDirectionWest();
 	}
 
 	// Y axis
 	if (allowableSwordDirections.canMoveNorth && allowableSwordDirections.canMoveSouth) {
 
 		// Refer to swordfocalpoint object  
-		allowableSwordDirections.canMoveNorth = avatarPtr->swordFocalPoint->isDominantDirectionNorth();
-		allowableSwordDirections.canMoveSouth = avatarPtr->swordFocalPoint->isDominantDirectionSouth();
+		allowableSwordDirections.canMoveNorth = avatarPtr->getSwordFocalPoint()->isDominantDirectionNorth();
+		allowableSwordDirections.canMoveSouth = avatarPtr->getSwordFocalPoint()->isDominantDirectionSouth();
 	}
 
 	// This is reset when the slash ends
@@ -61,26 +61,26 @@ void SlashSwordStance::calculateAllowableSwordDirections() {
 void SlashSwordStance::swordStanceActivation() {
 	
 	// Activate attack for slash sword stance
-	avatarPtr->isInAttackMotion = true; 
-	avatarPtr->attackMotionStartingSector = avatarPtr->currentViewportSector->getSectorID();
+	avatarPtr->setAvatarIsInAttackMotion(true); 
+	avatarPtr->setAttackMotionStartingSector(avatarPtr->getCurrentViewportSector()->getSectorID());
 
 	// Set current animation time to 0 
 	avatarPtr->animationInstance->currentTime = 0;
 
 	// Let weapon know its now attacking
-	avatarPtr->MeleeWeapon->startAttackMotion(); 
+	avatarPtr->getMeleeWeapon()->startAttackMotion(); 
 
 	// Activate the recording of mouse delta distances (required for tracking of slash movemment)
-	avatarPtr->swordFocalPoint->setRecordMouseDeltaDistances(true);
+	avatarPtr->getSwordFocalPoint()->setRecordMouseDeltaDistances(true);
 }
 
 void SlashSwordStance::swordStanceDeactivation() {
 
 	// Deactivate attack motion 
-	avatarPtr->isInAttackMotion = false;
+	avatarPtr->setAvatarIsInAttackMotion(false);
 
 	// Let weapon know its not attacking
-	avatarPtr->MeleeWeapon->endAttackMotion();
+	avatarPtr->getMeleeWeapon()->endAttackMotion();
 
 	// Reset allowable sword directions for next slash
 	allowableSwordDirections.canMoveEast = true;
@@ -89,5 +89,5 @@ void SlashSwordStance::swordStanceDeactivation() {
 	allowableSwordDirections.canMoveSouth = true;
 
 	// Deactivate the recording of mouse delta distances (required for tracking of slash movemment)
-	avatarPtr->swordFocalPoint->setRecordMouseDeltaDistances(false);
+	avatarPtr->getSwordFocalPoint()->setRecordMouseDeltaDistances(false);
 }

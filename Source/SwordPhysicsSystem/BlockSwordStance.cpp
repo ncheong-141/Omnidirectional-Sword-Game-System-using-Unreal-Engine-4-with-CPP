@@ -108,7 +108,7 @@ void BlockSwordStance::Yaw(float amount) {
 		
 		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 		if (avatarPtr->pController && amount) {
-			avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 	}
 }
@@ -121,7 +121,7 @@ void BlockSwordStance::Pitch(float amount) {
 
 		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 		if (avatarPtr->pController && amount) {
-			avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 	}
 }

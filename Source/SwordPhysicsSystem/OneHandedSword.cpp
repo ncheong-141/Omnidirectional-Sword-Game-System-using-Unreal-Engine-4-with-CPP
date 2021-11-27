@@ -48,7 +48,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	}
 
 	// Dont hit things when conditions arent met
-	if (weaponHolder->isInAttackMotion && canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
+	if (weaponHolder->avatarIsInAttackMotion() && canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
 
 		// Damage actor
 		otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
@@ -86,5 +86,5 @@ void AOneHandedSword::endAttackMotion() {
 float AOneHandedSword::calculateDynamicDamage() {
 
 	// Change right hand resultant speed to + movement speed later
-	return mass * weaponHolder->righthandResultantSpeed * AMeleeWeapon::canDamage;
+	return mass * weaponHolder->getRighthandResultantSpeed() * AMeleeWeapon::canDamage;
 }

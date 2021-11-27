@@ -96,7 +96,7 @@ void SwordStance::Yaw(float amount) {
 	if (avatarPtr->pController && amount) {
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
-		avatarPtr->AddControllerYawInput(avatarPtr->baseYawTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 
 	}
 }
@@ -107,7 +107,7 @@ void SwordStance::Pitch(float amount) {
 	if (avatarPtr->pController && amount) {
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
-		avatarPtr->AddControllerPitchInput(avatarPtr->basePitchTurnSpeed * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 
 	}
 }
@@ -140,29 +140,29 @@ void SwordStance::dodge() {
 
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Left"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Left"))
-				avatarPtr->isInDodge = true;
-				avatarPtr->dodgeDirection = 2;
+				avatarPtr->setAvatarIsInDodge(true);
+				avatarPtr->setDodgeDirection(2);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Right"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Right"))
-				avatarPtr->isInDodge = true;
-				avatarPtr->dodgeDirection = 3;
+				avatarPtr->setAvatarIsInDodge(true);
+				avatarPtr->setDodgeDirection(3);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Forward"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Forward"))
-				avatarPtr->isInDodge = true;
-				avatarPtr->dodgeDirection = 0;
+				avatarPtr->setAvatarIsInDodge(true);
+				avatarPtr->setDodgeDirection(0);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Back"));
 				UE_LOG(LogTemp, Display, TEXT("Dodge Back"))
-				avatarPtr->isInDodge = true;
-				avatarPtr->dodgeDirection = 1;
+				avatarPtr->setAvatarIsInDodge(true);
+				avatarPtr->setDodgeDirection(1);
 			}
 		}
 	}
