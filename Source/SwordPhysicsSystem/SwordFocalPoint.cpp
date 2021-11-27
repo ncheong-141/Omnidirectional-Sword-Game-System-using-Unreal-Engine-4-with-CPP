@@ -5,6 +5,9 @@
 // Game classes
 #include "SPSPlayerController.h"
 
+// External
+#include<cmath>
+
 
 USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
@@ -12,6 +15,7 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 	position2D = FVector2D(0.f);
 	oldMousePosition = FVector2D(0.f);
 	currentMousePositon = FVector2D(0.f);
+	oldPosition2D = FVector2D(0.f);
 
 	viewportSize = FVector2D(0.f);
 	viewportNormalisedBCMaxsize = 0.95;
@@ -44,7 +48,11 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	// Top left is (0,0), bottom right is (1,1)
 	oldMousePosition.X = currentMousePositon.X;
 	oldMousePosition.Y = currentMousePositon.Y;
-	
+
+	// Old sword focal position for direction calculations
+	oldPosition2D.X = position2D.X;
+	oldPosition2D.Y = position2D.Y;
+
 	if (pController) {
 		pController->GetMousePosition(currentMousePositon.X, currentMousePositon.Y);
 	}
@@ -59,12 +67,12 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	currentMousePositon.X /= viewportSize.X;	
 	currentMousePositon.Y /= viewportSize.Y;
 
-
 	/* Calculate sword focal point positions */
 	// This is based on differnce between old and new focal positons and also a sensitivity factor
 	// Note, these cannot exceed 0 or 1 
-	float SFPX = position2D.X;
 
+	// X Axis
+	float SFPX = position2D.X;
 	if (activatedPBC_X == false) {
 		SFPX = position2D.X + sensitivity*(currentMousePositon.X - oldMousePosition.X);
 		//UE_LOG(LogTemp, Display, TEXT("Normal SFPX: %f"), SFPX)
@@ -94,8 +102,7 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 		//UE_LOG(LogTemp, Display, TEXT("New position2D.X: %f"), position2D.X)
 	}
 
-
-
+	// Y Axis
 	float SFPY = position2D.Y;
 	if (activatedPBC_Y == false) {
 		SFPY = position2D.Y + sensitivity*(currentMousePositon.Y - oldMousePosition.Y);
@@ -124,6 +131,43 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 		//UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
 	}
 	
+	/* Calculate Sword direciton for reference*/
+
+	// New vector 
+	FVector2D MP_D = FVector2D(0.f);
+
+	// Use pController function as current and old is dependent on periodic boundaries
+	pController->GetInputMouseDelta(MP_D.X, MP_D.Y);
+
+	// KEEP IN MIND, 0,0 is top left, 1,1 is bottom right
+	// Check if the difference fvector is non 0. Only calculate direction based on a change of focal point
+	if (!MP_D.IsNearlyZero()) {
+
+		// Check if X is 0, if so only base direction of X (Y is always opposite for tan (o/a))
+		if (MP_D.X != 0.f && MP_D.X != -0.f) {
+
+			float vectorSideRatio = MP_D.Y / MP_D.X;
+
+			// Get quadrant to calculate angle; 
+			// Both X and Y position 
+			if (MP_D.X > 0 && MP_D.Y > 0) {
+				direction = atan(vectorSideRatio) * 180.f / PI;
+			}
+			// If X is -ve and Y +ve 
+			else if (MP_D.X < 0 && MP_D.Y > 0) {
+				direction = 180.f + (atan(vectorSideRatio) * 180.f / PI);
+			}
+			// if both X and Y -ve 
+			else if (MP_D.X < 0 && MP_D.Y < 0) {
+				direction = 180.f + (atan(vectorSideRatio) * 180.f / PI);
+			}
+			// if X +ve and Y -ve
+			else if (MP_D.X > 0 && MP_D.Y < 0) {
+				direction = 360.f + (atan(vectorSideRatio) * 180.f / PI);
+			}
+		}
+	}
+
 	/* Process mouse positon for next check, ensure periodic BCs*/
 	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
 	// Note, the activated booleans are used to branch into a different calculation on how to calculate the mouse difference
@@ -144,5 +188,18 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 		pController->SetMouseLocation(currentMousePositon.X * viewportSize.X, lowerPBC_Y * viewportSize.Y);
 		activatedPBC_Y = true;
 	}
-
 }
+
+
+float USwordFocalPoint::getSwordDirectionSensitivity() {
+	return sensitivity;
+}
+
+void USwordFocalPoint::setSwordDirectionSensitivity(float amount) {
+	sensitivity = amount;
+}
+
+float USwordFocalPoint::getSwordDirection() {
+	return direction;
+}
+

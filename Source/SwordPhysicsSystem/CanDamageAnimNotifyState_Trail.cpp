@@ -74,7 +74,6 @@ void UCanDamageAnimNotifyState_Trail::NotifyTick(USkeletalMeshComponent* MeshCom
 			avatar->MeleeWeapon->canDamage = true;
 		}
 	}
-
 }
 
 
@@ -91,7 +90,6 @@ void UCanDamageAnimNotifyState_Trail::NotifyEnd(USkeletalMeshComponent* MeshComp
 	if (avatar) {
 		avatar->MeleeWeapon->canDamage = false;
 	}
-
 }
 
 

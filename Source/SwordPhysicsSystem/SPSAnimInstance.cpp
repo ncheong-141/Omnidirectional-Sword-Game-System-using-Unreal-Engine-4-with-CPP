@@ -99,7 +99,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			}
 		}
 
-		UE_LOG(LogTemp, Display, TEXT("CanDamage %d"), animatedAvatar->MeleeWeapon->canDamage);
+		//UE_LOG(LogTemp, Display, TEXT("CanDamage %d"), animatedAvatar->MeleeWeapon->canDamage);
 
 		/* Apply animation curve values */
 		// The curve current values are updated in the animation notification states

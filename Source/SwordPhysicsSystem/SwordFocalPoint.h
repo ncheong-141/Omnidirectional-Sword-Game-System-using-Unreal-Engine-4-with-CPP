@@ -25,6 +25,8 @@ private:
 	UPROPERTY()
 		FVector2D currentMousePositon;
 	UPROPERTY()
+		FVector2D oldPosition2D; 
+	UPROPERTY()
 		FVector2D viewportSize; 
 
 	// Required as normalised mouse position is never (1,1) for some reason
@@ -38,6 +40,7 @@ private:
 	bool activatedPBC_Y; 
 
 	float sensitivity; 
+	float	direction;
 
 public:
 
@@ -55,4 +58,10 @@ public:
 	// Class member functions
 	void update(ASPSPlayerController* pController);
 	
+
+	// Getters and setters
+	float getSwordDirectionSensitivity();
+	void setSwordDirectionSensitivity(float amount); 
+
+	float getSwordDirection(); 
 };
