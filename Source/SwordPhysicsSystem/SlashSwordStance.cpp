@@ -31,6 +31,10 @@ void SlashSwordStance::Pitch(float amount) {
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
+void SlashSwordStance::calculateAllowableSwordDirections() {
+
+}
+
 void SlashSwordStance::swordStanceActivation() {
 	
 	// Activate attack for slash sword stance
@@ -42,8 +46,8 @@ void SlashSwordStance::swordStanceActivation() {
 
 	// Let weapon know its now attacking
 	avatarPtr->MeleeWeapon->startAttackMotion(); 
-}
 
+}
 
 void SlashSwordStance::swordStanceDeactivation() {
 

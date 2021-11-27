@@ -25,7 +25,7 @@ private:
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
-	SlashSwordStance() {}
+	SlashSwordStance() {};
 	SlashSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
 	~SlashSwordStance();
 
@@ -35,6 +35,9 @@ public:
 	// Mouse motion override functions for this specific stance
 	virtual void Yaw(float amount) override;
 	virtual void Pitch(float amount) override;
+
+	// Virtual function impl.
+	virtual void calculateAllowableSwordDirections() override;
 
 	// Pure virtual function impl.
 	virtual void swordStanceActivation() override; 

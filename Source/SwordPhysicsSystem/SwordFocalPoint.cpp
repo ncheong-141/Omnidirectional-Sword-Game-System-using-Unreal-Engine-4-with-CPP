@@ -8,7 +8,6 @@
 // External
 #include<cmath>
 
-
 USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
 	// Initalise all variables to 0 
@@ -30,6 +29,7 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 	activatedPBC_Y = false;
 
 	sensitivity = 0.7f; 
+	mouseDirection = 0.f; 
 };
 
 
@@ -42,7 +42,7 @@ void USwordFocalPoint::init(ASPSPlayerController pController) {
 
 // Make sure you update viewport size
 
-void USwordFocalPoint::update(ASPSPlayerController* pController) {
+void USwordFocalPoint::update(ASPSPlayerController* pController, AllowableSwordDirectionInformation allowableSwordDirections) {
 
 	// Mouse position update and store old
 	// Top left is (0,0), bottom right is (1,1)
@@ -69,7 +69,10 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 	/* Calculate sword focal point positions */
 	// This is based on differnce between old and new focal positons and also a sensitivity factor
-	// Note, these cannot exceed 0 or 1 
+	// Note, 
+	// - these cannot exceed 0 or 1 
+	// - sword can only move in allowable sword directions. These directions are in format
+	// [NorthorSouth, WestorEast] => 1 = North, West, 0 = any, -1 = South, East
 
 	// X Axis
 	float SFPX = position2D.X;
@@ -132,6 +135,33 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	}
 	
 	/* Calculate Sword direciton for reference*/
+	calculateMouseDirection(pController);
+
+	UE_LOG(LogTemp, Display, TEXT("Direction: %f"), mouseDirection);
+
+	/* Process mouse positon for next check, ensure periodic BCs*/
+	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
+	// Note, the activated booleans are used to branch into a different calculation on how to calculate the mouse difference
+	applyPeriodicBoundary(pController);
+}
+
+
+float USwordFocalPoint::getSwordDirectionSensitivity() {
+	return sensitivity;
+}
+
+void USwordFocalPoint::setSwordDirectionSensitivity(float amount) {
+	sensitivity = amount;
+}
+
+float USwordFocalPoint::getSwordDirection() {
+	return mouseDirection;
+}
+
+
+/* Internal helper functions */
+void USwordFocalPoint::calculateMouseDirection(ASPSPlayerController* pController) {
+
 
 	// New vector 
 	FVector2D MP_D = FVector2D(0.f);
@@ -151,26 +181,27 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 			// Get quadrant to calculate angle; 
 			// Both X and Y position 
 			if (MP_D.X > 0 && MP_D.Y > 0) {
-				direction = atan(vectorSideRatio) * 180.f / PI;
+				mouseDirection = atan(vectorSideRatio) * 180.f / PI;
 			}
 			// If X is -ve and Y +ve 
 			else if (MP_D.X < 0 && MP_D.Y > 0) {
-				direction = 180.f + (atan(vectorSideRatio) * 180.f / PI);
+				mouseDirection = 180.f + (atan(vectorSideRatio) * 180.f / PI);
 			}
 			// if both X and Y -ve 
 			else if (MP_D.X < 0 && MP_D.Y < 0) {
-				direction = 180.f + (atan(vectorSideRatio) * 180.f / PI);
+				mouseDirection = 180.f + (atan(vectorSideRatio) * 180.f / PI);
 			}
 			// if X +ve and Y -ve
 			else if (MP_D.X > 0 && MP_D.Y < 0) {
-				direction = 360.f + (atan(vectorSideRatio) * 180.f / PI);
+				mouseDirection = 360.f + (atan(vectorSideRatio) * 180.f / PI);
 			}
 		}
 	}
+}
 
-	/* Process mouse positon for next check, ensure periodic BCs*/
-	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
-	// Note, the activated booleans are used to branch into a different calculation on how to calculate the mouse difference
+void USwordFocalPoint::applyPeriodicBoundary(ASPSPlayerController* pController) {
+
+	// Check which boudary has been crossed
 	if (currentMousePositon.X < lowerPBC_X) {
 		pController->SetMouseLocation(upperPBC_X * viewportSize.X, currentMousePositon.Y * viewportSize.Y);
 		activatedPBC_X = true;
@@ -189,17 +220,3 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 		activatedPBC_Y = true;
 	}
 }
-
-
-float USwordFocalPoint::getSwordDirectionSensitivity() {
-	return sensitivity;
-}
-
-void USwordFocalPoint::setSwordDirectionSensitivity(float amount) {
-	sensitivity = amount;
-}
-
-float USwordFocalPoint::getSwordDirection() {
-	return direction;
-}
-

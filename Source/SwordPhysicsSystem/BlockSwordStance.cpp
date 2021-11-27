@@ -7,6 +7,10 @@
 // Debug output file
 #include "DebugOutput.h"
 
+BlockSwordStance::BlockSwordStance() {
+
+}
+
 BlockSwordStance::BlockSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {
 
 	// Instantiate class attributes

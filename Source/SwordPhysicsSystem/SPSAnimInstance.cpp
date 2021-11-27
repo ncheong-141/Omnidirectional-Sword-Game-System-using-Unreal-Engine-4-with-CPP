@@ -144,7 +144,6 @@ void USPSAnimInstance::setMovementFloatCurvePointers(UAnimSequenceBase* Animatio
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
 	}
-
 }
 
 void USPSAnimInstance::setAttackFloatCurvePointers(UAnimSequenceBase* Animation) {
@@ -164,4 +163,5 @@ void USPSAnimInstance::setAttackFloatCurvePointers(UAnimSequenceBase* Animation)
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
 	}
+
 }

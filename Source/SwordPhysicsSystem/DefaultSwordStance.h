@@ -23,7 +23,7 @@ private:
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
-	DefaultSwordStance() {}
+	DefaultSwordStance() {};
 	DefaultSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
 	~DefaultSwordStance(); 
 

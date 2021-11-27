@@ -10,7 +10,18 @@
  * 
  */
 
+// Forward declarations
 class ASPSPlayerController; 
+
+// Struct for containing information on the allowable directions
+struct AllowableSwordDirectionInformation {
+
+	// Initialise with true 
+	bool canMoveNorth = true; 
+	bool canMoveSouth = true;
+	bool canMoveWest = true;
+	bool canMoveEast = true;
+};
 
 UCLASS()
 class SWORDPHYSICSSYSTEM_API USwordFocalPoint : public UObject
@@ -40,7 +51,7 @@ private:
 	bool activatedPBC_Y; 
 
 	float sensitivity; 
-	float	direction;
+	float	mouseDirection;
 
 public:
 
@@ -56,7 +67,7 @@ public:
 	void init(ASPSPlayerController pController); 
 
 	// Class member functions
-	void update(ASPSPlayerController* pController);
+	void update(ASPSPlayerController* pController, AllowableSwordDirectionInformation allowableSwordDirections);
 	
 
 	// Getters and setters
@@ -64,4 +75,10 @@ public:
 	void setSwordDirectionSensitivity(float amount); 
 
 	float getSwordDirection(); 
+
+private: 
+	/* Internal helper functions */
+	// Calculate mouse direciton
+	void calculateMouseDirection(ASPSPlayerController* pController);
+	void applyPeriodicBoundary(ASPSPlayerController* pController);
 };

@@ -15,24 +15,17 @@
 #include "Kismet/GameplayStatics.h"
 
 
+SwordStance::SwordStance() {
 
+}
 
 // Constructor and destructor implementation
-SwordStance::SwordStance(AAvatar* avatar, int stance_ID){
+SwordStance::SwordStance(AAvatar* avatar, const int stance_ID) : stanceID(stance_ID){
 	
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
-
-	// Set the stance ID
-	stanceID = stance_ID; 
 }
 
-SwordStance::SwordStance(){
-
-	// Set avatar pointer to NULL
-	avatarPtr = NULL;
-
-}
 
 SwordStance::~SwordStance() {
 }
@@ -173,4 +166,19 @@ void SwordStance::dodge() {
 			}
 		}
 	}
+}
+
+
+void SwordStance::calculateAllowableSwordDirections() {
+
+	// By default, let all sword directions be possible
+	allowableSwordDirections.canMoveEast = true;
+	allowableSwordDirections.canMoveNorth = true;
+	allowableSwordDirections.canMoveSouth = true;
+	allowableSwordDirections.canMoveWest = true;
+}
+
+// Getters and setters
+AllowableSwordDirectionInformation SwordStance::getAllowableSwordDirections() {
+	return allowableSwordDirections;
 }

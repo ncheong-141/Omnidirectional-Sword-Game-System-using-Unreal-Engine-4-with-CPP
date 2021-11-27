@@ -3,6 +3,9 @@
 
 #include "CoreMinimal.h"
 
+// Game classes
+#include "SwordFocalPoint.h"
+
 /*
 *  SwordStance abstract class which is part of the State design pattern. 
 *  This class holds the pointer to the Context and defines functionality for concrete classes (sword stance)
@@ -30,10 +33,11 @@ protected:
 	UPROPERTY()
 		AAvatar* avatarPtr;
 
-	// Pointers/references to some commonly used Avatar objects to avoid function calls
-	// and/or reads from memory
-	//FVector* avatarForwardVector;
-	//FVector* avatarRightVector; 
+	// Allowable sword directions, set by subclasses during their stance activations
+	// E.g. slash can only move 1 direction north or south, west and east.
+	// This is calculated in the attack animation notification state tick function
+	UPROPERTY()
+		AllowableSwordDirectionInformation allowableSwordDirections;
 	 
 public:
 
@@ -41,7 +45,7 @@ public:
 	int stanceID;			// Used to reference the stance as an integer
 
 	// Constructors
-	SwordStance();	// NMeed to remove i think
+	SwordStance();
 	SwordStance(AAvatar* avatar, int stance_ID);
 
 	// Virtual destructor to ensure sub class objects are appopiately deleted
@@ -66,9 +70,17 @@ public:
 	virtual void jump();
 	virtual void dodge(); 
 
+	/* Virtual functions which sword stances can override */
+	virtual void calculateAllowableSwordDirections(); 
+
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 	virtual void swordStanceActivation() = 0; 
 	virtual void swordStanceDeactivation() = 0; 
 
+	// Getters and setters
+	AllowableSwordDirectionInformation getAllowableSwordDirections();
+
+private:
 	/* Internal helper functions for all sword stance classes */
+	
 };
