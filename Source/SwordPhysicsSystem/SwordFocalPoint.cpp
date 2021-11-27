@@ -32,7 +32,7 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 
 	// Need to move 10% of the viewport in a direciton for it to be dominating
 	// This can be changed by the user (future)
-	normalisedDistanceTillPredominating = 0.1f;
+	normalisedDistanceTillPredominating = 0.3f;
 
 	// Flags
 	dominatingDirection_North = false;
@@ -53,7 +53,7 @@ void USwordFocalPoint::init(ASPSPlayerController pController) {
 
 // Make sure you update viewport size
 
-void USwordFocalPoint::update(ASPSPlayerController* pController) {
+void USwordFocalPoint::update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections) {
 
 	// Mouse position update and store old
 	// Top left is (0,0), bottom right is (1,1)
@@ -86,10 +86,8 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 	
 	// X Axis
 	float dx = 0.f; 
-	float SFPX = position2D.X;
 	if (activatedPBC_X == false) {
 		dx = sensitivity * (currentMousePositon.X - oldMousePosition.X);
-		SFPX = position2D.X + dx;
 	}
 	else {
 		// If difference is negative => crossed right boundary
@@ -97,28 +95,24 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
 			dx = sensitivity * ((currentMousePositon.X - lowerPBC_X) + (oldMousePosition.X - upperPBC_X));
-			SFPX = position2D.X + dx;
 		}
 		else { // Else difference is positve => crossed left boundary
 
 			dx = sensitivity * ((oldMousePosition.X - lowerPBC_X) + (currentMousePositon.X - upperPBC_X));
-			SFPX = position2D.X + dx;
 		}
 		// Deactivate the boundary bool 
 		activatedPBC_X = false;
 	}
 	
 	// Enforce 0 or 1 boundary
-	if (SFPX >= 0.f && SFPX <= 1.f) {
-		position2D.X = SFPX;
+	if (position2D.X + dx >= 0.f && position2D.X + dx <= 1.f) {
+		position2D.X = position2D.X + dx;
 	}
 
 	// Y Axis
 	float dy = 0.f; 
-	float SFPY = position2D.Y;
 	if (activatedPBC_Y == false) {
 		dy = sensitivity * (currentMousePositon.Y - oldMousePosition.Y);
-		SFPY = position2D.Y + dy;
 	}
 	else {
 		// If difference is negative => crossed top boundary
@@ -126,26 +120,22 @@ void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 			// Get offsets between boundaries and mousepositions (this is the true difference distance when combined) 
 			dy = sensitivity * ((currentMousePositon.Y - lowerPBC_Y) + (oldMousePosition.Y - upperPBC_Y));
-			SFPY = position2D.Y + dy;
 		}
 		else { // Else difference is positve => crossed bot boundary
 
 			dy = sensitivity * ((oldMousePosition.Y - lowerPBC_Y) + (currentMousePositon.Y - upperPBC_Y));
-			SFPY = position2D.Y + dy;
 		}
 
 		// Deactivate the boundary bool 
 		activatedPBC_Y = false;
 	}
 	// Enforce 0 or 1 boundary
-	if (SFPY >= 0.f && SFPY <= 1.f) {
-		position2D.Y = SFPY;
+	if (position2D.Y + dy >= 0.f && position2D.Y + dy <= 1.f) {
+		position2D.Y = position2D.Y + dy;
 	}
 
 	/* Calculate Mouse direciton and distances for reference*/
 	calculateMouseDirection(pController);
-
-	UE_LOG(LogTemp, Display, TEXT("DIrection: %f"), mouseDirection);
 
 	// Record and calculate mouyse distances and directions when necessary
 	// e.g. when in slash stance activation (attack)

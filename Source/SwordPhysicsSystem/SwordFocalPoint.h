@@ -95,8 +95,11 @@ public:
 	// Initialise (need to learn how to construct UOBjects with parameters..)
 	void init(ASPSPlayerController pController); 
 
-	// Class member functions
-	void update(ASPSPlayerController* pController);
+	/* Class member functions */
+
+	// Called during avatar tick/per frame. Updates the focal point and any relevant
+	// SF stats such as direction, dominant direction etc
+	void update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections);
 	
 
 	// Getters and setters
@@ -115,11 +118,9 @@ public:
 
 private: 
 	/* Internal helper functions */
-	// Calculate mouse direciton
 	void calculateMouseDirection(ASPSPlayerController* pController);
 	void setCachedDistances(float dx, float dy);
 	void applyPeriodicBoundary(ASPSPlayerController* pController);
 	void calculatePredominatingDistance();
-
 	void resetDistanceCache(); 
 };
