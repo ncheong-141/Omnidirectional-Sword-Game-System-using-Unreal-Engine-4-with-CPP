@@ -47,12 +47,38 @@ private:
 	float upperPBC_X;
 	float lowerPBC_Y;
 	float upperPBC_Y;
+
+	// Flags to tell if mouse has crossed the periodic boundary
 	bool activatedPBC_X; 
 	bool activatedPBC_Y; 
 
+	// Arbitrary weight for user mouse motion 
 	float sensitivity; 
-	float	mouseDirection;
 
+	/* Direction and distance variables */
+
+	// Mouse direction currently
+	float				mouseDirection;
+
+	// Normalised distance till dominating: 
+	float				normalisedDistanceTillPredominating; 
+	
+	// Booleans for flagging which distance is currently dominating
+	bool dominatingDirection_North;
+	bool dominatingDirection_South;
+	bool dominatingDirection_West;
+	bool dominatingDirection_East;
+
+	// Distance storage
+	// The number of cached normalised distances reaching predom threshold
+	// is frame dependent/sensitificty, this is bad but if you make it large enough, it shouldnt matter
+	// A better solution can be found in the future
+	static const int	numCachedDeltaDistance = 50; 
+	float				cachedDeltaDistances_X[numCachedDeltaDistance] = { 0 };
+	float				cachedDeltaDistances_Y[numCachedDeltaDistance] = { 0 };
+	int					cachedDeltaDistances_Index; 
+
+	
 public:
 
 	// Class external attributes
@@ -67,7 +93,7 @@ public:
 	void init(ASPSPlayerController pController); 
 
 	// Class member functions
-	void update(ASPSPlayerController* pController, AllowableSwordDirectionInformation allowableSwordDirections);
+	void update(ASPSPlayerController* pController);
 	
 
 	// Getters and setters
@@ -79,6 +105,7 @@ public:
 private: 
 	/* Internal helper functions */
 	// Calculate mouse direciton
-	void calculateMouseDirection(ASPSPlayerController* pController);
+	void calculateMouseDirectionAndDistances(ASPSPlayerController* pController);
 	void applyPeriodicBoundary(ASPSPlayerController* pController);
+	void calculatePredominatingDistance();
 };

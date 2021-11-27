@@ -124,7 +124,7 @@ void AAvatar::Tick(float DeltaTime)
 	// Update focal point (!= 0 => not the default stance)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	if (currentStanceID != 0) {
-		swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections());
+		swordFocalPoint->update(pController);
 	}
 
 	// Set the current viewport sector to where the sword position is currently 

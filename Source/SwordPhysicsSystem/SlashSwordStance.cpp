@@ -56,4 +56,5 @@ void SlashSwordStance::swordStanceDeactivation() {
 
 	// Let weapon know its not attacking
 	avatarPtr->MeleeWeapon->endAttackMotion();
+
 }

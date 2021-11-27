@@ -16,6 +16,7 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 	currentMousePositon = FVector2D(0.f);
 	oldPosition2D = FVector2D(0.f);
 
+	// Viewport 
 	viewportSize = FVector2D(0.f);
 	viewportNormalisedBCMaxsize = 0.95;
 
@@ -24,17 +25,27 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 	upperPBC_X = viewportNormalisedBCMaxsize;
 	lowerPBC_Y = (1 - viewportNormalisedBCMaxsize);
 	upperPBC_Y = viewportNormalisedBCMaxsize;
-
 	activatedPBC_X = false;
 	activatedPBC_Y = false;
-
 	sensitivity = 0.7f; 
 	mouseDirection = 0.f; 
+
+	// Need to move 10% of the viewport in a direciton for it to be dominating
+	// This can be changed by the user (future)
+	normalisedDistanceTillPredominating = 0.1f;
+
+	// Flags
+	dominatingDirection_North = false;
+	dominatingDirection_South = false;
+	dominatingDirection_West = false;
+	dominatingDirection_East = false;
+	
+	// Index
+	cachedDeltaDistances_Index = 0;
 };
 
 
 void USwordFocalPoint::init(ASPSPlayerController pController) {
-
 
 }
 
@@ -42,7 +53,7 @@ void USwordFocalPoint::init(ASPSPlayerController pController) {
 
 // Make sure you update viewport size
 
-void USwordFocalPoint::update(ASPSPlayerController* pController, AllowableSwordDirectionInformation allowableSwordDirections) {
+void USwordFocalPoint::update(ASPSPlayerController* pController) {
 
 	// Mouse position update and store old
 	// Top left is (0,0), bottom right is (1,1)
@@ -134,10 +145,11 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, AllowableSwordD
 		//UE_LOG(LogTemp, Display, TEXT("position2D.Y: %f"), position2D.Y)
 	}
 	
-	/* Calculate Sword direciton for reference*/
-	calculateMouseDirection(pController);
+	/* Calculate Mouse direciton and distances for reference*/
+	calculateMouseDirectionAndDistances(pController);
 
-	UE_LOG(LogTemp, Display, TEXT("Direction: %f"), mouseDirection);
+	/* Calculate predom distances */
+	calculatePredominatingDistance(); 
 
 	/* Process mouse positon for next check, ensure periodic BCs*/
 	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
@@ -160,7 +172,7 @@ float USwordFocalPoint::getSwordDirection() {
 
 
 /* Internal helper functions */
-void USwordFocalPoint::calculateMouseDirection(ASPSPlayerController* pController) {
+void USwordFocalPoint::calculateMouseDirectionAndDistances(ASPSPlayerController* pController) {
 
 
 	// New vector 
@@ -197,6 +209,22 @@ void USwordFocalPoint::calculateMouseDirection(ASPSPlayerController* pController
 			}
 		}
 	}
+
+	/* Cache the delta distances */
+
+	//  Ensure index stays within static array bounds (start overwriting old values)
+	if (cachedDeltaDistances_Index + 1 == numCachedDeltaDistance) {
+		
+		// Reset index 
+		cachedDeltaDistances_Index = 0;
+	}
+
+	// Store the direction data
+	cachedDeltaDistances_X[cachedDeltaDistances_Index] = MP_D.X/viewportSize.X;
+	cachedDeltaDistances_Y[cachedDeltaDistances_Index] = MP_D.Y/viewportSize.Y;
+	
+	// Increment index
+	cachedDeltaDistances_Index++; 
 }
 
 void USwordFocalPoint::applyPeriodicBoundary(ASPSPlayerController* pController) {
@@ -219,4 +247,72 @@ void USwordFocalPoint::applyPeriodicBoundary(ASPSPlayerController* pController) 
 		pController->SetMouseLocation(currentMousePositon.X * viewportSize.X, lowerPBC_Y * viewportSize.Y);
 		activatedPBC_Y = true;
 	}
+}
+
+void USwordFocalPoint::calculatePredominatingDistance() {
+
+	// Calculate the dominating distance by adding the cached distances
+	// If the cached distances > normalisedDistanceTillPredominating, set as predominating in 
+	// the passed data structure 
+
+
+	// sum distances 
+	float sumX = 0.f;
+	float sumY = 0.f; 
+
+	for (int i = 0; i < numCachedDeltaDistance; i++) {
+
+		sumX += cachedDeltaDistances_X[i];
+		sumY += cachedDeltaDistances_Y[i];
+
+		//UE_LOG(LogTemp, Display, TEXT("sumX: %f"), sumX);
+
+		// Check each iteration if the predominating distance is found
+			
+		// X dir so West or East
+		if (sumX >= normalisedDistanceTillPredominating) {
+
+			// Moving dominantly east 
+			dominatingDirection_West = false;
+			dominatingDirection_East = true;
+		}
+		else if (sumX <= -1 * normalisedDistanceTillPredominating) {
+
+			// Moving dominantly west
+			dominatingDirection_West = true;
+			dominatingDirection_East = false;
+		}
+		else {
+			// Dominant direction not found
+			dominatingDirection_West = true;
+			dominatingDirection_East = true;
+		}
+
+
+
+		// Y dir so North or south
+		if (sumY >= normalisedDistanceTillPredominating) {
+
+			// Moving dominantly North 
+			dominatingDirection_South = false;
+			dominatingDirection_North = true;
+		}
+		else if (sumY <= -1 * normalisedDistanceTillPredominating) {
+
+			// Moving dominantly south
+			dominatingDirection_South = true;
+			dominatingDirection_North = false;
+		}
+		else {
+			// Dominant direction not found
+			dominatingDirection_South = true;
+			dominatingDirection_North = true;
+		}
+	}
+
+
+	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_North: %d"), dominatingDirection_North);
+	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_South: %d"), dominatingDirection_South);
+	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_West: %d"), dominatingDirection_West);
+	UE_LOG(LogTemp, Display, TEXT("dominatingDirection_East: %d"), dominatingDirection_East);
 }
