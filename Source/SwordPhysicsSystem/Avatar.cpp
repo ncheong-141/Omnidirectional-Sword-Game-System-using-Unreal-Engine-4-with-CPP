@@ -53,7 +53,7 @@ AAvatar::AAvatar() {
 	AAvatar::currentStanceID = currentStance->stanceID;
 
 	// Initialise other variables and control flow
-	inputVelocity = FVector2D(0.f);
+	normalisedLocalVelocity = FVector2D(0.f);
 	worldVelocity = FVector2D(0.f);
 	localVelocity = FVector2D(0.f);
 	righthandResultantSpeed = 0.f; 
@@ -114,10 +114,11 @@ void AAvatar::Tick(float DeltaTime)
 	/* Key physics */
 
 	// Velocity update
-	velocityUpdate();
+	velocityAndDirectionUpdate();
 
 	// Update focal point (!= 0 => not the default stance)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
+	// Change to flag in stance to say if it updates sword focal or not
 	if (currentStanceID != 0) {
 		swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections());
 	}
@@ -500,12 +501,22 @@ void AAvatar::actionAbilityLockCheck() {
 
 
 /* Internal class helpers */
-void AAvatar::velocityUpdate() {
+void AAvatar::velocityAndDirectionUpdate() {
 
 	// Calculate the local velocity of the avatar from the World velocity
 	FVector avatarWorldVelocity = this->GetVelocity();
 	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
+
+	//UE_LOG(LogTemp, Display, TEXT("World velocity of avatar: %f, %f"), avatarWorldVelocity.X, avatarWorldVelocity.Y);
+	//UE_LOG(LogTemp, Display, TEXT("Local velocity of avatar: %f, %f"), avatarLocalVelocity.X, avatarLocalVelocity.Y);
+
+	// Get actor direciton info
+	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
+	UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
+
+	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
+	UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
 
 	// Set world velocity
 	worldVelocity.X = avatarWorldVelocity.X;
@@ -517,8 +528,8 @@ void AAvatar::velocityUpdate() {
 
 	// Calculate the normalised inputed velocity (this is currently wrong)
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
-	inputVelocity.X = avatarLocalVelocity.X / avatarMaxSpeed;
-	inputVelocity.Y = avatarLocalVelocity.Y / avatarMaxSpeed;
+	normalisedLocalVelocity.X = avatarLocalVelocity.X / avatarMaxSpeed;
+	normalisedLocalVelocity.Y = avatarLocalVelocity.Y / avatarMaxSpeed;
 }
 
 
@@ -565,8 +576,8 @@ USwordFocalPoint* const AAvatar::getSwordFocalPoint() {
 	return swordFocalPoint;
 }
 
- FVector2D AAvatar::getInputVelocity() {
-	 return inputVelocity;
+ FVector2D AAvatar::getNormalisedLocalVelocity() {
+	 return normalisedLocalVelocity;
  }
 
  FVector2D AAvatar::getWorldVelocity() {

@@ -66,7 +66,7 @@ protected:
 
 	// Avatar velocity properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
-		FVector2D inputVelocity;
+		FVector2D normalisedLocalVelocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		FVector2D worldVelocity;
@@ -74,8 +74,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		FVector2D localVelocity;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float inputDirection;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float righthandResultantSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float turnInput;
+
 
 
 	// Avatar control properties
@@ -208,7 +215,7 @@ protected:
 	void actionAbilityLockCheck(); 
 
 	// Helpers
-	void velocityUpdate();
+	void velocityAndDirectionUpdate();
 	void debugOutput();
 
 	// Generate the viewport grid datastructure (called in constructor)
@@ -224,7 +231,7 @@ public:
 
 	int getCurrentStanceID();
 	USwordFocalPoint* const getSwordFocalPoint();
-	FVector2D getInputVelocity();
+	FVector2D getNormalisedLocalVelocity();
 	FVector2D getWorldVelocity();
 	FVector2D getLocalVelocity();
 	float getRighthandResultantSpeed();
