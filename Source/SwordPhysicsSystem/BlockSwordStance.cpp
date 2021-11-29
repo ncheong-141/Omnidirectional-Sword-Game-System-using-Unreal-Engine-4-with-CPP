@@ -3,6 +3,8 @@
 
 #include "BlockSwordStance.h"
 #include "Avatar.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 // Debug output file
 #include "DebugOutput.h"
@@ -105,6 +107,9 @@ void BlockSwordStance::Yaw(float amount) {
 
 	// If sword stance is activated (can turn camera)
 	if (canTurnCamera) {
+
+		avatarPtr->bUseControllerRotationYaw = true;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
 		
 		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 		if (avatarPtr->pController && amount) {

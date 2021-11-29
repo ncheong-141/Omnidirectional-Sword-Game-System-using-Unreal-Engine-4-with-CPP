@@ -42,6 +42,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
 		UCameraComponent* cameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar game settings")
+		float cameraZoomChangeIncrement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar game settings")
+		float cameraZoomMax;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar game settings")
+		float cameraZoomMin;
 
 	/* ---------------- Internal class attributes ----------------------- */
 
@@ -156,6 +164,8 @@ public:
 		ASPSPlayerController* pController;
 	UPROPERTY()
 		USPSAnimInstance* animationInstance;
+	UPROPERTY()
+		UCharacterMovementComponent* avatarMovementComponent; 
 
 	/* Unreal engine 4 class functions */
 	// Constructor: Sets default values for this character's properties
@@ -195,6 +205,10 @@ public:
 	// Player action inputs
 	void jump(); 
 	void dodge();
+
+	// Player camera change inputs
+	void changeCameraZoomIn();
+	void changeCameraZoomOut();
 	
 	// Used for switching a boolean variable for communicating with animation blueprint
 	void activateSwordStanceActivation();

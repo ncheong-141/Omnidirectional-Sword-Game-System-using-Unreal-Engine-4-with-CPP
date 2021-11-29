@@ -2,6 +2,7 @@
 
 #include "StabSwordStance.h"
 #include "Avatar.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Debug output file
 #include "DebugOutput.h"
@@ -30,8 +31,17 @@ void StabSwordStance::Yaw(float amount) {
 		if (avatarPtr->getMeleeWeapon() != nullptr) {
 
 			if (avatarPtr->getMeleeWeapon()->canDamage) {
-				avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+
+				// Switch to avatar following camera angle
+				avatarPtr->bUseControllerRotationYaw = true;
+				avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
 			}
+			else {
+				avatarPtr->bUseControllerRotationYaw = false;
+			}
+
+			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+
 		}
 	}
 }

@@ -39,6 +39,19 @@ AAvatar::AAvatar() {
 	cameraComponent = CreateDefaultSubobject <UCameraComponent>(TEXT("AvatarCameraComponent"));
 	cameraComponent->SetupAttachment(cameraSpringArmComponent);
 
+	// How much the camera changes per zoom increment
+	cameraZoomChangeIncrement = 10.f; 
+
+	// Set up camera 
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	avatarMovementComponent = GetCharacterMovement();
+	if (avatarMovementComponent) {
+		avatarMovementComponent->bOrientRotationToMovement = true;
+		avatarMovementComponent->bUseControllerDesiredRotation = false;
+	}
+
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
 	defaultStance = DefaultSwordStance(this, 0);
@@ -143,6 +156,11 @@ void AAvatar::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Display, TEXT("Can Slash East: %d"), currentStance->getAllowableSwordDirections()->canMoveEast);
 	}
 	
+	// Turn off controller rotation when not using these input keys/strafing
+	// (janky solution but works) 
+	if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {
+		this->bUseControllerRotationYaw = false;
+	}
 
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
@@ -179,11 +197,18 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping );
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AAvatar::dodge);
-	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Pressed, this, &AAvatar::activateSwordStanceActivation);
-	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Released, this, &AAvatar::deactivateSwordStanceActivation);
+
+
+	// Camera change inputs
+	PlayerInputComponent->BindAction("CameraZoomIn", IE_Pressed, this, &AAvatar::changeCameraZoomIn);
+	PlayerInputComponent->BindAction("CameraZoomOut", IE_Pressed, this, &AAvatar::changeCameraZoomOut);
+
 
 
 	// Sword stance change input
+	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Pressed, this, &AAvatar::activateSwordStanceActivation);
+	PlayerInputComponent->BindAction("SwordStanceActivation", IE_Released, this, &AAvatar::deactivateSwordStanceActivation);
+
 	PlayerInputComponent->BindAction("DefaultSwordStance", IE_Pressed, this, &AAvatar::switch_DefaultSwordStance);
 	
 	PlayerInputComponent->BindAction("SlashSwordStance", IE_Pressed, this, &AAvatar::switch_SlashSwordStance);
@@ -217,6 +242,10 @@ void AAvatar::switch_DefaultSwordStance() {
 
 		// Interrpt attack if in motion (before switching)
 		deactivateSwordStanceActivation();
+		
+		// Change camera properties
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
 
 		currentStance = &defaultStance;
 		currentStanceID = currentStance->stanceID;
@@ -227,6 +256,11 @@ void AAvatar::switch_DefaultSwordStance() {
 void AAvatar::switch_SlashSwordStance() {
 
 	if (!actionAbilityLocked) {
+
+		// Change camera properties
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
 		currentStance = &slashStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
@@ -240,6 +274,11 @@ void AAvatar::switch_BlockSwordStance() {
 		// Interrpt attack if in motion (before switching)
 		deactivateSwordStanceActivation();
 
+		// Change camera properties
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
+		// Switch stance
 		currentStance = &blockStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
@@ -249,6 +288,11 @@ void AAvatar::switch_BlockSwordStance() {
 void AAvatar::switch_StabSwordStance() {
 
 	if (!actionAbilityLocked) {
+
+		// Change camera properties
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
 		currentStance = &stabStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
@@ -405,6 +449,19 @@ void AAvatar::dodge()
 {
 	if (!actionAbilityLocked) {
 		currentStance->dodge();
+	}
+}
+void AAvatar::changeCameraZoomIn() {
+
+	if (cameraSpringArmComponent->TargetArmLength + cameraZoomChangeIncrement < cameraZoomMax) {
+		cameraSpringArmComponent->TargetArmLength -= cameraZoomChangeIncrement;
+	}
+}
+void AAvatar::changeCameraZoomOut() {
+
+	// Enforce max
+	if (cameraSpringArmComponent->TargetArmLength + cameraZoomChangeIncrement < cameraZoomMax ) {
+		cameraSpringArmComponent->TargetArmLength += cameraZoomChangeIncrement;
 	}
 }
 

@@ -13,7 +13,7 @@
 // UE4 Global functions
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 
 SwordStance::SwordStance() {
 
@@ -44,11 +44,17 @@ void SwordStance::MoveForward(float amount) {
 	// Don't enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->pController && amount) {
 	
-		// Get the value of the forward vector
-		FVector avatarForwardVector = avatarPtr->GetActorForwardVector(); 
+		
+		//FVector avatarForwardVector = avatarPtr->GetActorForwardVector(); 
+		// Get the value of the camera direction vector	
+		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::X);
+
+		// Since want character to orientate to movement (which is set already) 
+		avatarPtr->bUseControllerRotationYaw = false;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = true;
 
 		// Add movement input to the avatar forward vector. 
-		avatarPtr->AddMovementInput(avatarForwardVector, amount);
+		avatarPtr->AddMovementInput(cameraDirection, amount);
 	}
 }
 
@@ -57,11 +63,15 @@ void SwordStance::MoveBack(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0
 	if (avatarPtr->pController && amount) {
 
-		// Get the value of the forward vector
-		FVector avatarForwardVector = avatarPtr->GetActorForwardVector();
+		// Get the value of the camera direction vector
+		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::X);
+
+		// Since want to move character backwards in relation to camera
+		avatarPtr->bUseControllerRotationYaw = true;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
 
 		// Subtract movement input to the avatar forward vector. 
-		avatarPtr->AddMovementInput(avatarForwardVector, -amount);
+		avatarPtr->AddMovementInput(cameraDirection, -amount);
 	}
 }
 
@@ -71,9 +81,16 @@ void SwordStance::MoveRight(float amount) {
 	if (avatarPtr->pController && amount) {
 
 		// Get current right movement (no left vector) 
-		FVector avatarRightVector = avatarPtr->GetActorRightVector();
+		//FVector avatarRightVector = avatarPtr->GetActorRightVector();
+		
+		// Get the value of the camera direction vector
+		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::Y);
 
-		avatarPtr->AddMovementInput(avatarRightVector, amount);
+		// Since want to move character strafe in relation to camera
+		avatarPtr->bUseControllerRotationYaw = true;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
+
+		avatarPtr->AddMovementInput(cameraDirection, amount);
 	}
 }
 
@@ -83,9 +100,16 @@ void SwordStance::MoveLeft(float amount) {
 	if (avatarPtr->pController && amount) {
 
 		// Get current right movement (no left vector) 
-		FVector avatarRightVector = avatarPtr->GetActorRightVector();
+		//FVector avatarRightVector = avatarPtr->GetActorRightVector();
 
-		avatarPtr->AddMovementInput(avatarRightVector, -amount);
+		// Get the value of the camera direction vector
+		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::Y);
+
+		// Since want to move character strafe in relation to camera
+		avatarPtr->bUseControllerRotationYaw = true;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
+
+		avatarPtr->AddMovementInput(cameraDirection, -amount);
 	}
 }
 
@@ -94,6 +118,7 @@ void SwordStance::Yaw(float amount) {
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController && amount) {
+
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
 		avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
