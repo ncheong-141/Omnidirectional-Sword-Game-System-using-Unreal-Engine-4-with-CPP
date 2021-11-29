@@ -103,6 +103,18 @@ void AAvatar::BeginPlay()
 	if (animationInstance == nullptr) {
 		UE_LOG(LogTemp, Error, TEXT("animationInstance is null in %s"), __FUNCTION__);
 	}
+
+	/* Avatar key systems set up (Required here and in constructor for hot reloads)*/
+
+	// Generate the viewport sector grid
+	viewportGrid = TArray<UViewportSector*>();
+	generateViewportGrid();
+
+	// Instantiate currentViewpointSector 
+	currentViewportSector = nullptr;
+
+	// Initiate swordFocalPoint object
+	swordFocalPoint = NewObject<USwordFocalPoint>();
 }
 
 
@@ -130,6 +142,8 @@ void AAvatar::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Display, TEXT("Can Slash West: %d"), currentStance->getAllowableSwordDirections()->canMoveWest);
 		UE_LOG(LogTemp, Display, TEXT("Can Slash East: %d"), currentStance->getAllowableSwordDirections()->canMoveEast);
 	}
+	
+
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
 
@@ -512,10 +526,10 @@ void AAvatar::velocityAndDirectionUpdate() {
 	//UE_LOG(LogTemp, Display, TEXT("Local velocity of avatar: %f, %f"), avatarLocalVelocity.X, avatarLocalVelocity.Y);
 
 	// Get actor direciton info
-	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
+	//inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
 	UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
 
-	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
+	//turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
 	UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
 
 	// Set world velocity
@@ -542,7 +556,9 @@ void AAvatar::debugOutput() {
 
 	// Show mouse position
 	//GEngine->AddOnScreenDebugMessage(2, 100.f, FColor::White, FString::Printf(TEXT("Mouse X: %f, Mouse Y: %f"), mouse.X, mouse.Y));
-	GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y));
+	if (swordFocalPoint) {
+		GEngine->AddOnScreenDebugMessage(3, 100.f, FColor::White, FString::Printf(TEXT("SP X: %f, SP Y: %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y));
+	}
 
 
 	// Show right hand socket
