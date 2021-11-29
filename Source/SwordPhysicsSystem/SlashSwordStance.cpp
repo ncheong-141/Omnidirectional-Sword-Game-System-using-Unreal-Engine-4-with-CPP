@@ -6,6 +6,13 @@
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation
+SlashSwordStance::SlashSwordStance() {
+
+}
+
+SlashSwordStance::SlashSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
+
+}
 
 SlashSwordStance::~SlashSwordStance()
 {

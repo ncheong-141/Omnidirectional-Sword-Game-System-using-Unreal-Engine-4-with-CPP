@@ -5,6 +5,15 @@
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation
+DefaultSwordStance::DefaultSwordStance() {
+
+}
+
+DefaultSwordStance::DefaultSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
+
+}
+
+
 DefaultSwordStance::~DefaultSwordStance() {
 
 }

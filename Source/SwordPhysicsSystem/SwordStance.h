@@ -42,11 +42,12 @@ protected:
 public:
 
 	/* Class attributes */
-	int stanceID;			// Used to reference the stance as an integer
+	int stanceID;							// Used to reference the stance as an integer
+	bool applyRotationToSwordFocalPoint;	// Used to tell if input rotation is applied to the sword focal point
 
 	// Constructors
 	SwordStance();
-	SwordStance(AAvatar* avatar, int stance_ID);
+	SwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
 
 	// Virtual destructor to ensure sub class objects are appopiately deleted
 	virtual ~SwordStance();

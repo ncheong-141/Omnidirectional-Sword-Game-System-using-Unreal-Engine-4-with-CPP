@@ -32,7 +32,7 @@ public:
 	
 	// Constructor using constructor chaining to call super constructor with inputs
 	BlockSwordStance();
-	BlockSwordStance(AAvatar* avatar, int stance_ID);
+	BlockSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
 
 	// Destructor
 	~BlockSwordStance();

@@ -26,8 +26,8 @@ private:
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
-	SlashSwordStance() {};
-	SlashSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
+	SlashSwordStance();
+	SlashSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
 	~SlashSwordStance();
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class

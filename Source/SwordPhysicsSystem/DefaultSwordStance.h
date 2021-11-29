@@ -23,8 +23,8 @@ private:
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
-	DefaultSwordStance() {};
-	DefaultSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
+	DefaultSwordStance();
+	DefaultSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
 	~DefaultSwordStance(); 
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class

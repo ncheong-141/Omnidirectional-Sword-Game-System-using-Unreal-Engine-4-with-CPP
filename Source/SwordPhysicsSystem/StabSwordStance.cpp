@@ -7,6 +7,15 @@
 // Debug output file
 #include "DebugOutput.h"
 
+// Constructors and destructor
+StabSwordStance::StabSwordStance() {
+
+}
+
+StabSwordStance::StabSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
+
+}
+
 StabSwordStance::~StabSwordStance()
 {
 }

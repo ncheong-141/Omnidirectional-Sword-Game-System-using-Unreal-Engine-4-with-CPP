@@ -13,7 +13,7 @@ BlockSwordStance::BlockSwordStance() {
 
 }
 
-BlockSwordStance::BlockSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {
+BlockSwordStance::BlockSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
 
 	// Instantiate class attributes
 	canTurnCamera = false;
@@ -135,10 +135,14 @@ void BlockSwordStance::swordStanceActivation() {
 
 	// For block stance, activating the sword stance allows the user to turn their camera while blocking
 	canTurnCamera = true; 
+
+	// Turn off ability to change focal point since turniung camera
+	applyRotationToSwordFocalPoint = false;
 }
 
 void BlockSwordStance::swordStanceDeactivation() {
 
-	// Turn off ability to turn camera
+	// Turn off ability to turn camera 
 	canTurnCamera = false;
+	applyRotationToSwordFocalPoint = true;
 }

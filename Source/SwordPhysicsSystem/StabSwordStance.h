@@ -25,9 +25,8 @@ private:
 public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
-	StabSwordStance() {}
-	StabSwordStance(AAvatar* avatar, int stance_ID) : SwordStance(avatar, stance_ID) {}
-
+	StabSwordStance();
+	StabSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
 	// Destructor
 	~StabSwordStance();
 

@@ -57,10 +57,10 @@ AAvatar::AAvatar() {
 
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
-	defaultStance = DefaultSwordStance(this, 0);
-	slashStance = SlashSwordStance(this, 1);
-	blockStance = BlockSwordStance(this, 2);
-	stabStance = StabSwordStance(this, 3);
+	defaultStance = DefaultSwordStance(this, 0, false);
+	slashStance = SlashSwordStance(this, 1, true);
+	blockStance = BlockSwordStance(this, 2, true);
+	stabStance = StabSwordStance(this, 3, true);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
@@ -147,7 +147,7 @@ void AAvatar::Tick(float DeltaTime)
 	// Update focal point (!= 0 => not the default stance)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	// Change to flag in stance to say if it updates sword focal or not
-	if (currentStanceID != 0) {
+	if (currentStance->applyRotationToSwordFocalPoint == true) {
 		swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections());
 	}
 	
