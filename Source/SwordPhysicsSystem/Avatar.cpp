@@ -39,7 +39,10 @@ AAvatar::AAvatar() {
 	cameraComponent = CreateDefaultSubobject <UCameraComponent>(TEXT("AvatarCameraComponent"));
 	cameraComponent->SetupAttachment(cameraSpringArmComponent);
 
-	// How much the camera changes per zoom increment
+	// Set Spring arm parameters
+	cameraSpringArmComponent->TargetArmLength = 400.f;
+	cameraZoomMax = 1000.f;
+	cameraZoomMin = 100.f; 
 	cameraZoomChangeIncrement = 10.f; 
 
 	// Set up camera 
@@ -453,12 +456,15 @@ void AAvatar::dodge()
 }
 void AAvatar::changeCameraZoomIn() {
 
-	if (cameraSpringArmComponent->TargetArmLength + cameraZoomChangeIncrement < cameraZoomMax) {
+	UE_LOG(LogTemp, Display, TEXT("%s"), __FUNCTION__);
+
+	// Enforce Min
+	if (cameraSpringArmComponent->TargetArmLength - cameraZoomChangeIncrement > cameraZoomMin) {
 		cameraSpringArmComponent->TargetArmLength -= cameraZoomChangeIncrement;
 	}
 }
 void AAvatar::changeCameraZoomOut() {
-
+	UE_LOG(LogTemp, Display, TEXT("%s"), __FUNCTION__);
 	// Enforce max
 	if (cameraSpringArmComponent->TargetArmLength + cameraZoomChangeIncrement < cameraZoomMax ) {
 		cameraSpringArmComponent->TargetArmLength += cameraZoomChangeIncrement;
@@ -583,11 +589,11 @@ void AAvatar::velocityAndDirectionUpdate() {
 	//UE_LOG(LogTemp, Display, TEXT("Local velocity of avatar: %f, %f"), avatarLocalVelocity.X, avatarLocalVelocity.Y);
 
 	// Get actor direciton info
-	//inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
-	UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
+	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
+	//UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
 
 	//turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
-	UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
+	//UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
 
 	// Set world velocity
 	worldVelocity.X = avatarWorldVelocity.X;
