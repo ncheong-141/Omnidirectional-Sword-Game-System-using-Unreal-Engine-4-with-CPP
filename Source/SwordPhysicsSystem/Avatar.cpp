@@ -147,9 +147,8 @@ void AAvatar::Tick(float DeltaTime)
 	// Update focal point (!= 0 => not the default stance)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	// Change to flag in stance to say if it updates sword focal or not
-	if (currentStance->applyRotationToSwordFocalPoint == true) {
-		swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections());
-	}
+	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint == true);
+	
 	
 	if (swordFocalPoint->isRecordingMouseDeltaDistances()) {
 		UE_LOG(LogTemp, Display, TEXT("SwordFocalPt: %f, %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y);

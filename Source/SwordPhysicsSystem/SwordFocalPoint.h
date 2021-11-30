@@ -81,6 +81,7 @@ private:
 	// Should only record when attacking (for now, maybe other features used this)
 	bool				recordMouseDeltaDistances; 
 
+
 	
 public:
 
@@ -99,7 +100,7 @@ public:
 
 	// Called during avatar tick/per frame. Updates the focal point and any relevant
 	// SF stats such as direction, dominant direction etc
-	void update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections);
+	void update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections, bool applyRotationToSFP);
 	
 
 	// Getters and setters

@@ -42,6 +42,7 @@ USwordFocalPoint::USwordFocalPoint(const FObjectInitializer& ObjectInitializer) 
 	
 	// Index
 	cachedDeltaDistances_Index = 0;
+
 };
 
 
@@ -53,7 +54,8 @@ void USwordFocalPoint::init(ASPSPlayerController pController) {
 
 // Make sure you update viewport size
 
-void USwordFocalPoint::update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections) {
+void USwordFocalPoint::update(ASPSPlayerController* pController, const AllowableSwordDirectionInformation* allowableSwordDirections, bool applyRotationToSFP) {
+
 
 	// Mouse position update and store old
 	// Top left is (0,0), bottom right is (1,1)
@@ -64,6 +66,7 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 	oldPosition2D.X = position2D.X;
 	oldPosition2D.Y = position2D.Y;
 
+	// Get new mouse position
 	if (pController) {
 		pController->GetMousePosition(currentMousePositon.X, currentMousePositon.Y);
 	}
@@ -84,12 +87,13 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 	// - these cannot exceed 0 or 1 
 	// - sword can only move in allowable sword directions. 
 	
-	// X Axis
+	// Mouse X Axis deltas
 	float dx = 0.f; 
 	if (activatedPBC_X == false) {
 		dx = sensitivity * (currentMousePositon.X - oldMousePosition.X);
 	}
 	else {
+		// Periodic BC
 		// If difference is negative => crossed right boundary
 		if (currentMousePositon.X - oldMousePosition.X < 0) {
 
@@ -103,29 +107,14 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 		// Deactivate the boundary bool 
 		activatedPBC_X = false;
 	}
-	
-	// Enforce 0 or 1 boundary
-	if (position2D.X + dx >= 0.f && position2D.X + dx <= 1.f) {
 
-		// Check for allowable sword positions 
-		// West = -ve, East = +ve
-		if (allowableSwordDirections->canMoveEast && dx > 0.f) {
-			position2D.X = position2D.X + dx;
-		}
-		else if (allowableSwordDirections->canMoveWest && dx < 0.f) {
-			position2D.X = position2D.X + dx;
-		}
-		else if (dx != 0.f) {
-			UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in X!"));
-		}
-	}
-
-	// Y Axis
+	// Mouse Y Axis deltas
 	float dy = 0.f; 
 	if (activatedPBC_Y == false) {
 		dy = sensitivity * (currentMousePositon.Y - oldMousePosition.Y);
 	}
 	else {
+		// Periodic BC
 		// If difference is negative => crossed top boundary
 		if (currentMousePositon.Y - oldMousePosition.Y < 0) {
 
@@ -140,24 +129,42 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 		// Deactivate the boundary bool 
 		activatedPBC_Y = false;
 	}
-	// Enforce 0 or 1 boundary
-	if (position2D.Y + dy >= 0.f && position2D.Y + dy <= 1.f) {
 
-		// Check for allowable sword positions 
-		// North -ve, south +ve
-		if (allowableSwordDirections->canMoveNorth && dy < 0.f) {
-			position2D.Y = position2D.Y + dy;
+	// If  apply the user mouse motion input (yaw/pitch),
+	if (applyRotationToSFP) {
+
+		// Enforce 0 or 1 boundary
+		if (position2D.X + dx >= 0.f && position2D.X + dx <= 1.f) {
+
+			// Check for allowable sword positions 
+			// West = -ve, East = +ve
+			if (allowableSwordDirections->canMoveEast && dx > 0.f) {
+				position2D.X = position2D.X + dx;
+			}
+			else if (allowableSwordDirections->canMoveWest && dx < 0.f) {
+				position2D.X = position2D.X + dx;
+			}
+			else if (dx != 0.f) {
+				UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in X!"));
+			}
 		}
-		else if (allowableSwordDirections->canMoveSouth && dy > 0.f) {
-			position2D.Y = position2D.Y + dy;
-		}
-		else if (dy != 0.f) {
-			UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in Y!"));
+
+		// Enforce 0 or 1 boundary
+		if (position2D.Y + dy >= 0.f && position2D.Y + dy <= 1.f) {
+
+			// Check for allowable sword positions 
+			// North -ve, south +ve
+			if (allowableSwordDirections->canMoveNorth && dy < 0.f) {
+				position2D.Y = position2D.Y + dy;
+			}
+			else if (allowableSwordDirections->canMoveSouth && dy > 0.f) {
+				position2D.Y = position2D.Y + dy;
+			}
+			else if (dy != 0.f) {
+				UE_LOG(LogTemp, Display, TEXT("Cant move in that direction in Y!"));
+			}
 		}
 	}
-
-	/* Calculate Mouse direciton and distances for reference*/
-	calculateMouseDirection(pController);
 
 	// Record and calculate mouyse distances and directions when necessary
 	// e.g. when in slash stance activation (attack)
@@ -169,12 +176,16 @@ void USwordFocalPoint::update(ASPSPlayerController* pController, const Allowable
 		/* Calculate predom distances */
 		calculatePredominatingDistance();
 	}
+	
+	/* Calculate Mouse direciton and distances for reference*/
+	calculateMouseDirection(pController);
 
 	/* Process mouse positon for next check, ensure periodic BCs*/
 	// Set periodic boundary conditions on X and Y viewport edges such that mouse will always "move"
 	// Note, the activated booleans are used to branch into a different calculation on how to calculate the mouse difference
 	applyPeriodicBoundary(pController);
 }
+
 
 
 float USwordFocalPoint::getSwordDirectionSensitivity() {
