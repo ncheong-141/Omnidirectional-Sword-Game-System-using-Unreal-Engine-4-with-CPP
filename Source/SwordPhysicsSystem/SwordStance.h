@@ -38,12 +38,18 @@ protected:
 	// This is calculated in the attack animation notification state tick function
 	UPROPERTY()
 		AllowableSwordDirectionInformation allowableSwordDirections;
+
 	 
 public:
 
 	/* Class attributes */
 	int stanceID;							// Used to reference the stance as an integer
 	bool applyRotationToSwordFocalPoint;	// Used to tell if input rotation is applied to the sword focal point
+	
+	// Flags
+	bool stanceActivated;					// Used to tell if a stance has been activated
+	bool stanceActivationJustStarted; 
+	bool stanceActivationJustEnded;
 
 	// Constructors
 	SwordStance();

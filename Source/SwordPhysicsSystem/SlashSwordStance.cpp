@@ -71,6 +71,10 @@ void SlashSwordStance::swordStanceActivation() {
 	avatarPtr->setAvatarIsInAttackMotion(true); 
 	avatarPtr->setAttackMotionStartingSector(avatarPtr->getCurrentViewportSector()->getSectorID());
 
+	// Set the stance activation to true
+	stanceActivationJustStarted = true;
+	stanceActivated = true; 
+
 	// Set current animation time to 0 
 	avatarPtr->animationInstance->currentTime = 0;
 
@@ -85,6 +89,10 @@ void SlashSwordStance::swordStanceDeactivation() {
 
 	// Deactivate attack motion 
 	avatarPtr->setAvatarIsInAttackMotion(false);
+
+	// Set the stance activation to false
+	stanceActivated = false;
+	stanceActivationJustEnded = true;
 
 	// Let weapon know its not attacking
 	avatarPtr->getMeleeWeapon()->endAttackMotion();

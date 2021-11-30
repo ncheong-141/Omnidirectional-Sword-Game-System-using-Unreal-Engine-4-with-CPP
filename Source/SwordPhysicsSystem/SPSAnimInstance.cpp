@@ -46,6 +46,16 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	// Check if actor exists so to not crash if not
 	if (animatedAvatar != nullptr) {
 
+		// Check if stance just started (start of attack)
+		if (animatedAvatar->getStance()->stanceActivationJustStarted) {
+
+			// Set current time to zero
+			currentTime = 0.f;
+
+			// Unflag the flag
+			animatedAvatar->getStance()->stanceActivationJustStarted = false;
+		}
+
 		// If there is an animation currently playing
 		if (animationCurrentlyPlaying) {
 
@@ -63,9 +73,11 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 				currentTime += DeltaSeconds;
 			}
 			else {
-				UE_LOG(LogTemp, Error, TEXT("Going over total time"));
+				UE_LOG(LogTemp, Error, TEXT("over total time"));
 
 				// End attack? Reset time?
+				// Reset time
+
 
 			}
 			//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
@@ -106,26 +118,24 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			if (RightHandMovementSpeedFloatCurve != nullptr) {
 				righthandMovementCurveCurrentValue = RightHandMovementSpeedFloatCurve->Evaluate(currentTime);
 			}
-		}
 
-		//UE_LOG(LogTemp, Display, TEXT("CanDamage %d"), animatedAvatar->MeleeWeapon->canDamage);
+			/* Apply animation curve values */
+			// The curve current values are updated in the animation notification states
+			// Animations are applied in this class as it makes sense to apply the animation movement per animation tick
+			if (animatedAvatar->avatarIsInDodge()) {
 
-		/* Apply animation curve values */
-		// The curve current values are updated in the animation notification states
-		// Animations are applied in this class as it makes sense to apply the animation movement per animation tick
-		if (animatedAvatar->avatarIsInDodge()) {
+				// Apply animation curve movement
+				animatedAvatar->applyAnimMovement();
+			}
 
-			// Apply animation curve movement
-			animatedAvatar->applyAnimMovement();
-		}
+			if (animatedAvatar->avatarIsInAttackMotion()) {
 
-		if (animatedAvatar->avatarIsInAttackMotion()) {
+				// Apply animation curve movement
+				animatedAvatar->applyAnimMovement();
 
-			// Apply animation curve movement
-			animatedAvatar->applyAnimMovement();
-
-			// Set the right hand speed 
-			animatedAvatar->setRighthandResultantSpeed(righthandMovementCurveCurrentValue);
+				// Set the right hand speed 
+				animatedAvatar->setRighthandResultantSpeed(righthandMovementCurveCurrentValue);
+			}
 		}
 	}
 }

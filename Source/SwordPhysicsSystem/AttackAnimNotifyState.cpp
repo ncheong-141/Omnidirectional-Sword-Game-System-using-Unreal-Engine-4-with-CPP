@@ -88,7 +88,6 @@ void UAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	// Calculate allowable sword directions (this is stance dependent and is called polymorphicaly)
 	if (avatar) {
 		avatar->getStance()->calculateAllowableSwordDirections();
-		UE_LOG(LogTemp, Display, TEXT("Calling FN"))
 	}
 
 	// Set animation playing to true
@@ -110,5 +109,4 @@ void UAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 	if (avatarAnimInstance) {
 		avatarAnimInstance->animationCurrentlyPlaying = false;
 	}
-	
 }

@@ -20,7 +20,9 @@ SwordStance::SwordStance() {
 }
 
 // Constructor and destructor implementation
-SwordStance::SwordStance(AAvatar* avatar, const int stance_ID, bool applyRotationToSFP) : stanceID(stance_ID), applyRotationToSwordFocalPoint(applyRotationToSFP){
+SwordStance::SwordStance(AAvatar* avatar, const int stance_ID, bool applyRotationToSFP) : stanceID(stance_ID), 
+																							applyRotationToSwordFocalPoint(applyRotationToSFP), 
+																							stanceActivated(false), stanceActivationJustStarted(false), stanceActivationJustEnded(false) {
 	
 	// Set avatar pointer/State pattern context
 	avatarPtr = avatar; 
