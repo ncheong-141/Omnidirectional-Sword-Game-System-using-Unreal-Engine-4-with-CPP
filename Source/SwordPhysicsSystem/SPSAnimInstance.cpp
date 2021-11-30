@@ -57,12 +57,16 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			}
 
 			// Calculate the current time
+			// Notificaiton duration scaled by rate scale
 			if (currentTime + DeltaSeconds < totalNotificationDuration) {
 				lastFrameTime = currentTime;
 				currentTime += DeltaSeconds;
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Going over total time"));
+
+				// End attack? Reset time?
+
 			}
 			//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 

@@ -49,7 +49,7 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 
 				// Set the time stats
 				avatarAnimInstance->currentTime = 0;
-				avatarAnimInstance->totalNotificationDuration = TotalDuration;
+				avatarAnimInstance->totalNotificationDuration = TotalDuration / Animation->RateScale;
 
 				// Set the float curve data to anim instance
 				if (Animation != nullptr) {
