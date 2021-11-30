@@ -48,7 +48,7 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 			if (avatarAnimInstance != nullptr) {
 
 				// Reset the time stats
-				avatarAnimInstance->totalAnimationDuration = TotalDuration;
+				avatarAnimInstance->totalNotificationDuration = TotalDuration;
 
 				// Set the float curve data to anim instance
 				if (Animation != nullptr) {
@@ -58,6 +58,9 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 
 					// For attack curves
 					avatarAnimInstance->setAttackFloatCurvePointers(Animation);
+					
+					// Animation base reference
+					avatarAnimInstance->setCurrentAnimationBase(Animation);
 				}
 			}
 			else {

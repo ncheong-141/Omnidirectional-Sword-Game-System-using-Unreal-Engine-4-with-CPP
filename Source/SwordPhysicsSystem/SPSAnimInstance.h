@@ -52,7 +52,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
 		float righthandMovementCurveCurrentValue;
 
+	// Animation base currently playing
+	UPROPERTY()
+		UAnimSequenceBase* currentlyPlayingAnimation;
 
+	UPROPERTY()
+		UAnimMontage* currentlyPlayingMontage;
 
 	// Float curve data of current animation
 	const FFloatCurve* ForwardMovementDistanceFloatCurve;
@@ -68,7 +73,7 @@ public:
 		float lastFrameTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		float totalAnimationDuration;
+		float totalNotificationDuration;
 
 	// Flow control parameters altered by animation notification
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
@@ -85,4 +90,6 @@ public:
 
 	// Get attack curve values (hand speed, directions (in future), etc)
 	void setAttackFloatCurvePointers(UAnimSequenceBase* Animation);
+
+	void setCurrentAnimationBase(UAnimSequenceBase* animation);
 };

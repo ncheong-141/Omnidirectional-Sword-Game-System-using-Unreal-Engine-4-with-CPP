@@ -149,15 +149,6 @@ void AAvatar::Tick(float DeltaTime)
 	// Change to flag in stance to say if it updates sword focal or not
 	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint == true);
 	
-	
-	if (swordFocalPoint->isRecordingMouseDeltaDistances()) {
-		UE_LOG(LogTemp, Display, TEXT("SwordFocalPt: %f, %f"), swordFocalPoint->position2D.X, swordFocalPoint->position2D.Y);
-		UE_LOG(LogTemp, Display, TEXT("Can Slash North: %d"), currentStance->getAllowableSwordDirections()->canMoveNorth);
-		UE_LOG(LogTemp, Display, TEXT("Can Slash South: %d"), currentStance->getAllowableSwordDirections()->canMoveSouth);
-		UE_LOG(LogTemp, Display, TEXT("Can Slash West: %d"), currentStance->getAllowableSwordDirections()->canMoveWest);
-		UE_LOG(LogTemp, Display, TEXT("Can Slash East: %d"), currentStance->getAllowableSwordDirections()->canMoveEast);
-	}
-	
 	// Turn off controller rotation when not using these input keys/strafing
 	// (janky solution but works) 
 	if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {

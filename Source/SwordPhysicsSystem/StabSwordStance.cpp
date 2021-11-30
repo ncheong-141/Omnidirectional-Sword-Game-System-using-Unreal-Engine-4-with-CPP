@@ -37,19 +37,20 @@ void StabSwordStance::Yaw(float amount) {
 	// Allow for camera angling when attacking
 	if (avatarPtr->pController && amount) {
 
-		if (avatarPtr->getMeleeWeapon() != nullptr) {
+		if (avatarPtr->getMeleeWeapon() != nullptr && avatarPtr->avatarIsInAttackMotion()) {
 
 			if (avatarPtr->getMeleeWeapon()->canDamage) {
 
 				// Switch to avatar following camera angle
 				avatarPtr->bUseControllerRotationYaw = true;
 				avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
+				avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 			else {
 				avatarPtr->bUseControllerRotationYaw = false;
+				avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 
-			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 
 		}
 	}

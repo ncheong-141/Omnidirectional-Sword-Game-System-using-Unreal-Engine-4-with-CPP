@@ -49,10 +49,15 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		// If there is an animation currently playing
 		if (animationCurrentlyPlaying) {
 
-			UE_LOG(LogTemp, Display, TEXT("Anim total dura time: %f"), totalAnimationDuration);
+			UE_LOG(LogTemp, Display, TEXT("Anim total dura time: %f"), totalNotificationDuration);
+			if (currentlyPlayingAnimation) {
+				UE_LOG(LogTemp, Display, TEXT("Anim total dura time from object from function: %f"), currentlyPlayingAnimation->GetPlayLength());
+				UE_LOG(LogTemp, Display, TEXT("Anim total dura time from object from variable: %f"), currentlyPlayingAnimation->SequenceLength);
+				UE_LOG(LogTemp, Display, TEXT("Anim RateScake from object from variable: %f"), currentlyPlayingAnimation->RateScale);
+			}
 
 			// Calculate the current time
-			if (currentTime + DeltaSeconds < totalAnimationDuration) {
+			if (currentTime + DeltaSeconds < totalNotificationDuration) {
 				lastFrameTime = currentTime;
 				currentTime += DeltaSeconds;
 			}
@@ -116,7 +121,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			animatedAvatar->applyAnimMovement();
 
 			// Set the right hand speed 
-
+			animatedAvatar->setRighthandResultantSpeed(righthandMovementCurveCurrentValue);
 		}
 	}
 }
@@ -164,4 +169,8 @@ void USPSAnimInstance::setAttackFloatCurvePointers(UAnimSequenceBase* Animation)
 		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
 	}
 
+}
+
+void USPSAnimInstance::setCurrentAnimationBase(UAnimSequenceBase* Animation) {
+	currentlyPlayingAnimation = Animation;
 }
