@@ -1,51 +1,52 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SlashSwordStance.h"
+#include "BodyRotationSlashStance.h"
+
 #include "Avatar.h"
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation
-SlashSwordStance::SlashSwordStance() {
+BodyRotationSlashStance::BodyRotationSlashStance() {
 
 }
 
-SlashSwordStance::SlashSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
+BodyRotationSlashStance::BodyRotationSlashStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
 
 }
 
-SlashSwordStance::~SlashSwordStance()
+BodyRotationSlashStance::~BodyRotationSlashStance()
 {
 }
 
 // Virtual function override class function implementation
-void SlashSwordStance::displayStance() {
+void BodyRotationSlashStance::displayStance() {
 
 	DebugOutput output = DebugOutput();
 
-	output.toHUD(FString("Slash Stance"), 2.f, false);
+	output.toHUD(FString("BodyRotationSlashStance Stance"), 2.f, false);
 }
 
 
-void SlashSwordStance::Yaw(float amount) {
+void BodyRotationSlashStance::Yaw(float amount) {
 
 	// Change sword position based on mouse position
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
-void SlashSwordStance::Pitch(float amount) {
+void BodyRotationSlashStance::Pitch(float amount) {
 	// Change sword position based on mouse position
 	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
 }
 
-void SlashSwordStance::calculateAllowableSwordDirections() {
+void BodyRotationSlashStance::calculateAllowableSwordDirections() {
 
 	// Slash Stance rule: If any of the directions are predominant, change the allowable direction to that
-	
+
 	// Check directions
 	// if both axis directions are true, there is no dominant direciton yet.
 	// If one is false, then it is set to that until the attack slash is over
-	
+
 	// X axis
 	if (allowableSwordDirections.canMoveEast && allowableSwordDirections.canMoveWest) {
 
@@ -65,24 +66,21 @@ void SlashSwordStance::calculateAllowableSwordDirections() {
 	// This is reset when the slash ends
 }
 
-void SlashSwordStance::swordStanceActivation() {
-	
+void BodyRotationSlashStance::swordStanceActivation() {
+
 	// Activate attack for slash sword stance
-	avatarPtr->setAvatarIsInAttackMotion(true); 
+	avatarPtr->setAvatarIsInAttackMotion(true);
 	avatarPtr->setAttackMotionStartingSector(avatarPtr->getCurrentViewportSector()->getSectorID());
 
 	// Set the stance activation to true
 	stanceActivationJustStarted = true;
-	stanceActivated = true; 
+	stanceActivated = true;
 
 	// Let weapon know its now attacking
-	avatarPtr->getMeleeWeapon()->startAttackMotion(); 
-
-	// Activate the recording of mouse delta distances (required for tracking of slash movemment)
-	avatarPtr->getSwordFocalPoint()->setRecordMouseDeltaDistances(true);
+	avatarPtr->getMeleeWeapon()->startAttackMotion();
 }
 
-void SlashSwordStance::swordStanceDeactivation() {
+void BodyRotationSlashStance::swordStanceDeactivation() {
 
 	// Deactivate attack motion 
 	avatarPtr->setAvatarIsInAttackMotion(false);
@@ -99,7 +97,4 @@ void SlashSwordStance::swordStanceDeactivation() {
 	allowableSwordDirections.canMoveWest = true;
 	allowableSwordDirections.canMoveNorth = true;
 	allowableSwordDirections.canMoveSouth = true;
-
-	// Deactivate the recording of mouse delta distances (required for tracking of slash movemment)
-	avatarPtr->getSwordFocalPoint()->setRecordMouseDeltaDistances(false);
 }
