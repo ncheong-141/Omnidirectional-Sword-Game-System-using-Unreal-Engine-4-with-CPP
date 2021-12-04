@@ -4,6 +4,8 @@
 #include "DodgeAnimNotifyState.h"
 #include "Avatar.h"
 #include "SPSAnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) {
 

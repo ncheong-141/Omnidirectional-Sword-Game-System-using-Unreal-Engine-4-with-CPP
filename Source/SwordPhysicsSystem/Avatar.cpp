@@ -153,7 +153,7 @@ void AAvatar::Tick(float DeltaTime)
 	// Change to flag in stance to say if it updates sword focal or not
 	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint == true);
 	
-	// Turn off controller rotation when not using these input keys/strafing
+	// Turn off controller rotation when not using these input keys/strafing or in dodge
 	// (janky solution but works) 
 	if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {
 		this->bUseControllerRotationYaw = false;
@@ -464,6 +464,7 @@ void AAvatar::jump() {
 void AAvatar::dodge()
 {
 	if (!actionAbilityLocked) {
+
 		currentStance->dodge();
 	}
 }
@@ -641,7 +642,7 @@ void AAvatar::velocityAndDirectionUpdate() {
 		}
 	}
 
-	
+
 
 	// Calculate the normalised inputed velocity (this is currently wrong)
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();

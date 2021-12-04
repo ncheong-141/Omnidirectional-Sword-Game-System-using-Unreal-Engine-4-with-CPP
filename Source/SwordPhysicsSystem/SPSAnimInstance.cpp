@@ -77,8 +77,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 				// End attack? Reset time? Start next attack?
 				// Reset time
-				// Start next attack
-				animatedAvatar->getStance()->swordStanceActivation();
+
 
 			}
 			//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
