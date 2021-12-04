@@ -79,6 +79,9 @@ protected:
 		FVector2D normalisedLocalVelocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		FVector2D normalisedLocalVelocityBeforeAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		FVector2D worldVelocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
@@ -117,6 +120,16 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAttackMotion;
+
+
+	// Moving is always updated in avatar, wasMoving to determine if the isMoving was true
+	// and needs to be known before an action which changes speed sets it to false (i.e. after an attack)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isMoving;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool wasMovingBeforeAction;
+
 
 
 	// Avatar internal flow control conditions
@@ -249,6 +262,7 @@ public:
 	int getCurrentStanceID();
 	USwordFocalPoint* const getSwordFocalPoint();
 	FVector2D getNormalisedLocalVelocity();
+	FVector2D getNormalisedLocalVelocityBeforeAction();
 	FVector2D getWorldVelocity();
 	FVector2D getLocalVelocity();
 	float getRighthandResultantSpeed();
@@ -259,6 +273,8 @@ public:
 	bool avatarIsInIframe();
 	bool avatarIsInDodge();
 	bool avatarIsInAttackMotion();
+	bool avatarIsMoving();
+	bool avatarWasMovingBeforeAction();
 	bool isInputMovementLocked();
 	bool isActionAbilityLocked();
 	int getAttackMotionStartingSector();
@@ -276,6 +292,8 @@ public:
 	void setAvatarIsInIframe(bool value);
 	void setAvatarIsInDodge(bool value);
 	void setAvatarIsInAttackMotion(bool value);
+	void setAvatarIsMoving(bool value);
+	void setAvatarWasMovingBeforeAction(bool value);
 	void setAttackMotionStartingSector(int sectorID); 
 	void setDodgeDirection(int directionID);
 

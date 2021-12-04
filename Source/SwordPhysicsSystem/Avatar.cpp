@@ -73,11 +73,14 @@ AAvatar::AAvatar() {
 	normalisedLocalVelocity = FVector2D(0.f);
 	worldVelocity = FVector2D(0.f);
 	localVelocity = FVector2D(0.f);
+	normalisedLocalVelocityBeforeAction = FVector2D(0.f);
 	righthandResultantSpeed = 0.f; 
 	isInAir = false;
 	isInIframe = false;
 	isInDodge = false;
 	isInAttackMotion = false;
+	isMoving = false;
+	wasMovingBeforeAction = false;
 	attackMotionStartingSector = 0; 
 	dodgeDirection = 0;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
@@ -602,8 +605,10 @@ void AAvatar::velocityAndDirectionUpdate() {
 	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
 	//UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
 
-	//turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
-	//UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
+	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
+	UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
+
+
 
 	// Set world velocity
 	worldVelocity.X = avatarWorldVelocity.X;
@@ -612,6 +617,31 @@ void AAvatar::velocityAndDirectionUpdate() {
 	// Set local/relative velocity
 	localVelocity.X = avatarLocalVelocity.X;
 	localVelocity.Y = avatarLocalVelocity.Y;
+
+	// set movign flag if moving
+	if (!localVelocity.IsZero()) {
+		isMoving = true;
+	}
+	else {
+		isMoving = false;
+	}
+
+	// Set wasmovingBeforeAction 
+	// Dont change if user is doing an action 
+	if (!isInAttackMotion && !isInDodge) {
+		
+		if (isMoving == true) {
+			wasMovingBeforeAction = true;
+			normalisedLocalVelocityBeforeAction = normalisedLocalVelocity;
+		}
+		else {
+			wasMovingBeforeAction = false;
+			normalisedLocalVelocityBeforeAction.X = 0.f;
+			normalisedLocalVelocityBeforeAction.Y = 0.f;
+		}
+	}
+
+	
 
 	// Calculate the normalised inputed velocity (this is currently wrong)
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
@@ -647,6 +677,8 @@ void AAvatar::debugOutput() {
 	GEngine->AddOnScreenDebugMessage(6, 100.f, FColor::White, FString::Printf(TEXT("IML: %d"), inputMovementLocked));
 	GEngine->AddOnScreenDebugMessage(7, 100.f, FColor::White, FString::Printf(TEXT("AAL: %d"), actionAbilityLocked));
 	GEngine->AddOnScreenDebugMessage(8, 100.f, FColor::White, FString::Printf(TEXT("IAM: %d"), isInAttackMotion));
+	GEngine->AddOnScreenDebugMessage(11, 100.f, FColor::White, FString::Printf(TEXT("IsMoving: %d"), isMoving));
+	GEngine->AddOnScreenDebugMessage(12, 100.f, FColor::White, FString::Printf(TEXT("wasMoving: %d"), wasMovingBeforeAction));
 
 	// show pitch
 	FRotator actorRotation = pController->GetControlRotation(); 
@@ -667,6 +699,10 @@ USwordFocalPoint* const AAvatar::getSwordFocalPoint() {
 
  FVector2D AAvatar::getNormalisedLocalVelocity() {
 	 return normalisedLocalVelocity;
+ }
+
+ FVector2D AAvatar::getNormalisedLocalVelocityBeforeAction() {
+	 return normalisedLocalVelocityBeforeAction;
  }
 
  FVector2D AAvatar::getWorldVelocity() {
@@ -702,6 +738,12 @@ bool AAvatar::avatarIsInDodge() {
 }
 bool AAvatar::avatarIsInAttackMotion() {
 	return isInAttackMotion; 
+}
+bool AAvatar::avatarIsMoving() {
+	return isMoving;
+}
+bool AAvatar::avatarWasMovingBeforeAction() {
+	return wasMovingBeforeAction;
 }
 
 bool AAvatar::isInputMovementLocked() {
@@ -752,6 +794,12 @@ void AAvatar::setAvatarIsInDodge(bool value) {
 }
 void AAvatar::setAvatarIsInAttackMotion(bool value) {
 	isInAttackMotion = value;
+}
+void AAvatar::setAvatarIsMoving(bool value) {
+	isMoving = value;
+}
+void AAvatar::setAvatarWasMovingBeforeAction(bool value) {
+	wasMovingBeforeAction = value;
 }
 
 void AAvatar::setAttackMotionStartingSector(int sectorID) {
