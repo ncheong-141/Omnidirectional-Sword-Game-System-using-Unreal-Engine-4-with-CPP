@@ -7,6 +7,10 @@
 #include "Avatar.h"
 #include "DebugOutput.h"
 
+// Game classes
+#include "GameFramework/CharacterMovementComponent.h"
+
+
 // Constructor and destructor implementation
 BodyRotationSlashStance::BodyRotationSlashStance() {
 
@@ -31,8 +35,24 @@ void BodyRotationSlashStance::displayStance() {
 
 void BodyRotationSlashStance::Yaw(float amount) {
 
-	// Change sword position based on mouse position
-	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->pController && amount) {
+		
+		// Used to slow the yaw motion when not attacking
+		float stanceYawFactor = 0.1; 
+		
+		// Avatar is attacking
+		if (avatarPtr->avatarIsInAttackMotion()) {
+			
+			// Set avatar to now rotate with camera yaw
+			avatarPtr->bUseControllerRotationYaw = true;
+			avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
+			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		}
+		else {
+			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() *stanceYawFactor* amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		}
+	}
 }
 
 void BodyRotationSlashStance::Pitch(float amount) {
