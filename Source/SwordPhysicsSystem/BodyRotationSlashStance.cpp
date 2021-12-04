@@ -38,11 +38,12 @@ void BodyRotationSlashStance::Yaw(float amount) {
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController && amount) {
 		
-		// Used to slow the yaw motion when not attacking
-		float stanceYawFactor = 0.1; 
-		
 		// Avatar is attacking
 		if (avatarPtr->avatarIsInAttackMotion()) {
+			
+			// Need to set a max yaw
+			
+			// Change canDamage here if yaw is accelerating
 			
 			// Set avatar to now rotate with camera yaw
 			avatarPtr->bUseControllerRotationYaw = true;
@@ -50,14 +51,21 @@ void BodyRotationSlashStance::Yaw(float amount) {
 			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 		else {
-			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() *stanceYawFactor* amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 	}
 }
 
 void BodyRotationSlashStance::Pitch(float amount) {
-	// Change sword position based on mouse position
-	//avatarPtr->swordFocalPoint->update(avatarPtr->pController);
+
+	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
+	if (avatarPtr->pController && amount) {
+
+		// Avatar is not attacking
+		if (!avatarPtr->avatarIsInAttackMotion()) {
+			avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		}
+	}
 }
 
 void BodyRotationSlashStance::calculateAllowableSwordDirections() {
@@ -89,6 +97,10 @@ void BodyRotationSlashStance::swordStanceActivation() {
 
 	// Let weapon know its now attacking
 	avatarPtr->getMeleeWeapon()->startAttackMotion();
+
+	// Set weapon to can damage (usually set in animation notificaiton since only part of sword slash should be able to damage)
+	// however, for this stance it makes sense that all can
+	avatarPtr->getMeleeWeapon()->canDamage = true;
 }
 
 void BodyRotationSlashStance::swordStanceDeactivation() {
@@ -102,6 +114,7 @@ void BodyRotationSlashStance::swordStanceDeactivation() {
 
 	// Let weapon know its not attacking
 	avatarPtr->getMeleeWeapon()->endAttackMotion();
+	avatarPtr->getMeleeWeapon()->canDamage = false;
 
 	// Reset allowable sword directions for next slash
 	allowableSwordDirections.canMoveEast = true;
