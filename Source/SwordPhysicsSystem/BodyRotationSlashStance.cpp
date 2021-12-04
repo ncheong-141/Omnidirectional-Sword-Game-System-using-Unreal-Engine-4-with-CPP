@@ -3,6 +3,7 @@
 
 #include "BodyRotationSlashStance.h"
 
+#include "SwordFocalPoint.h"
 #include "Avatar.h"
 #include "DebugOutput.h"
 
@@ -41,27 +42,17 @@ void BodyRotationSlashStance::Pitch(float amount) {
 
 void BodyRotationSlashStance::calculateAllowableSwordDirections() {
 
-	// Slash Stance rule: If any of the directions are predominant, change the allowable direction to that
-
-	// Check directions
-	// if both axis directions are true, there is no dominant direciton yet.
-	// If one is false, then it is set to that until the attack slash is over
-
+	// BRSS Stance rule: Is rotating so only makjes sense to move sword up and down
+	// Needs to be minimised though 
+	// 
 	// X axis
-	if (allowableSwordDirections.canMoveEast && allowableSwordDirections.canMoveWest) {
-
-		// Refer to swordfocalpoint object  
-		allowableSwordDirections.canMoveEast = avatarPtr->getSwordFocalPoint()->isDominantDirectionEast();
-		allowableSwordDirections.canMoveWest = avatarPtr->getSwordFocalPoint()->isDominantDirectionWest();
-	}
-
+	allowableSwordDirections.canMoveEast = false;
+	allowableSwordDirections.canMoveWest = false;
+	
 	// Y axis
-	if (allowableSwordDirections.canMoveNorth && allowableSwordDirections.canMoveSouth) {
-
-		// Refer to swordfocalpoint object  
-		allowableSwordDirections.canMoveNorth = avatarPtr->getSwordFocalPoint()->isDominantDirectionNorth();
-		allowableSwordDirections.canMoveSouth = avatarPtr->getSwordFocalPoint()->isDominantDirectionSouth();
-	}
+	// Refer to swordfocalpoint object  
+	allowableSwordDirections.canMoveNorth = true;
+	allowableSwordDirections.canMoveSouth = true;
 
 	// This is reset when the slash ends
 }
