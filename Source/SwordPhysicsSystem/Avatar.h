@@ -12,6 +12,7 @@
 #include "SlashSwordStance.h"
 #include "BlockSwordStance.h"
 #include "StabSwordStance.h"
+#include "BodyRotationSlashStance.h"
 #include "MeleeWeapon.h"
 #include "OneHandedSword.h"
 #include "SPSPlayerController.h"
@@ -59,10 +60,11 @@ protected:
 	// Store instances of all stances such that SwordStance* currentStance can interchange which stance it points too
 	// This means the stance wont be created/deleted every time it is called. 
 	// Note, each stance has an internal ID variable which is used to reference each stance as an integer and makes it easy to define in UE BPs
-	DefaultSwordStance	defaultStance;		// ID = 0
-	SlashSwordStance	slashStance;		// ID = 1
-	BlockSwordStance	blockStance;		// ID = 2
-	StabSwordStance		stabStance;			// ID = 3 
+	DefaultSwordStance		defaultStance;				// ID = 0
+	SlashSwordStance		slashStance;				// ID = 1
+	BlockSwordStance		blockStance;				// ID = 2
+	StabSwordStance			stabStance;					// ID = 3 
+	BodyRotationSlashStance bodyRotationSlashStance;	// ID = 4
 
 	// Current stance ID, this variable is used to denote which stance the avatar is in
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
@@ -191,6 +193,7 @@ public:
 	void			switch_SlashSwordStance();
 	void			switch_BlockSwordStance();
 	void			switch_StabSwordStance(); 
+	void			switch_BodyRotationSlashSwordStance();
 
 	// Player input 
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour

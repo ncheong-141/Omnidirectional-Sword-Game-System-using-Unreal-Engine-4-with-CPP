@@ -61,6 +61,7 @@ AAvatar::AAvatar() {
 	slashStance = SlashSwordStance(this, 1, true);
 	blockStance = BlockSwordStance(this, 2, true);
 	stabStance = StabSwordStance(this, 3, true);
+	bodyRotationSlashStance = BodyRotationSlashStance(this, 4, true);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
@@ -212,6 +213,11 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	
 	PlayerInputComponent->BindAction("StabSwordStance", IE_Pressed, this, &AAvatar::switch_StabSwordStance);
 	PlayerInputComponent->BindAction("StabSwordStance", IE_Released, this, &AAvatar::switch_DefaultSwordStance);
+
+	PlayerInputComponent->BindAction("BodyRotationSlashStance", IE_Pressed, this, &AAvatar::switch_BodyRotationSlashSwordStance);
+	PlayerInputComponent->BindAction("BodyRotationSlashStance", IE_Released, this, &AAvatar::switch_DefaultSwordStance);
+
+	//BodyRotationSlashStance
 }
 
 
@@ -287,6 +293,20 @@ void AAvatar::switch_StabSwordStance() {
 		avatarMovementComponent->bOrientRotationToMovement = false;
 
 		currentStance = &stabStance;
+		currentStanceID = currentStance->stanceID;
+		currentStance->displayStance();
+	}
+}
+
+void AAvatar::switch_BodyRotationSlashSwordStance() {
+
+	if (!actionAbilityLocked) {
+
+		// Change camera properties (switches yaw to change with camera pos)
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
+		currentStance = &bodyRotationSlashStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
 	}
