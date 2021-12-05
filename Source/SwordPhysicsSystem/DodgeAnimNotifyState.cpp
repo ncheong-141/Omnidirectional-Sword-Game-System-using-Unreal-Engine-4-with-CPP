@@ -30,6 +30,10 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 				
 				// Begin notifcation code for avatar
 				// Not required to set isInDodge for avatar as done in input command
+				
+				// Set avatar to change yaw with camera direction for all dodges
+				avatar->bUseControllerRotationYaw = true;
+				avatar->avatarMovementComponent->bOrientRotationToMovement = false;
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
@@ -101,6 +105,10 @@ void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeq
 	// Set dodge to false as it has ended
 	if (avatar) {
 		avatar->setAvatarIsInDodge(false);
+
+		// Reset camera back to normal
+		avatar->bUseControllerRotationYaw = false;
+		avatar->avatarMovementComponent->bOrientRotationToMovement = true;
 	}
 
 	// Set playing animation to false after finishing animation

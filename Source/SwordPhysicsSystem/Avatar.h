@@ -212,9 +212,13 @@ public:
 	// All impl. call stance functions such that the stances have full control over Avatar behaviour
 	// Functions for input are required in Avatar since UE4 framework requires Avatar function pointers
 	void MoveForward(float amount);
+	void MoveForwardRelease(); 
 	void MoveBack(float amount);
+	void MoveBackRelease();
 	void MoveLeft(float amount);
+	void MoveLeftRelease(); 
 	void MoveRight(float amount);
+	void MoveRightRelease(); 
 	void Yaw(float amount);
 	void Pitch(float amount);
 

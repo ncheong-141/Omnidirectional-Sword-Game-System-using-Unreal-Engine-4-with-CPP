@@ -3,6 +3,8 @@
 
 #include "SlashSwordStance.h"
 #include "Avatar.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 #include "DebugOutput.h"
 
 // Constructor and destructor implementation

@@ -155,9 +155,9 @@ void AAvatar::Tick(float DeltaTime)
 	
 	// Turn off controller rotation when not using these input keys/strafing or in dodge
 	// (janky solution but works) 
-	if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {
-		this->bUseControllerRotationYaw = false;
-	}
+	//if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {
+	//	this->bUseControllerRotationYaw = false;
+	//}
 
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector(); 
@@ -185,6 +185,13 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Back", this, &AAvatar::MoveBack);
 	PlayerInputComponent->BindAxis("StrafeLeft", this, &AAvatar::MoveLeft);
 	PlayerInputComponent->BindAxis("StrafeRight", this, &AAvatar::MoveRight);
+
+	// Release "action" inputs for axis input key releases
+	PlayerInputComponent->BindAction("MoveForwardRelease", IE_Released, this, &AAvatar::MoveForwardRelease);
+	PlayerInputComponent->BindAction("MoveBackRelease", IE_Released, this, &AAvatar::MoveBackRelease);
+	PlayerInputComponent->BindAction("StrafeRightRelease", IE_Released, this, &AAvatar::MoveRightRelease);
+	PlayerInputComponent->BindAction("StrafeLeftRelease", IE_Released, this, &AAvatar::MoveLeftRelease);
+
 
 	// Mouse inputs 
 	PlayerInputComponent->BindAxis("Yaw", this, &AAvatar::Yaw);
@@ -244,10 +251,10 @@ void AAvatar::switch_DefaultSwordStance() {
 
 		// Interrpt attack if in motion (before switching)
 		deactivateSwordStanceActivation();
-		
-		// Change camera properties
-		bUseControllerRotationYaw = true;
-		avatarMovementComponent->bOrientRotationToMovement = false;
+
+		// Reset back to default
+		bUseControllerRotationYaw = false;
+		avatarMovementComponent->bOrientRotationToMovement = true;
 
 		currentStance = &defaultStance;
 		currentStanceID = currentStance->stanceID;
@@ -259,7 +266,7 @@ void AAvatar::switch_SlashSwordStance() {
 
 	if (!actionAbilityLocked) {
 
-		// Change camera properties
+		// Aim in camera direction
 		bUseControllerRotationYaw = true;
 		avatarMovementComponent->bOrientRotationToMovement = false;
 
@@ -276,7 +283,7 @@ void AAvatar::switch_BlockSwordStance() {
 		// Interrpt attack if in motion (before switching)
 		deactivateSwordStanceActivation();
 
-		// Change camera properties
+		// Aim in camera direction
 		bUseControllerRotationYaw = true;
 		avatarMovementComponent->bOrientRotationToMovement = false;
 
@@ -291,7 +298,7 @@ void AAvatar::switch_StabSwordStance() {
 
 	if (!actionAbilityLocked) {
 
-		// Change camera properties
+		// Aim in camera direction
 		bUseControllerRotationYaw = true;
 		avatarMovementComponent->bOrientRotationToMovement = false;
 
@@ -305,7 +312,7 @@ void AAvatar::switch_BodyRotationSlashSwordStance() {
 
 	if (!actionAbilityLocked) {
 
-		// Change camera properties (switches yaw to change with camera pos)
+		// Aim in camera direction
 		bUseControllerRotationYaw = true;
 		avatarMovementComponent->bOrientRotationToMovement = false;
 
@@ -412,29 +419,81 @@ void AAvatar::setCurrentViewportSector() {
 ======================== */
 void AAvatar::MoveForward(float amount) {
 
-	if (!inputMovementLocked) {
+	// These funcitons are always called, dont enter body unless amount > 0 
+	if (!inputMovementLocked && amount) {
+
+		// Reset avatar to orientate to movemnet when not straging
+		//bUseControllerRotationYaw = false;
+		//avatarMovementComponent->bOrientRotationToMovement = true;
+
 		currentStance->MoveForward(amount);
 	}
 }
 
+void AAvatar::MoveForwardRelease() {
+
+}
+
 void AAvatar::MoveBack(float amount) {
-	if (!inputMovementLocked) {
+	
+	// These funcitons are always called, dont enter body unless amount > 0 
+	if (!inputMovementLocked && amount) {
+
+		// Change avatar to rotate with camera yaw and no orientate to movement for strafing
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
 		currentStance->MoveBack(amount);
 	}
 }
 
+void AAvatar::MoveBackRelease() {
+	
+	// Reset avatar to orientate to movemnet when not straging
+	bUseControllerRotationYaw = false;
+	avatarMovementComponent->bOrientRotationToMovement = true;
+}
+
 void AAvatar::MoveRight(float amount) {
 
-	if (!inputMovementLocked) {
+	// These funcitons are always called, dont enter body unless amount > 0 
+	if (!inputMovementLocked && amount) {
+
+		// Change avatar to rotate with camera yaw and no orientate to movement for strafing
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
 		currentStance->MoveRight(amount);
 	}
 }
 
+void AAvatar::MoveRightRelease() {
+
+	// Reset avatar to orientate to movemnet when not straging
+	bUseControllerRotationYaw = false;
+	avatarMovementComponent->bOrientRotationToMovement = true;
+}
+
 void AAvatar::MoveLeft(float amount) {
 
-	if (!inputMovementLocked) {
+	// These funcitons are always called, dont enter body unless amount > 0 
+	if (!inputMovementLocked && amount) {
+
+		// Change avatar to rotate with camera yaw and no orientate to movement for strafing
+		bUseControllerRotationYaw = true;
+		avatarMovementComponent->bOrientRotationToMovement = false;
+
 		currentStance->MoveLeft(amount);
 	}
+}
+
+void AAvatar::MoveLeftRelease() {
+
+	// Reset avatar to orientate to movemnet when not straging
+	bUseControllerRotationYaw = false;
+	avatarMovementComponent->bOrientRotationToMovement = true;
+
+	UE_LOG(LogTemp, Display, TEXT("In Moveleftrelease"))
 }
 
 
@@ -607,7 +666,7 @@ void AAvatar::velocityAndDirectionUpdate() {
 	//UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
 
 	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
-	UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
+	//UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
 
 
 

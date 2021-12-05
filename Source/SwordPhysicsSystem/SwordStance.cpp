@@ -51,10 +51,6 @@ void SwordStance::MoveForward(float amount) {
 		// Get the value of the camera direction vector	
 		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::X);
 
-		// Since want character to orientate to movement (which is set already) 
-		avatarPtr->bUseControllerRotationYaw = false;
-		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = true;
-
 		// Add movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(cameraDirection, amount);
 	}
@@ -67,10 +63,6 @@ void SwordStance::MoveBack(float amount) {
 
 		// Get the value of the camera direction vector
 		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::X);
-
-		// Since want to move character backwards in relation to camera
-		avatarPtr->bUseControllerRotationYaw = true;
-		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
 
 		// Subtract movement input to the avatar forward vector. 
 		avatarPtr->AddMovementInput(cameraDirection, -amount);
@@ -88,10 +80,6 @@ void SwordStance::MoveRight(float amount) {
 		// Get the value of the camera direction vector
 		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::Y);
 
-		// Since want to move character strafe in relation to camera
-		avatarPtr->bUseControllerRotationYaw = true;
-		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
-
 		avatarPtr->AddMovementInput(cameraDirection, amount);
 	}
 }
@@ -106,10 +94,6 @@ void SwordStance::MoveLeft(float amount) {
 
 		// Get the value of the camera direction vector
 		FVector cameraDirection = FRotationMatrix(avatarPtr->pController->GetControlRotation()).GetScaledAxis(EAxis::Y);
-
-		// Since want to move character strafe in relation to camera
-		avatarPtr->bUseControllerRotationYaw = true;
-		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
 
 		avatarPtr->AddMovementInput(cameraDirection, -amount);
 	}

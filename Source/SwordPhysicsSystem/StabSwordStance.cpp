@@ -48,6 +48,7 @@ void StabSwordStance::Yaw(float amount) {
 			}
 			else {
 				avatarPtr->bUseControllerRotationYaw = false;
+				avatarPtr->avatarMovementComponent->bOrientRotationToMovement = true;
 				avatarPtr->AddControllerYawInput(avatarPtr->getBaseYawTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 
