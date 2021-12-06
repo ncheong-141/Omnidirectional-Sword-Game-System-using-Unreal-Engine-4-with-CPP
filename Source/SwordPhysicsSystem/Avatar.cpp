@@ -57,11 +57,11 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
-	defaultStance = DefaultSwordStance(this, 0, false);
-	slashStance = SlashSwordStance(this, 1, true);
-	blockStance = BlockSwordStance(this, 2, true);
-	stabStance = StabSwordStance(this, 3, true);
-	bodyRotationSlashStance = BodyRotationSlashStance(this, 4, true);
+	defaultStance = DefaultSwordStance(this, 0, false, false);
+	slashStance = SlashSwordStance(this, 1, true, true);
+	blockStance = BlockSwordStance(this, 2, true, true);
+	stabStance = StabSwordStance(this, 3, true, true);
+	bodyRotationSlashStance = BodyRotationSlashStance(this, 4, true, true);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);
@@ -167,7 +167,7 @@ void AAvatar::Tick(float DeltaTime)
 	actionAbilityLockCheck();
 
 	// Apply target system
-	applyCameraRotationFromTargetSystem(true);
+	applyCameraRotationFromTargetSystem(currentStance->lockOnTarget);
 
 	// Debug output helper function
 	debugOutput(); 

@@ -12,7 +12,7 @@ SlashSwordStance::SlashSwordStance() {
 
 }
 
-SlashSwordStance::SlashSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP) : SwordStance(avatar, stance_ID, applyRotationToSFP) {
+SlashSwordStance::SlashSwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP, bool lockOn_Target) : SwordStance(avatar, stance_ID, applyRotationToSFP, lockOn_Target) {
 
 }
 

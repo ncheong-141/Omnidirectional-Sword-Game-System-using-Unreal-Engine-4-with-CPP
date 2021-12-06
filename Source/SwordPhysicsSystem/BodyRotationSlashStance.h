@@ -17,7 +17,7 @@ public:
 
 	// Constructor using constructor chaining to call super constructor with inputs
 	BodyRotationSlashStance();
-	BodyRotationSlashStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
+	BodyRotationSlashStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP, bool lockOn_Target);
 	~BodyRotationSlashStance();
 
 	// Virtual function overrides of parent class to redefine functionality specific for this class

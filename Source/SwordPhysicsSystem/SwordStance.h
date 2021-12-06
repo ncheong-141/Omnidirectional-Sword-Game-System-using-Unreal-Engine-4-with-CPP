@@ -44,16 +44,17 @@ public:
 
 	/* Class attributes */
 	int stanceID;							// Used to reference the stance as an integer
-	bool applyRotationToSwordFocalPoint;	// Used to tell if input rotation is applied to the sword focal point
 	
 	// Flags
+	bool applyRotationToSwordFocalPoint;	// Used to tell if input rotation is applied to the sword focal point
 	bool stanceActivated;					// Used to tell if a stance has been activated
 	bool stanceActivationJustStarted; 
 	bool stanceActivationJustEnded;
+	bool lockOnTarget;						// Locks onto target if true;
 
 	// Constructors
 	SwordStance();
-	SwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP);
+	SwordStance(AAvatar* avatar, int stance_ID, bool applyRotationToSFP, bool lockOn_Target);
 
 	// Virtual destructor to ensure sub class objects are appopiately deleted
 	virtual ~SwordStance();
