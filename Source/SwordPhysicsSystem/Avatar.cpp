@@ -24,7 +24,7 @@
 #include <string>
 
 // Sets default values
-AAvatar::AAvatar() {
+AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -99,6 +99,8 @@ AAvatar::AAvatar() {
 	// Initiate swordFocalPoint object
 	swordFocalPoint = NewObject<USwordFocalPoint>();
 
+	// Instantiate targetting system
+	currentTargettingSystem = ObjectInitializer.CreateDefaultSubobject<USwordTargetingSystemComponent>(this, TEXT("Target System sight sphere"));
 }
 
 
@@ -135,6 +137,7 @@ void AAvatar::BeginPlay()
 
 	// Initiate swordFocalPoint object
 	swordFocalPoint = NewObject<USwordFocalPoint>();
+
 }
 
 
@@ -152,15 +155,9 @@ void AAvatar::Tick(float DeltaTime)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	// Change to flag in stance to say if it updates sword focal or not
 	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint == true);
-	
-	// Turn off controller rotation when not using these input keys/strafing or in dodge
-	// (janky solution but works) 
-	//if (!pController->IsInputKeyDown(EKeys::A) && !pController->IsInputKeyDown(EKeys::D) && !pController->IsInputKeyDown(EKeys::S)) {
-	//	this->bUseControllerRotationYaw = false;
-	//}
 
 	// Set the current viewport sector to where the sword position is currently 
-	setCurrentViewportSector(); 
+	setCurrentViewportSector();
 
 	// Check if cardinal movement or actions should be locked or not
 	inputMovementLockCheck();
@@ -168,6 +165,15 @@ void AAvatar::Tick(float DeltaTime)
 
 	// Check if avatar is in the air for physics and animation flow
 	isInAir = this->GetCharacterMovement()->IsFalling();
+
+	FRotator aaa = currentTargettingSystem->hardLockOnTarget();
+	AActor* test = currentTargettingSystem->getCurrentTarget();
+	if (test) {
+
+		UE_LOG(LogTemp, Display, TEXT("Actor in sight sphere %s"), *test->GetFName().ToString());
+	}
+	RootComponent->SetWorldRotation(aaa);
+
 
 	// Debug output helper function
 	debugOutput(); 

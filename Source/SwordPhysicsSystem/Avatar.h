@@ -20,6 +20,7 @@
 #include "ViewportSector.h"
 #include "SwordFocalPoint.h"
 #include "TargetingSystem.h"
+#include "SwordTargetingSystemComponent.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -54,7 +55,9 @@ protected:
 		float cameraZoomMin;
 
 	/* Targeting system */
-	ITargetingSystem* currentTargettingSystem;
+	// Note, require TScript smart pointer as garbage collector is not interface aware
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
+		TScriptInterface<ITargetingSystem> currentTargettingSystem;
 
 	/* ---------------- Internal class attributes ----------------------- */
 
@@ -188,7 +191,7 @@ public:
 
 	/* Unreal engine 4 class functions */
 	// Constructor: Sets default values for this character's properties
-	AAvatar();
+	AAvatar(const FObjectInitializer& ObjectInitializer);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
