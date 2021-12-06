@@ -19,6 +19,7 @@
 #include "SPSAnimInstance.h"
 #include "ViewportSector.h"
 #include "SwordFocalPoint.h"
+#include "TargetingSystem.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar game settings")
 		float cameraZoomMin;
+
+	/* Targeting system */
+	ITargetingSystem* currentTargettingSystem;
 
 	/* ---------------- Internal class attributes ----------------------- */
 
