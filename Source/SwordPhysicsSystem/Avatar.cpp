@@ -100,7 +100,7 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 	swordFocalPoint = NewObject<USwordFocalPoint>();
 
 	// Instantiate targetting system
-	currentTargettingSystem = ObjectInitializer.CreateDefaultSubobject<USwordTargetingSystemComponent>(this, TEXT("Target System sight sphere"));
+	currentTargettingSystem = NewObject<USwordTargetingSystemComponent>(this, TEXT("Target System"));
 }
 
 
@@ -126,7 +126,8 @@ void AAvatar::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("animationInstance is null in %s"), __FUNCTION__);
 	}
 
-	/* Avatar key systems set up (Required here and in constructor for hot reloads)*/
+	/* Avatar key systems set up 
+	(Required here and in constructor for hot reloads)*/
 
 	// Generate the viewport sector grid
 	viewportGrid = TArray<UViewportSector*>();
@@ -138,6 +139,8 @@ void AAvatar::BeginPlay()
 	// Initiate swordFocalPoint object
 	swordFocalPoint = NewObject<USwordFocalPoint>();
 
+	// Instantiate targetting system
+	currentTargettingSystem = NewObject<USwordTargetingSystemComponent>(this, TEXT("Target System"));
 }
 
 
@@ -154,7 +157,7 @@ void AAvatar::Tick(float DeltaTime)
 	// Update focal point (!= 0 => not the default stance)
 	// Somehow does not behave well if done in the Yaw or Pitch functions in Slash or Stab stance
 	// Change to flag in stance to say if it updates sword focal or not
-	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint == true);
+	swordFocalPoint->update(pController, currentStance->getAllowableSwordDirections(), currentStance->applyRotationToSwordFocalPoint);
 
 	// Set the current viewport sector to where the sword position is currently 
 	setCurrentViewportSector();
@@ -163,17 +166,8 @@ void AAvatar::Tick(float DeltaTime)
 	inputMovementLockCheck();
 	actionAbilityLockCheck();
 
-	// Check if avatar is in the air for physics and animation flow
-	isInAir = this->GetCharacterMovement()->IsFalling();
-
-	FRotator aaa = currentTargettingSystem->hardLockOnTarget();
-	AActor* test = currentTargettingSystem->getCurrentTarget();
-	if (test) {
-
-		UE_LOG(LogTemp, Display, TEXT("Actor in sight sphere %s"), *test->GetFName().ToString());
-	}
-	RootComponent->SetWorldRotation(aaa);
-
+	// Apply target system
+	applyCameraRotationFromTargetSystem(true);
 
 	// Debug output helper function
 	debugOutput(); 
@@ -663,19 +657,7 @@ void AAvatar::velocityAndDirectionUpdate() {
 	FVector avatarWorldVelocity = this->GetVelocity();
 	FQuat	avatarWorldRotation = this->GetActorTransform().GetRotation();
 	FVector avatarLocalVelocity = avatarWorldRotation.UnrotateVector(avatarWorldVelocity);
-
-	//UE_LOG(LogTemp, Display, TEXT("World velocity of avatar: %f, %f"), avatarWorldVelocity.X, avatarWorldVelocity.Y);
-	//UE_LOG(LogTemp, Display, TEXT("Local velocity of avatar: %f, %f"), avatarLocalVelocity.X, avatarLocalVelocity.Y);
-
-	// Get actor direciton info
-	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
-	//UE_LOG(LogTemp, Display, TEXT("Direction of avatar: %f"), inputDirection);
-
-	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
-	//UE_LOG(LogTemp, Display, TEXT("Turn of avatar: %f"), turnInput);
-
-
-
+	
 	// Set world velocity
 	worldVelocity.X = avatarWorldVelocity.X;
 	worldVelocity.Y = avatarWorldVelocity.Y;
@@ -683,6 +665,11 @@ void AAvatar::velocityAndDirectionUpdate() {
 	// Set local/relative velocity
 	localVelocity.X = avatarLocalVelocity.X;
 	localVelocity.Y = avatarLocalVelocity.Y;
+	
+	// Calculate the normalised inputed velocity (this is currently wrong)
+	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
+	normalisedLocalVelocity.X = avatarLocalVelocity.X / avatarMaxSpeed;
+	normalisedLocalVelocity.Y = avatarLocalVelocity.Y / avatarMaxSpeed;
 
 	// set movign flag if moving
 	if (!localVelocity.IsZero()) {
@@ -707,14 +694,44 @@ void AAvatar::velocityAndDirectionUpdate() {
 		}
 	}
 
+	// Get actor direciton info
+	inputDirection = animationInstance->CalculateDirection(avatarWorldVelocity, this->GetActorRotation());
+	turnInput = ACharacter::GetInputAxisValue(FName("Yaw"));
 
-
-	// Calculate the normalised inputed velocity (this is currently wrong)
-	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
-	normalisedLocalVelocity.X = avatarLocalVelocity.X / avatarMaxSpeed;
-	normalisedLocalVelocity.Y = avatarLocalVelocity.Y / avatarMaxSpeed;
+	// Check if avatar is in the air for physics and animation flow
+	isInAir = this->GetCharacterMovement()->IsFalling();
 }
 
+
+void AAvatar::applyCameraRotationFromTargetSystem(bool avatarLockedOnTarget) {
+
+	// Check if avatar should be locked on
+	if (avatarLockedOnTarget && currentTargettingSystem) {
+
+		// Set the target (more comprehensive in future)
+		currentTargettingSystem->setCurrentTarget();
+
+		// Chose a type of lock on, hardlock on in this case and get new world rotation
+		FRotator lockedOnRotation = currentTargettingSystem->hardLockOnTarget();
+
+		// Debug
+		AActor* test = currentTargettingSystem->getCurrentTarget();
+		if (test) {
+
+			UE_LOG(LogTemp, Display, TEXT("Actor in sight sphere %s"), *test->GetFName().ToString());
+		}
+
+		// Set camera rotation to locked on rotation
+		if (!lockedOnRotation.IsNearlyZero()){
+			pController->SetControlRotation(lockedOnRotation);
+		}
+	}
+
+	if (currentTargettingSystem == nullptr) {
+		UE_LOG(LogTemp, Display, TEXT("FUCK MY LIFE"));
+
+	}
+}
 
 void AAvatar::debugOutput() {
 	/* ------------------- Debug displaying ------------------------ */

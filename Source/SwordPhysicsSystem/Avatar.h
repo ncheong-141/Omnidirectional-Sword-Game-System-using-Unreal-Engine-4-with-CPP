@@ -55,6 +55,7 @@ protected:
 		float cameraZoomMin;
 
 	/* Targeting system */
+
 	// Note, require TScript smart pointer as garbage collector is not interface aware
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Avatar game settings")
 		TScriptInterface<ITargetingSystem> currentTargettingSystem;
@@ -265,7 +266,8 @@ protected:
 	// Sets the current viewport sector based on sword focal point position
 	void setCurrentViewportSector();
 
-
+	// Set camera rotation from lock on system
+	void applyCameraRotationFromTargetSystem(bool avatarLockedOnTarget);
 public:
 
 	/* Getters and setters */

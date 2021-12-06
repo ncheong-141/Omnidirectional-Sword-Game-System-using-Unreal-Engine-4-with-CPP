@@ -40,16 +40,23 @@ public:
 	// Interface functions
 	virtual UShapeComponent* getSightProximityShape() override;
 	virtual AActor* getCurrentTarget() override;
+	virtual void	setCurrentTarget() override; 
 	virtual TArray<AActor*> getPossibleTargets() override;
 	virtual FRotator hardLockOnTarget() override;
 	virtual FRotator softLockOnTarget() override;
+	virtual void	unlockFromTarget() override; 
 
 
 protected:
 	// Internal functions
 	UFUNCTION(BlueprintNativeEvent, Category = "Collision")
-		void proximityCheck(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void sightProxSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	virtual int proximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual int sightProxSphereOverlapBegin_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Collision")
+		void sightProxSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	virtual int sightProxSphereOverlapEnd_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

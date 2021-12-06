@@ -22,7 +22,8 @@ USwordTargetingSystemComponent::USwordTargetingSystemComponent(const FObjectInit
 	sightProximitySphere->SetSphereRadius(500.f);
 
 	// Make USwordTargetingSystemComponent::prox run when this proximity sphere overlaps another actor
-	sightProximitySphere->OnComponentBeginOverlap.AddDynamic(this, &USwordTargetingSystemComponent::proximityCheck);
+	sightProximitySphere->OnComponentBeginOverlap.AddDynamic(this, &USwordTargetingSystemComponent::sightProxSphereOverlapBegin);
+	sightProximitySphere->OnComponentEndOverlap.AddDynamic(this, &USwordTargetingSystemComponent::sightProxSphereOverlapEnd);
 }
 
 
@@ -32,7 +33,9 @@ void USwordTargetingSystemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// Get owner of component and attach sphere to it 
-	sightProximitySphere->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	sightProximitySphere->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	sightProximitySphere->SetSphereRadius(500.f);
+
 }
 
 
@@ -53,16 +56,7 @@ AActor* USwordTargetingSystemComponent::getCurrentTarget() {
 	return currentTarget;
 }
 
-TArray<AActor*> USwordTargetingSystemComponent::getPossibleTargets() {
-
-	return targetsInProximity;
-}
-
-FRotator USwordTargetingSystemComponent::hardLockOnTarget() {
-
-	// Owning actor and target (just pick first target in set for now)
-	AActor* owner = GetOwner(); 
-	currentTarget = nullptr;
+void USwordTargetingSystemComponent::setCurrentTarget() {
 
 	// Iterate over set (need a way to select eventually, should only be one target for now) 
 	//for (TSet<AActor*>::TIterator it = targetsInProximity.CreateIterator(); it; ++it) {
@@ -72,9 +66,26 @@ FRotator USwordTargetingSystemComponent::hardLockOnTarget() {
 	//		currentTarget = *(it);
 	//	}
 	//}
+	
+
+	// Just do first element for now, in future will have a much more comprehnsive/efficent method
 	if (targetsInProximity.Num() > 0) {
 		currentTarget = targetsInProximity[0];
 	}
+	else {
+		// No targets so unlock
+		unlockFromTarget();
+	}
+}
+
+TArray<AActor*> USwordTargetingSystemComponent::getPossibleTargets() {
+	return targetsInProximity;
+}
+
+FRotator USwordTargetingSystemComponent::hardLockOnTarget() {
+
+	// Owning actor and target (just pick first target in set for now)
+	AActor* owner = GetOwner(); 
 
 	if (currentTarget != nullptr) {
 
@@ -98,12 +109,18 @@ FRotator USwordTargetingSystemComponent::softLockOnTarget() {
 	return FRotator(0.f);
 }
 
+void USwordTargetingSystemComponent::unlockFromTarget() {
+	
+	// Reset current target
+	currentTarget = nullptr; 
+}
+
 
 /* Internal function */
-int USwordTargetingSystemComponent::proximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+int USwordTargetingSystemComponent::sightProxSphereOverlapBegin_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 
 	//This is where our code will fo for what happens when there is an intersection
-	UE_LOG(LogTemp, Display, TEXT("In prox check"));
+	UE_LOG(LogTemp, Display, TEXT("In OverlapBegin check"));
 
 	// Dont hit non root component
 	if (OtherComp != OtherActor->GetRootComponent()) {
@@ -116,11 +133,26 @@ int USwordTargetingSystemComponent::proximityCheck_Implementation(UPrimitiveComp
 		// Add actor to set
 		UE_LOG(LogTemp, Display, TEXT("Adding actor"));
 		targetsInProximity.Add(OtherActor);
-		UE_LOG(LogTemp, Display, TEXT("Actor in sight sphere %s"), *targetsInProximity[0]->GetFName().ToString());
-		UE_LOG(LogTemp, Display, TEXT("targetsInProximity num %d"), targetsInProximity.Num());
-
 	}
 
 	return 0;
 }
 
+
+int USwordTargetingSystemComponent::sightProxSphereOverlapEnd_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+
+	//This is where our code will fo for what happens when there is an intersection
+	UE_LOG(LogTemp, Display, TEXT("In OverlapEnd check"));
+
+	// Dont hit non root component
+	if (OtherComp != OtherActor->GetRootComponent()) {
+		return -1;
+	}
+
+	// Remove actor from target list
+	if (targetsInProximity.Contains(OtherActor)) {
+		targetsInProximity.Remove(OtherActor);
+	}
+
+	return 0;
+}
