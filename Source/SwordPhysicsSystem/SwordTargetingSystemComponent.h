@@ -26,11 +26,19 @@ protected:
 	UPROPERTY()
 		TArray<AActor*> targetsInProximity; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
+		float yawSensitivity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
+		float pitchSensitivity;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
 	
+
+
 	// Sets default values for this component's properties
 	USwordTargetingSystemComponent(const FObjectInitializer& ObjectInitializer);
 
@@ -42,8 +50,7 @@ public:
 	virtual AActor* getCurrentTarget() override;
 	virtual void	setCurrentTarget() override; 
 	virtual TArray<AActor*> getPossibleTargets() override;
-	virtual FRotator hardLockOnTarget() override;
-	virtual FRotator softLockOnTarget() override;
+	virtual void lockOnTarget() override;
 	virtual void	unlockFromTarget() override; 
 
 

@@ -16,6 +16,8 @@ USwordTargetingSystemComponent::USwordTargetingSystemComponent(const FObjectInit
 	// Istantiate other variables
 	currentTarget = nullptr;
 	targetsInProximity = TArray<AActor*>();
+	yawSensitivity = 1.5;
+	pitchSensitivity = 0.4;
 
 	// Instantiate sight sphere
 	sightProximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Target System Proximity Sphere"));
@@ -82,32 +84,94 @@ TArray<AActor*> USwordTargetingSystemComponent::getPossibleTargets() {
 	return targetsInProximity;
 }
 
-FRotator USwordTargetingSystemComponent::hardLockOnTarget() {
+void USwordTargetingSystemComponent::lockOnTarget() {
 
 	// Owning actor and target (just pick first target in set for now)
-	AActor* owner = GetOwner(); 
+	// Cast to avatar
+	AAvatar* avatar = Cast<AAvatar>(GetOwner());
 
 	if (currentTarget != nullptr) {
 
 		// Get vector to target
-		FVector toTarget = currentTarget->GetActorLocation() - owner->GetActorLocation();
+		FVector toTarget = currentTarget->GetActorLocation() - avatar->GetActorLocation();
 
 		// Get rotation to target and reset pitch as dont want o adjust that?
 		FRotator rotationToTarget = toTarget.Rotation();
-		rotationToTarget.Pitch = 0;
 
-		return rotationToTarget;
-	}
-	else {
-		return FRotator(0.f); 
-	}
+		// Set the target (more comprehensive in future)
+		setCurrentTarget();
 
+		// Diference between current and old rotation 
+		FRotator currentRotation = avatar->pController->GetControlRotation();
+		
+		// There is two rotation differences, anti clockwise and clockwise
+		FRotator rotationDifference =  currentRotation - rotationToTarget;
+		FRotator clockwiseRotationDifference = FRotator(0.f);
+		FRotator antiClockwiseRotationDifference = FRotator(0.f);
+
+
+		// Proccess Yaw
+		if (rotationDifference.Yaw >= 0) {
+
+			// The angle from Current to Target is anti clockwise
+			antiClockwiseRotationDifference.Yaw = std::abs(rotationDifference.Yaw); 
+			clockwiseRotationDifference.Yaw = 360.f - antiClockwiseRotationDifference.Yaw;
+		}
+		else if (rotationDifference.Yaw < 0) {
+
+			// The angle from Current to Target is clockwise 
+			clockwiseRotationDifference.Yaw = std::abs(rotationDifference.Yaw);
+			antiClockwiseRotationDifference.Yaw = 360.f - clockwiseRotationDifference.Yaw;
+		}
+
+		// Process pitch
+		if (rotationDifference.Pitch >= 0) {
+
+			// The angle from Current to Target is anti clockwise
+			antiClockwiseRotationDifference.Pitch = std::abs(rotationDifference.Pitch);
+			clockwiseRotationDifference.Pitch = 360.f - antiClockwiseRotationDifference.Pitch;
+		}
+		else if (rotationDifference.Pitch < 0) {
+
+			// The angle from Current to Target is clockwise 
+			clockwiseRotationDifference.Pitch = std::abs(rotationDifference.Pitch);
+			antiClockwiseRotationDifference.Pitch = 360.f - clockwiseRotationDifference.Pitch;
+		}
+
+		UE_LOG(LogTemp, Display, TEXT("Current Rotation: %f, %f"), currentRotation.Yaw, currentRotation.Pitch)
+			UE_LOG(LogTemp, Display, TEXT("rotationToTarget: %f, %f"), rotationToTarget.Yaw, rotationToTarget.Pitch)
+			UE_LOG(LogTemp, Display, TEXT("rotationDifference: %f, %f"), rotationDifference.Yaw, rotationDifference.Pitch)
+			UE_LOG(LogTemp, Display, TEXT("antiClockwiseRotationDifference: %f, %f"), antiClockwiseRotationDifference.Yaw, antiClockwiseRotationDifference.Pitch)
+			UE_LOG(LogTemp, Display, TEXT("clockwiseRotationDiffernce: %f, %f"), clockwiseRotationDifference.Yaw, clockwiseRotationDifference.Pitch);
+
+
+		// Gradually change to the rotation 
+		// Create a new rotation which steps towards this
+		FRotator steppedToRotation = FRotator(0.f);
+
+		// Apply yaw 
+		// If clockwise, add to current, if anticlockwise, subrract from current
+		if (antiClockwiseRotationDifference.Yaw > clockwiseRotationDifference.Yaw) {
+			steppedToRotation.Yaw = currentRotation.Yaw + (clockwiseRotationDifference.Yaw * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+		}
+		else {
+			steppedToRotation.Yaw = currentRotation.Yaw - (antiClockwiseRotationDifference.Yaw * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+		}
+
+		// Apply pitch
+		if (antiClockwiseRotationDifference.Pitch > clockwiseRotationDifference.Pitch) {
+			steppedToRotation.Pitch = currentRotation.Pitch + (clockwiseRotationDifference.Pitch * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+		}
+		else {
+			steppedToRotation.Pitch = currentRotation.Pitch - (antiClockwiseRotationDifference.Pitch * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+		}
+
+		// Set camera rotation to locked on rotation
+		avatar->pController->SetControlRotation(steppedToRotation);
+
+	}
 }
 
-
-FRotator USwordTargetingSystemComponent::softLockOnTarget() {
-	return FRotator(0.f);
-}
 
 void USwordTargetingSystemComponent::unlockFromTarget() {
 	

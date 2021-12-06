@@ -31,8 +31,7 @@ public:
 	virtual AActor*			getCurrentTarget() = 0;
 	virtual void			setCurrentTarget() = 0;
 	virtual TArray<AActor*> getPossibleTargets() = 0;
-	virtual FRotator		hardLockOnTarget() = 0;
-	virtual FRotator		softLockOnTarget() = 0;
+	virtual void			lockOnTarget() = 0;
 	virtual void			unlockFromTarget() = 0;
 
 

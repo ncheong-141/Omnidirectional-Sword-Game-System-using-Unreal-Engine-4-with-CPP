@@ -705,31 +705,10 @@ void AAvatar::velocityAndDirectionUpdate() {
 
 void AAvatar::applyCameraRotationFromTargetSystem(bool avatarLockedOnTarget) {
 
-	// Check if avatar should be locked on
-	if (avatarLockedOnTarget && currentTargettingSystem) {
+	if (avatarLockedOnTarget) {
 
-		// Set the target (more comprehensive in future)
 		currentTargettingSystem->setCurrentTarget();
-
-		// Chose a type of lock on, hardlock on in this case and get new world rotation
-		FRotator lockedOnRotation = currentTargettingSystem->hardLockOnTarget();
-
-		// Debug
-		AActor* test = currentTargettingSystem->getCurrentTarget();
-		if (test) {
-
-			UE_LOG(LogTemp, Display, TEXT("Actor in sight sphere %s"), *test->GetFName().ToString());
-		}
-
-		// Set camera rotation to locked on rotation
-		if (!lockedOnRotation.IsNearlyZero()){
-			pController->SetControlRotation(lockedOnRotation);
-		}
-	}
-
-	if (currentTargettingSystem == nullptr) {
-		UE_LOG(LogTemp, Display, TEXT("FUCK MY LIFE"));
-
+		currentTargettingSystem->lockOnTarget(); 
 	}
 }
 
