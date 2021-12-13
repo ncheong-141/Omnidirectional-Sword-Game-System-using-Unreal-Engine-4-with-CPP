@@ -18,6 +18,7 @@ USwordTargetingSystemComponent::USwordTargetingSystemComponent(const FObjectInit
 	targetsInProximity = TArray<AActor*>();
 	yawSensitivity = 1.5;
 	pitchSensitivity = 0.4;
+	lockOnStepSize = 0.2;
 
 	// Instantiate sight sphere
 	sightProximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Target System Proximity Sphere"));
@@ -152,18 +153,18 @@ void USwordTargetingSystemComponent::lockOnTarget() {
 		// Apply yaw 
 		// If clockwise, add to current, if anticlockwise, subrract from current
 		if (antiClockwiseRotationDifference.Yaw > clockwiseRotationDifference.Yaw) {
-			steppedToRotation.Yaw = currentRotation.Yaw + (clockwiseRotationDifference.Yaw * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+			steppedToRotation.Yaw = currentRotation.Yaw + yawSensitivity*(lockOnStepSize*clockwiseRotationDifference.Yaw * GetWorld()->DeltaTimeSeconds);
 		}
 		else {
-			steppedToRotation.Yaw = currentRotation.Yaw - (antiClockwiseRotationDifference.Yaw * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+			steppedToRotation.Yaw = currentRotation.Yaw - yawSensitivity*(lockOnStepSize*antiClockwiseRotationDifference.Yaw  * GetWorld()->DeltaTimeSeconds);
 		}
 
 		// Apply pitch
 		if (antiClockwiseRotationDifference.Pitch > clockwiseRotationDifference.Pitch) {
-			steppedToRotation.Pitch = currentRotation.Pitch + (clockwiseRotationDifference.Pitch * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+			steppedToRotation.Pitch = currentRotation.Pitch + pitchSensitivity*(lockOnStepSize*clockwiseRotationDifference.Pitch  * GetWorld()->DeltaTimeSeconds);
 		}
 		else {
-			steppedToRotation.Pitch = currentRotation.Pitch - (antiClockwiseRotationDifference.Pitch * yawSensitivity * GetWorld()->DeltaTimeSeconds);
+			steppedToRotation.Pitch = currentRotation.Pitch - pitchSensitivity*(lockOnStepSize*antiClockwiseRotationDifference.Pitch  * GetWorld()->DeltaTimeSeconds);
 		}
 
 		// Set camera rotation to locked on rotation

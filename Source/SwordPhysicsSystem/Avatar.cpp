@@ -716,7 +716,7 @@ void AAvatar::debugOutput() {
 	/* ------------------- Debug displaying ------------------------ */
 	// Show root component of Avatar
 	FVector avatarLocation = this->GetActorLocation();
-	DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
+	//DrawDebugSphere(GetWorld(), avatarLocation, 20.f, 20, FColor::Red);
 	GEngine->AddOnScreenDebugMessage(1, 100.f, FColor::White, FString::Printf(TEXT("AL X: %f, AL Y: %f, AL Z: %f"), avatarLocation.X, avatarLocation.Y, avatarLocation.Z));
 
 	// Show mouse position
@@ -729,9 +729,9 @@ void AAvatar::debugOutput() {
 	// Show right hand socket
 	const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
 
-	if (socket) {
-		DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
-	}
+	//if (socket) {
+	//	DrawDebugSphere(GetWorld(), socket->GetSocketLocation(GetMesh()), 5.f, 20, FColor::Red);
+	//}
 
 	// Show avatar flow control variables
 	GEngine->AddOnScreenDebugMessage(4, 100.f, FColor::White, FString::Printf(TEXT("isInAir: %d"), isInAir));

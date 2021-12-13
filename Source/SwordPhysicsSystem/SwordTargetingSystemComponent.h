@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
 		float pitchSensitivity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
+		float lockOnStepSize; 
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
