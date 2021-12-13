@@ -60,7 +60,7 @@ void AAvatarHUD::drawHitpointBar() {
 	float barMargin = 50; 
 
 	// Get % hp
-	float percentHP = avatar->getCurrentHP() / avatar->getMaxHP();
+	float percentHP = avatar->SPSActorGetHP() / avatar->SPSActorGetMaxHP();
 
 	// Get viewprot size
 	const FVector2D viewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());

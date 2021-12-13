@@ -22,6 +22,7 @@
 #include "TargetingSystem.h"
 #include "SwordTargetingSystemComponent.h"
 #include "AvatarHUD.h"
+#include "SPSTargetable.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -30,7 +31,7 @@ class UCameraComponent;
 class USkeletalMeshComponent;
 
 UCLASS()
-class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter
+class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter, public ISPSTargetable
 {
 	GENERATED_BODY()
 
@@ -142,6 +143,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool isInAttackMotion;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isBlocking;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool wasBlocked;
 
 
 	// Moving is always updated in avatar, wasMoving to determine if the isMoving was true
@@ -286,9 +293,15 @@ protected:
 	void applyCameraRotationFromTargetSystem(bool avatarLockedOnTarget);
 public:
 
+	/* Targetable Interface functions*/ 
+	virtual bool SPSActorIsBlocking() override;
+	virtual bool SPSActorWasBlocked() override;
+	virtual float SPSActorGetHP() override; 
+	virtual float SPSActorGetMaxHP() override;
+	virtual void SPSActorTakeDamage(float amount) override;
+
 	/* Getters and setters */
-	float getCurrentHP(); 
-	float getMaxHP(); 
+
 	float getCurrentStamina(); 
 	float getMaxStamina(); 
 	int getCurrentStanceID();

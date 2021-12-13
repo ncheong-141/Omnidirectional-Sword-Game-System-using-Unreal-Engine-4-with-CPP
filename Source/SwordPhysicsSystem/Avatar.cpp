@@ -766,15 +766,33 @@ void AAvatar::debugOutput() {
 }
 
 
-/* Getters and setters */
-float AAvatar::getCurrentHP() {
+/* Targetable Interface functions*/
+bool AAvatar::SPSActorIsBlocking() {
+	return isBlocking;
+}
+
+bool AAvatar::SPSActorWasBlocked() {
+	return wasBlocked;
+}
+
+float AAvatar::SPSActorGetHP() {
 	return currentHitPoints; 
 }
 
-float AAvatar::getMaxHP() {
+float AAvatar::SPSActorGetMaxHP() {
 	return maxHitPoints;
 }
 
+void AAvatar::SPSActorTakeDamage(float amount) {
+
+	// take damage
+	currentHitPoints -= amount; 
+	
+	// Check if dead etc 
+}
+
+
+/* Getters and setters */
 float AAvatar::getCurrentStamina() {
 	return currentStamina;
 }

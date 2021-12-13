@@ -47,10 +47,28 @@ void ANPC::Tick(float DeltaTime)
 	
 }
 
-// Called to bind functionality to input
-void ANPC::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+/* Targetable Interface functions*/
+bool ANPC::SPSActorIsBlocking() {
+	return isBlocking;
 }
 
+bool ANPC::SPSActorWasBlocked() {
+	return wasBlocked;
+}
+
+float ANPC::SPSActorGetHP() {
+	return currentHitPoints;
+}
+
+float ANPC::SPSActorGetMaxHP() {
+	return maxHitPoints;
+}
+
+void ANPC::SPSActorTakeDamage(float amount) {
+
+	// take damage
+	currentHitPoints -= amount;
+
+	// Check if dead etc 
+}
