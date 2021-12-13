@@ -4,9 +4,7 @@
 #include "Avatar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-// Debug output file
-#include "DebugOutput.h"
-
+#include "AvatarHUD.h"
 // Constructors and destructor
 StabSwordStance::StabSwordStance() {
 
@@ -23,9 +21,8 @@ StabSwordStance::~StabSwordStance()
 // Virtual function override class function implementation
 void StabSwordStance::displayStance() {
 
-	DebugOutput output = DebugOutput();
+	avatarPtr->avatarHUD->addHUDMessage(HUDMessage("Stab Stance", 2.f, FColor::White));
 
-	output.toHUD(FString("Stab Stance"), 2.f, false);
 }
 
 

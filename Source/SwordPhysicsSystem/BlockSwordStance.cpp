@@ -5,9 +5,7 @@
 #include "Avatar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-
-// Debug output file
-#include "DebugOutput.h"
+#include "AvatarHUD.h"
 
 BlockSwordStance::BlockSwordStance() {
 
@@ -26,10 +24,8 @@ BlockSwordStance::~BlockSwordStance()
 
 // Virtual function override class function implementation
 void BlockSwordStance::displayStance() {
+	avatarPtr->avatarHUD->addHUDMessage(HUDMessage("Block Stance", 2.f, FColor::White));
 
-	DebugOutput output = DebugOutput();
-
-	output.toHUD(FString("Block Stance"), 2.f, false);
 }
 
 

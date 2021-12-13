@@ -5,7 +5,7 @@
 #include "Avatar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-#include "DebugOutput.h"
+#include "AvatarHUD.h"
 
 // Constructor and destructor implementation
 SlashSwordStance::SlashSwordStance() {
@@ -23,9 +23,8 @@ SlashSwordStance::~SlashSwordStance()
 // Virtual function override class function implementation
 void SlashSwordStance::displayStance() {
 
-	DebugOutput output = DebugOutput();
+	avatarPtr->avatarHUD->addHUDMessage(HUDMessage("Slash Stance", 2.f, FColor::White));
 
-	output.toHUD(FString("Slash Stance"), 2.f, false);
 }
 
 

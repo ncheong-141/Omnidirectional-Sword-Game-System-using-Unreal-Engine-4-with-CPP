@@ -55,6 +55,13 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 		avatarMovementComponent->bUseControllerDesiredRotation = false;
 	}
 
+	// Avatar stats
+	maxHitPoints = 1000; 
+	currentHitPoints = maxHitPoints;
+	maxStamina = 100; 
+	currentStamina = maxStamina; 
+
+
 	// Set Sword stance variables and instanciate objects for referencing
 	// Integer values are the stance ID sets
 	defaultStance = DefaultSwordStance(this, 0, false, false);
@@ -117,6 +124,10 @@ void AAvatar::BeginPlay()
 	// Get anim instance for refernce
 	animationInstance = Cast<USPSAnimInstance>(GetMesh()->GetAnimInstance());
 
+	// Get avatar HUD
+	avatarHUD = Cast<AAvatarHUD>(pController->GetHUD());
+	avatarHUD->initialise(this);
+
 	// Checks 
 	if (pController == nullptr) {
 		UE_LOG(LogTemp, Error, TEXT("pController is null in %s"), __FUNCTION__);
@@ -126,6 +137,9 @@ void AAvatar::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("animationInstance is null in %s"), __FUNCTION__);
 	}
 
+	if (avatarHUD == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("avatarHUD is null in %s"), __FUNCTION__);
+	}
 	/* Avatar key systems set up 
 	(Required here and in constructor for hot reloads)*/
 
@@ -751,6 +765,22 @@ void AAvatar::debugOutput() {
 
 
 /* Getters and setters */
+float AAvatar::getCurrentHP() {
+	return currentHitPoints; 
+}
+
+float AAvatar::getMaxHP() {
+	return maxHitPoints;
+}
+
+float AAvatar::getCurrentStamina() {
+	return currentStamina;
+}
+
+float AAvatar::getMaxStamina() {
+	return maxStamina;
+}
+
 int AAvatar::getCurrentStanceID() {
 	return currentStanceID;
 }
@@ -831,6 +861,36 @@ const float AAvatar::getNumAxesSegments() {
 }
 AMeleeWeapon* const AAvatar::getMeleeWeapon() {
 	return MeleeWeapon;
+}
+
+void AAvatar::setCurrentHP(float amount) {
+
+	// Do not exceed max hit points
+	if (amount > maxHitPoints) {
+		currentHitPoints = maxHitPoints; 
+	}
+	else {
+		currentHitPoints = amount; 
+	}
+}
+
+void AAvatar::setMaxHP(float amount) {
+	maxHitPoints = amount; 
+}
+
+void AAvatar::setCurrentStamina(float amount) {
+	
+	// Do not exceed max stamina points
+	if (amount > maxStamina) {
+		currentStamina = maxStamina;
+	}
+	else {
+		currentStamina = amount;
+	}
+}
+
+void AAvatar::setMaxStamina(float amount) {
+	maxStamina = amount;
 }
 
 void AAvatar::setRighthandResultantSpeed(float amount) {

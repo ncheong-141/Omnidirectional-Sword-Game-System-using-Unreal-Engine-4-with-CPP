@@ -21,6 +21,7 @@
 #include "SwordFocalPoint.h"
 #include "TargetingSystem.h"
 #include "SwordTargetingSystemComponent.h"
+#include "AvatarHUD.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -61,6 +62,19 @@ protected:
 		TScriptInterface<ITargetingSystem> currentTargettingSystem;
 
 	/* ---------------- Internal class attributes ----------------------- */
+
+	// Avatar stats
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float currentHitPoints; 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float maxHitPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float currentStamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float maxStamina;
 
 	// SwordStance parent class pointer, used for polymorphic referenceing of other Stance classes (concrete class in state pattern)
 	SwordStance*		currentStance;
@@ -189,6 +203,8 @@ public:
 		USPSAnimInstance* animationInstance;
 	UPROPERTY()
 		UCharacterMovementComponent* avatarMovementComponent; 
+	UPROPERTY()
+		AAvatarHUD* avatarHUD; 
 
 	/* Unreal engine 4 class functions */
 	// Constructor: Sets default values for this character's properties
@@ -271,7 +287,10 @@ protected:
 public:
 
 	/* Getters and setters */
-
+	float getCurrentHP(); 
+	float getMaxHP(); 
+	float getCurrentStamina(); 
+	float getMaxStamina(); 
 	int getCurrentStanceID();
 	USwordFocalPoint* const getSwordFocalPoint();
 	FVector2D getNormalisedLocalVelocity();
@@ -297,6 +316,10 @@ public:
 	const float getNumAxesSegments();
 	AMeleeWeapon* const getMeleeWeapon();
 
+	void setCurrentHP(float amount); 
+	void setMaxHP(float amount);
+	void setCurrentStamina(float amount); 
+	void setMaxStamina(float amount);
 	void setRighthandResultantSpeed(float amount);
 	void setAvatarMaxSpeed(float amount);
 	void setBaseYawTurnSpeed(float amount);

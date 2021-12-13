@@ -5,7 +5,7 @@
 
 #include "SwordFocalPoint.h"
 #include "Avatar.h"
-#include "DebugOutput.h"
+#include "AvatarHUD.h"
 
 // Game classes
 #include "GameFramework/CharacterMovementComponent.h"
@@ -27,9 +27,7 @@ BodyRotationSlashStance::~BodyRotationSlashStance()
 // Virtual function override class function implementation
 void BodyRotationSlashStance::displayStance() {
 
-	DebugOutput output = DebugOutput();
-
-	output.toHUD(FString("BodyRotationSlashStance Stance"), 2.f, false);
+	avatarPtr->avatarHUD->addHUDMessage(HUDMessage("BodyRotationSlashStance Stance", 2.f, FColor::White));
 }
 
 

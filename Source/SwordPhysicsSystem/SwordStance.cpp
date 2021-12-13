@@ -6,9 +6,7 @@
 #include "Avatar.h"
 #include "SPSPlayerController.h"
 #include "SPSAnimInstance.h"
-
-// Debug file
-#include "DebugOutput.h"
+#include "AvatarHUD.h"
 
 // UE4 Global functions
 #include "Components/InputComponent.h"
@@ -36,9 +34,6 @@ SwordStance::~SwordStance() {
 
 // Virtual functions likely common to all states but can be overidden when required
 void SwordStance::displayStance() {
-	DebugOutput output = DebugOutput();
-
-	output.toHUD(FString("AHH"), 2.f, false);
 }
 
 // Note, input of amount is 0 or 1
@@ -135,7 +130,6 @@ void SwordStance::jump() {
 
 void SwordStance::dodge() {
 
-	DebugOutput output = DebugOutput();
 
 	// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 	if (avatarPtr->pController) {
