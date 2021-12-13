@@ -4,7 +4,6 @@
 #include "Avatar.h"
 
 // Debug output for printing to console
-#include "DebugOutput.h"
 #include "DrawDebugHelpers.h"
 
 // Unreal engine component classes

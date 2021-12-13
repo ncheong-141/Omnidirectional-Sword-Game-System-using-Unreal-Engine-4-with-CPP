@@ -3,6 +3,7 @@
 
 #include "MeleeWeapon.h"
 #include "Avatar.h"
+#include "NPC.h"
 
 
 
@@ -10,9 +11,11 @@
 AMeleeWeapon::AMeleeWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	// Set class attributes 
-	weaponHolder = NULL;
+	avatarWeaponHolder = NULL;
+	npcWeaponHolder = NULL;
 	targetsHit = TSet<AActor*>();
 	canDamage = false;
+	weaponHolderIsAvatar = false; 
 }
 
 
@@ -50,10 +53,25 @@ TSet<AActor*> AMeleeWeapon::getTargetsHit() {
 	return targetsHit;
 }
 
-AAvatar* AMeleeWeapon::getWeaponHolder() {
-	return weaponHolder;
+AActor* AMeleeWeapon::getWeaponHolder() {
+	
+	if (weaponHolderIsAvatar) {
+		return avatarWeaponHolder; 
+	}
+	else {
+		return npcWeaponHolder;
+	}
 }
 
-void AMeleeWeapon::setWeaponHolder(AAvatar* avatar) {
-	weaponHolder = avatar;
+void AMeleeWeapon::setWeaponHolder(AActor* actor) {
+
+	// Set flag for setting if the weapon is held by avatar (just for ease of ref) 
+	if (Cast<AAvatar>(actor) != nullptr) {
+		avatarWeaponHolder = Cast<AAvatar>(actor);
+		weaponHolderIsAvatar = true;
+	}
+	else {
+		npcWeaponHolder = Cast<ANPC>(actor);
+		weaponHolderIsAvatar = false;
+	}
 }

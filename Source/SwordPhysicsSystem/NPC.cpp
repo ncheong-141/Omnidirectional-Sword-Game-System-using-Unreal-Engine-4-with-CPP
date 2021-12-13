@@ -3,8 +3,13 @@
 
 #include "NPC.h"
 #include "Avatar.h"
+#include "MeleeWeapon.h"
+#include "OneHandedSword.h"
+#include "Engine/SkeletalMeshSocket.h"
 
-// Sets default values
+
+// Constructor
+
 ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 
 	// Initialise variables
@@ -15,7 +20,14 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	// Code to make ANMPC::proc() run when this proximity sphere overlaps another actor
 	proximitySphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::proximityCheck);
 	
+	// Set variables 
 	hasBeenHit = false;
+
+	maxHitPoints = 1000;
+	currentHitPoints = maxHitPoints;
+	isBlocking = false;
+	wasBlocked = false;
+
 }
 
 // Note, although this was eclared in the header as NPC::Prox() it is now NPC::Prox_Implementaiton here
@@ -38,6 +50,33 @@ void ANPC::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+
+void ANPC::PostInitializeComponents() {
+
+	Super::PostInitializeComponents();
+
+	// Instantiate the melee weapon if a BP was selected in UE4
+	if (BPMeleeWeapon) {
+
+		// Instantiate melee weapon (Onehanded sword here, need a check for what is in BPMeleewapon)
+		MeleeWeapon = GetWorld()->SpawnActor<AOneHandedSword>(BPMeleeWeapon, FVector(), FRotator());
+
+		// If instantiation was successful, apply it to avatar
+		if (MeleeWeapon) {
+
+			// Get refence to the socket
+			const USkeletalMeshSocket* socket = GetMesh()->GetSocketByName(FName("hand_rSocket"));
+
+			if (socket) {
+				// Attach meleeWeapon to socket
+				socket->AttachActor(MeleeWeapon, GetMesh());
+				MeleeWeapon->setWeaponHolder(this);
+			}
+		}
+	}
+}
+
 
 // Called every frame
 void ANPC::Tick(float DeltaTime)
@@ -71,4 +110,10 @@ void ANPC::SPSActorTakeDamage(float amount) {
 	currentHitPoints -= amount;
 
 	// Check if dead etc 
+}
+
+
+/* Gettrers and setters */
+AMeleeWeapon* const ANPC::getMeleeWeapon() {
+	return MeleeWeapon;
 }

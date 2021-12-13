@@ -8,6 +8,7 @@
 
 // Forward declaration
 class AAvatar; 
+class ANPC;
 class UBoxComponent;
 
 /*
@@ -29,8 +30,16 @@ protected:
 		TSet<AActor*> targetsHit; 
 	
 	// Reference to weapon holder to check ensure does not hit themselve
+	// Two references as will set either or depending on who is the weapon holder
+	// Any NPC in the game should inherit from NPC so two references should be enough
+
 	UPROPERTY()
-		AAvatar* weaponHolder;
+		AAvatar* avatarWeaponHolder;
+
+	UPROPERTY()
+		ANPC* npcWeaponHolder; 
+
+	bool weaponHolderIsAvatar; 
 
 	// UE4 functions 
 	// Called when the game starts or when spawned
@@ -60,6 +69,6 @@ public:
 
 	// Getters and Setters
 	TSet<AActor*> getTargetsHit();
-	AAvatar* getWeaponHolder();
-	void setWeaponHolder(AAvatar* avatar);
+	AActor* getWeaponHolder();
+	void setWeaponHolder(AActor* actor);
 };

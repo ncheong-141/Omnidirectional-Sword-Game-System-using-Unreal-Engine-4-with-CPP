@@ -47,24 +47,32 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 		return -1;
 	}
 
-	// Dont hit things when conditions arent met
-	if (weaponHolder->avatarIsInAttackMotion() && canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
-
-		// Damage actor
-		otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
+	// If the weapon holder is an Avatar
+	if (weaponHolderIsAvatar) {
 		
-		// Add to hit list so do not strike more than once with one swing
-		targetsHit.Add(otherActor);
+		// Dont hit things when conditions arent met
+		if (avatarWeaponHolder->avatarIsInAttackMotion() && canDamage && otherActor != (AActor*)avatarWeaponHolder && !targetsHit.Contains(otherActor)) {
 
-		// Set staggared if target is a NPC 
-		ANPC* npc = Cast<ANPC>(otherActor); 
+			// Damage actor
+			otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
 
-		// Check if cast successful
-		if (npc != nullptr) {
+			// Add to hit list so do not strike more than once with one swing
+			targetsHit.Add(otherActor);
 
-			npc->hasBeenHit = true; 
+			// Set staggared if target is a NPC 
+			ANPC* npc = Cast<ANPC>(otherActor);
+
+			// Check if cast successful
+			if (npc != nullptr) {
+
+				npc->hasBeenHit = true;
+			}
 		}
+	}
+	else {
+		// Not an avatar but NPC (
+
 	}
 
 	return 0;
@@ -85,6 +93,13 @@ void AOneHandedSword::endAttackMotion() {
 // Calculate damage based on sword movementspeed and weigt
 float AOneHandedSword::calculateDynamicDamage() {
 
-	// Change right hand resultant speed to + movement speed later
-	return mass * weaponHolder->getRighthandResultantSpeed() * AMeleeWeapon::canDamage;
+	// Check if is an avatar
+	if (weaponHolderIsAvatar) {
+		// Change right hand resultant speed to + movement speed later
+		return mass * avatarWeaponHolder->getRighthandResultantSpeed() * AMeleeWeapon::canDamage;
+	}
+	else {
+		// NPC damage
+		return 1; 
+	}
 }

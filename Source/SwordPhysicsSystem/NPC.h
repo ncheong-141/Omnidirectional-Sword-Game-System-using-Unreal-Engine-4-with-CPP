@@ -8,6 +8,8 @@
 #include "SPSTargetable.h"
 #include "NPC.generated.h"
 
+class AMeleeWeapon;
+
 UCLASS()
 class SWORDPHYSICSSYSTEM_API ANPC : public ACharacter, public ISPSTargetable
 {
@@ -33,11 +35,18 @@ protected:
 		bool wasBlocked;
 
 
+	// Adding weapon to Avatar, assuming a specific mesh is already set
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPMeleeWeapon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		AMeleeWeapon* MeleeWeapon;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Ths runs after the avatars constructor is complete. 
+	virtual void PostInitializeComponents() override;
 public:	
 
 	// Public variables
@@ -60,6 +69,9 @@ public:
 
 	virtual int proximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	/* Getters and setters*/
+
+	AMeleeWeapon* const getMeleeWeapon();
 
 	/* Targetable Interface functions*/
 	virtual bool SPSActorIsBlocking() override;
