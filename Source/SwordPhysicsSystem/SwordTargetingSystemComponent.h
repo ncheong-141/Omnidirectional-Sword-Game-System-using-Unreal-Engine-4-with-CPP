@@ -29,10 +29,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
 		float yawSensitivity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 		float pitchSensitivity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Target System")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 		float lockOnStepSize; 
 
 	// Called when the game starts

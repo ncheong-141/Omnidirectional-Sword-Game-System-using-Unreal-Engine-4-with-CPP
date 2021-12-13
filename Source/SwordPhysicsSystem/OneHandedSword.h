@@ -48,7 +48,6 @@ public:
 	virtual void startAttackMotion() override;
 	virtual void endAttackMotion() override;
 
-	// Pure virtual override
 	// Calculate damage based on sword movement speed and weight
 	// This could also depend on location hit
 	virtual float calculateDynamicDamage() override;

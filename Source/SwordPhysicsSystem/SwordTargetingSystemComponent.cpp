@@ -16,8 +16,8 @@ USwordTargetingSystemComponent::USwordTargetingSystemComponent(const FObjectInit
 	// Istantiate other variables
 	currentTarget = nullptr;
 	targetsInProximity = TArray<AActor*>();
-	yawSensitivity = 1.5;
-	pitchSensitivity = 0.4;
+	yawSensitivity = 4;
+	pitchSensitivity = 1.0;
 	lockOnStepSize = 0.2;
 
 	// Instantiate sight sphere

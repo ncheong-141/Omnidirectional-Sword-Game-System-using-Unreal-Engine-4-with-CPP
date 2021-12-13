@@ -57,7 +57,7 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 
 	// Avatar stats
 	maxHitPoints = 1000; 
-	currentHitPoints = maxHitPoints;
+	currentHitPoints = maxHitPoints*0.9;
 	maxStamina = 100; 
 	currentStamina = maxStamina; 
 
@@ -155,6 +155,8 @@ void AAvatar::BeginPlay()
 
 	// Instantiate targetting system
 	currentTargettingSystem = NewObject<USwordTargetingSystemComponent>(this, TEXT("Target System"));
+
+
 }
 
 
