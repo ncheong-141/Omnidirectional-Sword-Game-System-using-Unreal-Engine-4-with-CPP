@@ -96,3 +96,9 @@ void StabSwordStance::swordStanceDeactivation() {
 	// Let weapon know its not attacking
 	avatarPtr->getMeleeWeapon()->endAttackMotion();
 }
+
+void StabSwordStance::exitStance() {
+
+	// Cancel the attack 
+	swordStanceDeactivation();
+}

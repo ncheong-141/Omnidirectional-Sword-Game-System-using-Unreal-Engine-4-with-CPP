@@ -35,3 +35,7 @@ void DefaultSwordStance::swordStanceDeactivation() {
 
 	// Nothing just yet
 }
+
+void DefaultSwordStance::exitStance() {
+	// Nothing just yet
+}

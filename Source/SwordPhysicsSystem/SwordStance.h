@@ -84,6 +84,7 @@ public:
 	/* Pure virtual functions which the Sword Stance classes MUST implement */
 	virtual void swordStanceActivation() = 0; 
 	virtual void swordStanceDeactivation() = 0; 
+	virtual void exitStance() = 0; 
 
 	// Getters and setters
 	const AllowableSwordDirectionInformation* getAllowableSwordDirections();

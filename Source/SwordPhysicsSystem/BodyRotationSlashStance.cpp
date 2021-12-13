@@ -120,3 +120,9 @@ void BodyRotationSlashStance::swordStanceDeactivation() {
 	allowableSwordDirections.canMoveNorth = true;
 	allowableSwordDirections.canMoveSouth = true;
 }
+
+void BodyRotationSlashStance::exitStance() {
+	
+	// Cancel the attack
+	swordStanceDeactivation();
+}

@@ -296,6 +296,8 @@ public:
 	/* Targetable Interface functions*/ 
 	virtual bool SPSActorIsBlocking() override;
 	virtual bool SPSActorWasBlocked() override;
+	virtual void SPSSetActorIsBlocking(bool value) override;
+	virtual void SPSSetActorWasBlocked(bool value) override;
 	virtual float SPSActorGetHP() override; 
 	virtual float SPSActorGetMaxHP() override;
 	virtual void SPSActorTakeDamage(float amount) override;

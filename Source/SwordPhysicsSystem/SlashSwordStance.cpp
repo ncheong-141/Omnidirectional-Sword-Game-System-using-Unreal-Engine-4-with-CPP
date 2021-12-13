@@ -104,3 +104,9 @@ void SlashSwordStance::swordStanceDeactivation() {
 	// Deactivate the recording of mouse delta distances (required for tracking of slash movemment)
 	avatarPtr->getSwordFocalPoint()->setRecordMouseDeltaDistances(false);
 }
+
+void SlashSwordStance::exitStance() {
+
+	// Cancel the attack
+	swordStanceDeactivation();
+}

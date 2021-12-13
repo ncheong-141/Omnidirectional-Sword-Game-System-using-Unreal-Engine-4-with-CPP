@@ -96,6 +96,15 @@ bool ANPC::SPSActorWasBlocked() {
 	return wasBlocked;
 }
 
+
+void ANPC::SPSSetActorIsBlocking(bool value) {
+	isBlocking = value;
+}
+
+void ANPC::SPSSetActorWasBlocked(bool value) {
+	wasBlocked = value;
+}
+
 float ANPC::SPSActorGetHP() {
 	return currentHitPoints;
 }

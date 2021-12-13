@@ -142,3 +142,8 @@ void BlockSwordStance::swordStanceDeactivation() {
 	canTurnCamera = false;
 	applyRotationToSwordFocalPoint = true;
 }
+
+void BlockSwordStance::exitStance() {
+
+	avatarPtr->SPSSetActorIsBlocking(false);
+}

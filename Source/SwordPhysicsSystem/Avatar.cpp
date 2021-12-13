@@ -264,8 +264,9 @@ void AAvatar::switch_DefaultSwordStance() {
 
 	if (!actionAbilityLocked) {
 
-		// Interrpt attack if in motion (before switching)
-		deactivateSwordStanceActivation();
+		// Call exit function to prepare for exiting stance
+		// Sets any flags appropiately for each stance
+		currentStance->exitStance();
 
 		// Reset back to default
 		bUseControllerRotationYaw = false;
@@ -281,6 +282,10 @@ void AAvatar::switch_SlashSwordStance() {
 
 	if (!actionAbilityLocked) {
 
+		// Call exit function to prepare for exiting stance
+		// Sets any flags appropiately for each stance
+		currentStance->exitStance();
+
 		// Aim in camera direction
 		bUseControllerRotationYaw = true;
 		avatarMovementComponent->bOrientRotationToMovement = false;
@@ -295,8 +300,9 @@ void AAvatar::switch_BlockSwordStance() {
 
 	if (!actionAbilityLocked) {
 	
-		// Interrpt attack if in motion (before switching)
-		deactivateSwordStanceActivation();
+		// Call exit function to prepare for exiting stance
+		// Sets any flags appropiately for each stance
+		currentStance->exitStance();
 
 		// Aim in camera direction
 		bUseControllerRotationYaw = true;
@@ -306,12 +312,19 @@ void AAvatar::switch_BlockSwordStance() {
 		currentStance = &blockStance;
 		currentStanceID = currentStance->stanceID;
 		currentStance->displayStance();
+
+		// Set avatar to blocking
+		isBlocking = true;
 	}
 }
 
 void AAvatar::switch_StabSwordStance() {
 
 	if (!actionAbilityLocked) {
+
+		// Call exit function to prepare for exiting stance
+		// Sets any flags appropiately for each stance
+		currentStance->exitStance();
 
 		// Aim in camera direction
 		bUseControllerRotationYaw = true;
@@ -326,6 +339,10 @@ void AAvatar::switch_StabSwordStance() {
 void AAvatar::switch_BodyRotationSlashSwordStance() {
 
 	if (!actionAbilityLocked) {
+
+		// Call exit function to prepare for exiting stance
+		// Sets any flags appropiately for each stance
+		currentStance->exitStance();
 
 		// Aim in camera direction
 		bUseControllerRotationYaw = true;
@@ -542,6 +559,7 @@ void AAvatar::dodge()
 		currentStance->dodge();
 	}
 }
+
 void AAvatar::changeCameraZoomIn() {
 
 	UE_LOG(LogTemp, Display, TEXT("%s"), __FUNCTION__);
@@ -551,6 +569,7 @@ void AAvatar::changeCameraZoomIn() {
 		cameraSpringArmComponent->TargetArmLength -= cameraZoomChangeIncrement;
 	}
 }
+
 void AAvatar::changeCameraZoomOut() {
 	UE_LOG(LogTemp, Display, TEXT("%s"), __FUNCTION__);
 	// Enforce max
@@ -772,6 +791,14 @@ bool AAvatar::SPSActorIsBlocking() {
 
 bool AAvatar::SPSActorWasBlocked() {
 	return wasBlocked;
+}
+
+void AAvatar::SPSSetActorIsBlocking(bool value) {
+	isBlocking = value;
+}
+
+void AAvatar::SPSSetActorWasBlocked(bool value) {
+	wasBlocked = value; 
 }
 
 float AAvatar::SPSActorGetHP() {

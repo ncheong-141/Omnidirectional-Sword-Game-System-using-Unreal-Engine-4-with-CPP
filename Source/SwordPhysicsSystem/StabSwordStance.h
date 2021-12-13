@@ -40,4 +40,5 @@ public:
 	// Pure virtual function impl.
 	virtual void swordStanceActivation() override;
 	virtual void swordStanceDeactivation() override;
+	virtual void exitStance() override;
 };
