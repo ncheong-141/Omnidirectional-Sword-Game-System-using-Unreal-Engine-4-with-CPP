@@ -25,6 +25,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 
 	maxHitPoints = 1000;
 	currentHitPoints = maxHitPoints;
+	attackSpeed = 1.f;
 	isBlocking = true;
 	wasBlocked = false;
 
@@ -119,6 +120,13 @@ void ANPC::SPSActorTakeDamage(float amount) {
 	currentHitPoints -= amount;
 
 	// Check if dead etc 
+}
+
+float ANPC::getAttackSpeed() {
+	return attackSpeed;
+}
+void ANPC::setAttackSpeed(float amount) {
+	attackSpeed = amount;
 }
 
 

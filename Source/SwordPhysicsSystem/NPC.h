@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
 		bool wasBlocked;
 
+	// This variable is affects animation playrate
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float attackSpeed;
 
 	// Adding weapon to Avatar, assuming a specific mesh is already set
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
@@ -71,7 +74,7 @@ public:
 
 	/* Getters and setters*/
 
-	AMeleeWeapon* const getMeleeWeapon();
+
 
 	/* Targetable Interface functions*/
 	virtual bool SPSActorIsBlocking() override;
@@ -81,6 +84,9 @@ public:
 	virtual float SPSActorGetHP() override;
 	virtual float SPSActorGetMaxHP() override;
 	virtual void SPSActorTakeDamage(float amount) override;
+	virtual float getAttackSpeed() override;
+	virtual void setAttackSpeed(float amount) override;
 
+	AMeleeWeapon* const getMeleeWeapon() override;
 
 };

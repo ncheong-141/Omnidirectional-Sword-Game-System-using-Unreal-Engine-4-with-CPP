@@ -48,8 +48,8 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 			if (avatarAnimInstance != nullptr) {
 
 				// Reset the time stats
-				// Calculate the time of the notification (modified by its rate scale)
-				avatarAnimInstance->totalNotificationDuration = TotalDuration / Animation->RateScale;
+				// Set the time of the notification 
+				avatarAnimInstance->totalNotificationDuration = TotalDuration;
 
 				// Set the float curve data to anim instance
 				if (Animation != nullptr) {

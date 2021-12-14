@@ -65,10 +65,14 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			//	UE_LOG(LogTemp, Display, TEXT("Anim total dura time from object from variable: %f"), currentlyPlayingAnimation->SequenceLength);
 			//	UE_LOG(LogTemp, Display, TEXT("Anim RateScake from object from variable: %f"), currentlyPlayingAnimation->RateScale);
 			//}
+			
+
+			// Calculate correctedNotificaitonDuration based on animation base ratescale and attackspeed
+			float correctedNotificationDuration = totalNotificationDuration / (currentlyPlayingAnimation->RateScale * animatedAvatar->getAttackSpeed());
 
 			// Calculate the current time
 			// Notificaiton duration scaled by rate scale
-			if (currentTime + DeltaSeconds < totalNotificationDuration) {
+			if (currentTime + DeltaSeconds < correctedNotificationDuration) {
 				lastFrameTime = currentTime;
 				currentTime += DeltaSeconds;
 			}
@@ -77,8 +81,6 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 				// End attack? Reset time? Start next attack?
 				// Reset time
-
-
 			}
 			//UE_LOG(LogTemp, Display, TEXT("Current time: %f"), currentTime);
 

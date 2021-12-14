@@ -77,6 +77,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float maxStamina;
 
+	// This variable is affects animation playrate
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
+		float attackSpeed; 
+
 	// SwordStance parent class pointer, used for polymorphic referenceing of other Stance classes (concrete class in state pattern)
 	SwordStance*		currentStance;
 
@@ -301,6 +305,10 @@ public:
 	virtual float SPSActorGetHP() override; 
 	virtual float SPSActorGetMaxHP() override;
 	virtual void SPSActorTakeDamage(float amount) override;
+	virtual float getAttackSpeed() override;
+	virtual void setAttackSpeed(float amount) override;
+
+	AMeleeWeapon* const getMeleeWeapon() override;
 
 	/* Getters and setters */
 
@@ -329,7 +337,7 @@ public:
 	UViewportSector* const getCurrentViewportSector();
 	TArray<UViewportSector*> const getViewportGrid();
 	const float getNumAxesSegments();
-	AMeleeWeapon* const getMeleeWeapon();
+
 
 	void setCurrentHP(float amount); 
 	void setMaxHP(float amount);

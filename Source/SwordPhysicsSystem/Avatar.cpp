@@ -59,6 +59,7 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 	currentHitPoints = maxHitPoints*0.9;
 	maxStamina = 100; 
 	currentStamina = maxStamina; 
+	attackSpeed = 1.f;
 
 
 	// Set Sword stance variables and instanciate objects for referencing
@@ -815,6 +816,13 @@ void AAvatar::SPSActorTakeDamage(float amount) {
 	currentHitPoints -= amount; 
 	
 	// Check if dead etc 
+}
+
+float AAvatar::getAttackSpeed() {
+	return attackSpeed;
+}
+void AAvatar::setAttackSpeed(float amount) {
+	attackSpeed = amount;
 }
 
 
