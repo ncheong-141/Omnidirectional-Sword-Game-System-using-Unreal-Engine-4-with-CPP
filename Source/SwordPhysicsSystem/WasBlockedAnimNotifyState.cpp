@@ -63,7 +63,8 @@ void UWasBlockedAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 			// Set damage to false
 			weaponHolder->getMeleeWeapon()->canDamage = false;
 
-			// Reversse playrate variable 
+			// Reversse attackspeed variable 
+			weaponHolder->setAttackSpeed(-1.f); 
 		}
 	}
 }
@@ -81,6 +82,8 @@ void UWasBlockedAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 	if (weaponHolder) {
 		
 		weaponHolder->SPSSetActorWasBlocked(false); 
+		weaponHolder->setAttackSpeed(1.f);
+
 	}
 
 }
