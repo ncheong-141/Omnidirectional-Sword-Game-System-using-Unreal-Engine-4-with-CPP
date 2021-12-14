@@ -56,8 +56,6 @@ public:
 	UPROPERTY()
 		UAnimSequenceBase* currentlyPlayingAnimation;
 
-	UPROPERTY()
-		UAnimMontage* currentlyPlayingMontage;
 
 	// Float curve data of current animation
 	const FFloatCurve* ForwardMovementDistanceFloatCurve;

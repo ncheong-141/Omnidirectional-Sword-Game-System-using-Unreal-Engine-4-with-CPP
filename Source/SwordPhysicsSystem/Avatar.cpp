@@ -265,6 +265,14 @@ void AAvatar::switch_DefaultSwordStance() {
 
 	if (!actionAbilityLocked) {
 
+		// Check if any of the current stance keys are currently, if so dont swtich
+		for (int i = 0; i < pController->stanceSwitchMappings.Num(); i++) {
+
+			if (pController->IsInputKeyDown(pController->stanceSwitchMappings[i].Key)) {
+				return;
+			}
+		}
+
 		// Call exit function to prepare for exiting stance
 		// Sets any flags appropiately for each stance
 		currentStance->exitStance();
@@ -526,7 +534,6 @@ void AAvatar::MoveLeftRelease() {
 	bUseControllerRotationYaw = false;
 	avatarMovementComponent->bOrientRotationToMovement = true;
 
-	UE_LOG(LogTemp, Display, TEXT("In Moveleftrelease"))
 }
 
 
@@ -836,9 +843,8 @@ void AAvatar::stopAttackIfBlocked() {
 	// Stop attack (which will always be swordStance activation)
 	currentStance->swordStanceDeactivation();
 
-	// Set attackspeed back to normal
+	// Set attackspeed back to normal (when have proper animations this wont be needed)
 	setAttackSpeed(1.f);
-
 }
 
 

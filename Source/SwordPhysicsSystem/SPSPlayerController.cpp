@@ -19,6 +19,15 @@ ASPSPlayerController::ASPSPlayerController(const FObjectInitializer& ObjectIniti
 
 	// Set up dodge action mappings
 	inputSettings->GetActionMappingByName("Dodge", dodgeActionMappings);
+
+	// Get all stance switch inputs 
+	stanceSwitchMappings = TArray<FInputActionKeyMapping>();	
+	inputSettings->GetActionMappingByName("DefaultSwordStance", stanceSwitchMappings);
+	inputSettings->GetActionMappingByName("SlashSwordStance", stanceSwitchMappings);
+	inputSettings->GetActionMappingByName("BlockSwordStance", stanceSwitchMappings);
+	inputSettings->GetActionMappingByName("StabSwordStance", stanceSwitchMappings);
+	inputSettings->GetActionMappingByName("BodyRotationSlashStance", stanceSwitchMappings);
+
 }
 
 

@@ -56,24 +56,48 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			animatedAvatar->getStance()->stanceActivationJustStarted = false;
 		}
 
+
 		// If there is an animation currently playing
 		if (animationCurrentlyPlaying) {
 
 			// Calculate correctedNotificaitonDuration based on animation base ratescale and attackspeed
-			float correctedNotificationDuration = totalNotificationDuration / (currentlyPlayingAnimation->RateScale * animatedAvatar->getAttackSpeed());
+			// Required as AnimationSequence only supplies duration of animation ratescale 1.0 without any modifiers.
+			// If attack speed is positive, going in normal animation play direction
+			if (animatedAvatar->getAttackSpeed() > 0) {
+				
+				float correctedNotificationDuration = totalNotificationDuration / (currentlyPlayingAnimation->RateScale * animatedAvatar->getAttackSpeed());
 
-			// Calculate the current time
-			// Notificaiton duration scaled by rate scale
-			if (currentTime + DeltaSeconds < correctedNotificationDuration) {
-				lastFrameTime = currentTime;
-				currentTime += DeltaSeconds;
+				// Calculate the current time
+				// Notificaiton duration scaled by rate scale
+				// *0.85 as for some reason current time and anim time does not match up even when not corrected
+				// Must be something to do with desync between anim notif state and animinstance deltaseconds..
+				// Need a better, more robust soln later
+				if (currentTime + DeltaSeconds < 0.85*correctedNotificationDuration) {
+					lastFrameTime = currentTime;
+					currentTime += DeltaSeconds;
+				}
+				else {
+					UE_LOG(LogTemp, Error, TEXT("over total time"));
+					// End the attack
+					animatedAvatar->getStance()->swordStanceDeactivation();
+					animationCurrentlyPlaying = false;
+				}
+				UE_LOG(LogTemp, Display, TEXT("Current Time: %f"), currentTime);
+				UE_LOG(LogTemp, Display, TEXT("Anim Notif Time: %f"), totalNotificationDuration);
+				UE_LOG(LogTemp, Display, TEXT("Corrected Anim Time: %f"), correctedNotificationDuration);
+
 			}
 			else {
-				UE_LOG(LogTemp, Error, TEXT("over total time"));
-
-				// End attack? Reset time? Start next attack?
-				// Reset time
+				// Negative attack speed, need to count down from current time				
+				if (currentTime - DeltaSeconds > 0) {
+					lastFrameTime = currentTime;
+					currentTime -= DeltaSeconds;
+				}
+				else {
+					UE_LOG(LogTemp, Error, TEXT("less than 0 time"));
+				}
 			}
+
 
 
 			/* Reading of curve data */

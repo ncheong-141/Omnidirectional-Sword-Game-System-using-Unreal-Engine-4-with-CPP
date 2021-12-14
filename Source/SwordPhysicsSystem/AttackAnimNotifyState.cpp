@@ -7,12 +7,6 @@
 
 void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) {
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	//UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
-	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
-
-
 	// Get the avatar and AnimInstance references to store in class for future use
 	// Initial checks
 	if (MeshComp != nullptr) {
@@ -80,11 +74,9 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 
 void UAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 
-	// Check if avatar and animation instance cast was successful 
 
 	// Perform code
 	// Can perform audio cues here too 
-
 	// Calculate allowable sword directions (this is stance dependent and is called polymorphicaly)
 	if (avatar) {
 		avatar->getStance()->calculateAllowableSwordDirections();
@@ -99,14 +91,13 @@ void UAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 
 void UAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) {
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	//UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
-	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
-
-
 	// Set playing animation to false after finishing animation
 	if (avatarAnimInstance) {
 		avatarAnimInstance->animationCurrentlyPlaying = false;
 	}
+
+	//if (avatar) {
+	//	avatar->getStance()->swordStanceDeactivation();
+	//}
+
 }

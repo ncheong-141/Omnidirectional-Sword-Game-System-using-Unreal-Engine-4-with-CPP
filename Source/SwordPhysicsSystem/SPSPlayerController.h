@@ -48,6 +48,9 @@ public:
 	UPROPERTY()
 		TArray<FInputActionKeyMapping> dodgeActionMappings;
 
+	UPROPERTY()
+		TArray<FInputActionKeyMapping> stanceSwitchMappings; 
+
 
 	// Constructors. Note, super constructor required to be called in order to set up the controller. 
 	ASPSPlayerController();

@@ -80,6 +80,9 @@ void UWasBlockedAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 	// Good having it here as you can either not input and play full rebound animation or the faster
 	// you input the faster you recover from the animation so its responsive
 	if (weaponHolder) {
-		weaponHolder->stopAttackIfBlocked();
+
+		if (weaponHolder->SPSActorWasBlocked()) {
+			weaponHolder->stopAttackIfBlocked();
+		}
 	}
 }
