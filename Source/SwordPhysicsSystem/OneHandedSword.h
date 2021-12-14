@@ -38,7 +38,6 @@ public:
 	// Hit box detection 
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
 		void proximityCheck(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
-
 	virtual int proximityCheck_Implementation(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
 

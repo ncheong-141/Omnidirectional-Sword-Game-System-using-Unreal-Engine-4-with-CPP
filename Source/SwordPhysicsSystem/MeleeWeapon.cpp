@@ -11,8 +11,7 @@
 AMeleeWeapon::AMeleeWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	// Set class attributes 
-	avatarWeaponHolder = NULL;
-	npcWeaponHolder = NULL;
+	weaponHolder = nullptr;
 	targetsHit = TSet<AActor*>();
 	canDamage = false;
 	weaponHolderIsAvatar = false; 
@@ -55,23 +54,28 @@ TSet<AActor*> AMeleeWeapon::getTargetsHit() {
 
 AActor* AMeleeWeapon::getWeaponHolder() {
 	
-	if (weaponHolderIsAvatar) {
-		return avatarWeaponHolder; 
-	}
-	else {
-		return npcWeaponHolder;
-	}
+	return weaponHolder;
 }
 
 void AMeleeWeapon::setWeaponHolder(AActor* actor) {
 
+	// Set weapon holder
+	weaponHolder = actor; 
+
 	// Set flag for setting if the weapon is held by avatar (just for ease of ref) 
 	if (Cast<AAvatar>(actor) != nullptr) {
-		avatarWeaponHolder = Cast<AAvatar>(actor);
 		weaponHolderIsAvatar = true;
 	}
 	else {
-		npcWeaponHolder = Cast<ANPC>(actor);
 		weaponHolderIsAvatar = false;
 	}
+
+	// Set up interface reference for future usage
+	weaponHolderInterfaceReference = TScriptInterface<ISPSTargetable>(actor);
+
+	 //Check
+	if (weaponHolderInterfaceReference == nullptr) {
+		UE_LOG(LogTemp, Fatal, TEXT("Weapon holder is not a SPSTargetable interfaced object in %s"), __FUNCTION__);
+	}
+
 }

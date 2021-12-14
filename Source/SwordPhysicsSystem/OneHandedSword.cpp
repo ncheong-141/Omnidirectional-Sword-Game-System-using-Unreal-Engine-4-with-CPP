@@ -47,32 +47,59 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 		return -1;
 	}
 
-	// If the weapon holder is an Avatar
-	if (weaponHolderIsAvatar) {
-		
-		// Dont hit things when conditions arent met
-		if (avatarWeaponHolder->avatarIsInAttackMotion() && canDamage && otherActor != (AActor*)avatarWeaponHolder && !targetsHit.Contains(otherActor)) {
+	// Check if other actor is a sword
+	AMeleeWeapon* enemySword = Cast<AMeleeWeapon>(otherActor);
+	if (enemySword != nullptr) {
 
-			// Damage actor
-			otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
+		UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
-			// Add to hit list so do not strike more than once with one swing
-			targetsHit.Add(otherActor);
+		// Cast targetable object to targetable interface
+		ISPSTargetable* enemySwordOwner = Cast<ISPSTargetable>(enemySword->getWeaponHolder());
 
-			// Set staggared if target is a NPC 
-			ANPC* npc = Cast<ANPC>(otherActor);
+		// Check cast is successful/ enemy is targetable
+		if (enemySwordOwner) {
 
-			// Check if cast successful
-			if (npc != nullptr) {
+			// Check if other sword is blocking
+			if (enemySwordOwner->SPSActorIsBlocking()) {
 
-				npc->hasBeenHit = true;
+				// Blocking, so set this attacking actor to WasBlocked
+				weaponHolderInterfaceReference->SPSSetActorWasBlocked(true);
 			}
 		}
-	}
-	else {
-		// Not an avatar but NPC (
 
+	}
+
+	// Check if an Targatable SPS actor ( check if cast can be succssful)
+	if (Cast<ISPSTargetable>(otherActor)) {
+
+		// If the weapon holder is an Avatar
+		if (weaponHolderIsAvatar) {
+
+			// Dont hit things when conditions arent met
+			// Removed: avatarWeaponHolder->avatarIsInAttackMotion() to generalise and canDamage is never true unless in attack motion
+			if (canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
+
+				// Damage actor
+				otherActor->TakeDamage(calculateDynamicDamage(), FDamageEvent(), NULL, this);
+				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Target Hit!")));
+
+				// Add to hit list so do not strike more than once with one swing
+				targetsHit.Add(otherActor);
+
+				// Set staggared if target is a NPC 
+				ANPC* npc = Cast<ANPC>(otherActor);
+
+				// Check if cast successful
+				if (npc != nullptr) {
+
+					npc->hasBeenHit = true;
+				}
+			}
+		}
+		else {
+			// Not an avatar but NPC (
+
+		}
 	}
 
 	return 0;
@@ -95,8 +122,11 @@ float AOneHandedSword::calculateDynamicDamage() {
 
 	// Check if is an avatar
 	if (weaponHolderIsAvatar) {
+
+		//Cast to avatar
+		AAvatar* avatar = Cast<AAvatar>(weaponHolder);
 		// Change right hand resultant speed to + movement speed later
-		return mass * avatarWeaponHolder->getRighthandResultantSpeed() * AMeleeWeapon::canDamage;
+		return mass * avatar->getRighthandResultantSpeed() * AMeleeWeapon::canDamage;
 	}
 	else {
 		// NPC damage

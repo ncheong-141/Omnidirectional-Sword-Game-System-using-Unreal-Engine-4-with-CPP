@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "SPSTargetable.h"
 #include "MeleeWeapon.generated.h"
 
 // Forward declaration
@@ -30,14 +31,11 @@ protected:
 		TSet<AActor*> targetsHit; 
 	
 	// Reference to weapon holder to check ensure does not hit themselve
-	// Two references as will set either or depending on who is the weapon holder
-	// Any NPC in the game should inherit from NPC so two references should be enough
-
+	// Two references as will set, one is the interface reference for quick access
 	UPROPERTY()
-		AAvatar* avatarWeaponHolder;
-
+		AActor* weaponHolder;
 	UPROPERTY()
-		ANPC* npcWeaponHolder; 
+		TScriptInterface<ISPSTargetable> weaponHolderInterfaceReference; 
 
 	bool weaponHolderIsAvatar; 
 
