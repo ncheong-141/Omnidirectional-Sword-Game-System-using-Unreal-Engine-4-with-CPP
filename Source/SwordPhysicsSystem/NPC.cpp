@@ -130,6 +130,10 @@ void ANPC::setAttackSpeed(float amount) {
 }
 
 
+void ANPC::stopAttackIfBlocked() {
+
+}
+
 /* Gettrers and setters */
 AMeleeWeapon* const ANPC::getMeleeWeapon() {
 	return MeleeWeapon;

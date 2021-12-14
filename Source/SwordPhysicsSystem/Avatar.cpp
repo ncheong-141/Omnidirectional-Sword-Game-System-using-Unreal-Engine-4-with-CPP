@@ -665,7 +665,7 @@ void AAvatar::setAttackAnimInformation() {
 void AAvatar::inputMovementLockCheck() {
 
 	// List of conditions in which would lock cardinal movement (use ||)
-	if (isInDodge || isInAir || isInAttackMotion) {
+	if (isInDodge || isInAir || isInAttackMotion ) {
 		inputMovementLocked = true;
 	}
 	else {
@@ -785,7 +785,10 @@ void AAvatar::debugOutput() {
 }
 
 
+
+
 /* Targetable Interface functions*/
+
 bool AAvatar::SPSActorIsBlocking() {
 	return isBlocking;
 }
@@ -824,6 +827,22 @@ float AAvatar::getAttackSpeed() {
 void AAvatar::setAttackSpeed(float amount) {
 	attackSpeed = amount;
 }
+
+void AAvatar::stopAttackIfBlocked() {
+
+	// Set blocked back to false
+	SPSSetActorWasBlocked(false);
+
+	// Stop attack (which will always be swordStance activation)
+	currentStance->swordStanceDeactivation();
+
+	// Set attackspeed back to normal
+	setAttackSpeed(1.f);
+
+}
+
+
+
 
 
 /* Getters and setters */

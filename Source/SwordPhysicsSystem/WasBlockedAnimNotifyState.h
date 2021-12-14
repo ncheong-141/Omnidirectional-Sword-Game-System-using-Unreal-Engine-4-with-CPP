@@ -23,6 +23,7 @@ private:
 	UPROPERTY()
 		TScriptInterface<ISPSWeaponHolder> weaponHolder;
 
+
 public:
 
 	// Overriding functions
@@ -37,5 +38,5 @@ public:
 
 private:
 	/* Internal helper functions*/
-
+	
 };

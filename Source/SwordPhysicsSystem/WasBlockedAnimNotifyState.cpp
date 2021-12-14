@@ -27,8 +27,6 @@ void UWasBlockedAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 			// Check if cast is successful 
 			if (weaponHolder != nullptr) {
 
-				// Begin notifcation code for weaponHolder
-				//Check if inAttackMOtion
 			}
 			else {
 
@@ -79,8 +77,9 @@ void UWasBlockedAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 
 
 	// Once state is exited either at end or by interuption, set wasblocked to false
+	// Good having it here as you can either not input and play full rebound animation or the faster
+	// you input the faster you recover from the animation so its responsive
 	if (weaponHolder) {
-		
-		weaponHolder->SPSSetActorWasBlocked(false); 
+		weaponHolder->stopAttackIfBlocked();
 	}
 }

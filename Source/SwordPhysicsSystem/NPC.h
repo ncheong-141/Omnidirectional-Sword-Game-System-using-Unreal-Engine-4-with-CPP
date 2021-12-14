@@ -86,6 +86,7 @@ public:
 	virtual void SPSActorTakeDamage(float amount) override;
 	virtual float getAttackSpeed() override;
 	virtual void setAttackSpeed(float amount) override;
+	virtual void stopAttackIfBlocked() override;
 
 	AMeleeWeapon* const getMeleeWeapon() override;
 
