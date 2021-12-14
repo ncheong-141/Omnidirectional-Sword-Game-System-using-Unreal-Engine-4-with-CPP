@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState_Trail.h"
+#include "SPSWeaponHolder.h"
 #include "CanDamageAnimNotifyState_Trail.generated.h"
 
 class AAvatar;
@@ -19,7 +20,7 @@ private:
 	/* Class attributes */
 	// Reference to avatar, set up in Begin andFlag to check that avatar cast was succesful for Tick function
 	UPROPERTY()
-		AAvatar* avatar;
+		TScriptInterface<ISPSWeaponHolder> weaponHolder;
 
 public:
 

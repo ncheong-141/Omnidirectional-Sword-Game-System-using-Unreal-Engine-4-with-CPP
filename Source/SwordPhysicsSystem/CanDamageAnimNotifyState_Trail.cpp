@@ -22,18 +22,14 @@ void UCanDamageAnimNotifyState_Trail::NotifyBegin(USkeletalMeshComponent* MeshCo
 		if (MeshComp->GetOwner() != nullptr) {
 
 			// Cast to avatar and set up class variable
-			avatar = Cast<AAvatar>(MeshComp->GetOwner());
+			weaponHolder = TScriptInterface<ISPSWeaponHolder>(MeshComp->GetOwner());
 
 			// Check if cast is successful 
-			if (avatar != nullptr) {
+			if (weaponHolder != nullptr) {
 
-				// Begin notifcation code for avatar
-				//Check if inAttackMOtion
-				if (avatar->avatarIsInAttackMotion()) {
-
-					// Set melee weapon can damage to true
-					avatar->getMeleeWeapon()->canDamage = true;
-				}
+				// Begin notifcation code 
+				// Set melee weapon can damage to true
+				weaponHolder->getMeleeWeapon()->canDamage = true;
 			}
 			else {
 
@@ -65,14 +61,10 @@ void UCanDamageAnimNotifyState_Trail::NotifyTick(USkeletalMeshComponent* MeshCom
 
 	// Constantly setting to true as animation may change/blend, this would invoke 
 	// the NotifyEnd() method of another canDamageState and thus this needs to be updated regularly
-	if (avatar) {
+	if (weaponHolder) {
 
-		//Check if inAttackMOtion
-		if (avatar->avatarIsInAttackMotion()) {
-
-			// Set melee weapon can damage to true
-			avatar->getMeleeWeapon()->canDamage = true;
-		}
+		// Set melee weapon can damage to true
+		weaponHolder->getMeleeWeapon()->canDamage = true;
 	}
 }
 
@@ -87,8 +79,8 @@ void UCanDamageAnimNotifyState_Trail::NotifyEnd(USkeletalMeshComponent* MeshComp
 	UAnimNotifyState_Trail::NotifyEnd(MeshComp, Animation);
 
 	// Set melee weapon can damage to false since ending canDamage state
-	if (avatar) {
-		avatar->getMeleeWeapon()->canDamage = false;
+	if (weaponHolder) {
+		weaponHolder->getMeleeWeapon()->canDamage = false;
 	}
 }
 

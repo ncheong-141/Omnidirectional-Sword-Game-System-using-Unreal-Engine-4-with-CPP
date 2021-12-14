@@ -63,7 +63,7 @@ void UWasBlockedAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 			// Set damage to false
 			weaponHolder->getMeleeWeapon()->canDamage = false;
 
-			// Reversse attackspeed variable 
+			// Reversse attackspeed variable to simulate recoil (no animations for rebound)
 			weaponHolder->setAttackSpeed(-1.f); 
 		}
 	}
@@ -82,8 +82,5 @@ void UWasBlockedAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 	if (weaponHolder) {
 		
 		weaponHolder->SPSSetActorWasBlocked(false); 
-		weaponHolder->setAttackSpeed(1.f);
-
 	}
-
 }
