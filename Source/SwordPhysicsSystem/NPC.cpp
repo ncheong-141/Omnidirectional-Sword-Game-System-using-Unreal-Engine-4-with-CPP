@@ -25,7 +25,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 
 	maxHitPoints = 1000;
 	currentHitPoints = maxHitPoints;
-	isBlocking = false;
+	isBlocking = true;
 	wasBlocked = false;
 
 }

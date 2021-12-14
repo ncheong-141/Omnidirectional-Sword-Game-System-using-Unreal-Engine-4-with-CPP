@@ -9,8 +9,8 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 
 	// Get the avatar and AnimInstance references to store in class for future use
@@ -101,8 +101,8 @@ void UAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 	
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 
 	// Set playing animation to false after finishing animation

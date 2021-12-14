@@ -43,34 +43,41 @@ void AOneHandedSword::init(FString name_, float mass_) {
 int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
 
 	// Dont hit non-root components 
-	if (otherComp != otherActor->GetRootComponent()) {
-		return -1;
-	}
+	//if (otherComp != otherActor->GetRootComponent()) {
+	//	return -1;
+	//}
 
 	// Check if other actor is a sword
 	AMeleeWeapon* enemySword = Cast<AMeleeWeapon>(otherActor);
 	if (enemySword != nullptr) {
 
-		UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
+		// Check if sword has been hit before and sword is in candamage state
+		if (!targetsHit.Contains(otherActor) && canDamage) {
+			UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
-		// Cast targetable object to targetable interface
-		ISPSTargetable* enemySwordOwner = Cast<ISPSTargetable>(enemySword->getWeaponHolder());
+			// Add ssword to targets hit to not hit more than once in one attack
+			targetsHit.Add(otherActor);
 
-		// Check cast is successful/ enemy is targetable
-		if (enemySwordOwner) {
+			// Cast targetable object to targetable interface
+			ISPSWeaponHolder* enemySwordOwner = Cast<ISPSWeaponHolder>(enemySword->getWeaponHolder());
 
-			// Check if other sword is blocking
-			if (enemySwordOwner->SPSActorIsBlocking()) {
+			// Check cast is successful/ enemy is targetable
+			if (enemySwordOwner) {
 
-				// Blocking, so set this attacking actor to WasBlocked
-				weaponHolderInterfaceReference->SPSSetActorWasBlocked(true);
+				// Check if other sword is blocking
+				if (enemySwordOwner->SPSActorIsBlocking()) {
+
+					// Blocking, so set this attacking actor to WasBlocked
+					weaponHolderInterfaceReference->SPSSetActorWasBlocked(true);
+					UE_LOG(LogTemp, Display, TEXT("Enemy Sword is blocking and set Attack to was blocked"));
+				}
 			}
 		}
 
 	}
 
 	// Check if an Targatable SPS actor ( check if cast can be succssful)
-	if (Cast<ISPSTargetable>(otherActor)) {
+	if (Cast<ISPSWeaponHolder>(otherActor)) {
 
 		// If the weapon holder is an Avatar
 		if (weaponHolderIsAvatar) {

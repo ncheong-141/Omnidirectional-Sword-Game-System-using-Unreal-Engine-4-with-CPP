@@ -139,12 +139,13 @@ void USwordTargetingSystemComponent::lockOnTarget() {
 			antiClockwiseRotationDifference.Pitch = 360.f - clockwiseRotationDifference.Pitch;
 		}
 
+		/*
 		UE_LOG(LogTemp, Display, TEXT("Current Rotation: %f, %f"), currentRotation.Yaw, currentRotation.Pitch)
 			UE_LOG(LogTemp, Display, TEXT("rotationToTarget: %f, %f"), rotationToTarget.Yaw, rotationToTarget.Pitch)
 			UE_LOG(LogTemp, Display, TEXT("rotationDifference: %f, %f"), rotationDifference.Yaw, rotationDifference.Pitch)
 			UE_LOG(LogTemp, Display, TEXT("antiClockwiseRotationDifference: %f, %f"), antiClockwiseRotationDifference.Yaw, antiClockwiseRotationDifference.Pitch)
 			UE_LOG(LogTemp, Display, TEXT("clockwiseRotationDiffernce: %f, %f"), clockwiseRotationDifference.Yaw, clockwiseRotationDifference.Pitch);
-
+		*/
 
 		// Gradually change to the rotation 
 		// Create a new rotation which steps towards this

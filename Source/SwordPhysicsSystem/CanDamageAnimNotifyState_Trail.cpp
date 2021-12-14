@@ -9,8 +9,8 @@ void UCanDamageAnimNotifyState_Trail::NotifyBegin(USkeletalMeshComponent* MeshCo
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Can Damage Notification function: Begin"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Can Damage Notification function: Begin"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 	UAnimNotifyState_Trail::NotifyBegin(MeshComp, Animation, TotalDuration);
 
@@ -81,8 +81,8 @@ void UCanDamageAnimNotifyState_Trail::NotifyEnd(USkeletalMeshComponent* MeshComp
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Can Damage NotificationNotification function: End"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Can Damage NotificationNotification function: End"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 	UAnimNotifyState_Trail::NotifyEnd(MeshComp, Animation);
 

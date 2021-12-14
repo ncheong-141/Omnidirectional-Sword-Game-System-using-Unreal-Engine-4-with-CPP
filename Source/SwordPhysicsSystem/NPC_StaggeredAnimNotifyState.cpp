@@ -48,8 +48,8 @@ void UNPC_StaggeredAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 	// Reset back to false affter animation complete
 	if (npc) {

@@ -9,8 +9,8 @@ void UCanDamageAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 
 	// Get the avatar and AnimInstance references to store in class for future use
@@ -74,8 +74,8 @@ void UCanDamageAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAni
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
+	//UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
+	//UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
 
 
 	// Set melee weapon can damage to false since ending canDamage state

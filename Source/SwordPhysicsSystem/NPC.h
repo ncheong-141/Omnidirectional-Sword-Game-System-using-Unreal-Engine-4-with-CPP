@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/SphereComponent.h"
-#include "SPSTargetable.h"
+#include "SPSWeaponHolder.h"
 #include "NPC.generated.h"
 
 class AMeleeWeapon;
 
 UCLASS()
-class SWORDPHYSICSSYSTEM_API ANPC : public ACharacter, public ISPSTargetable
+class SWORDPHYSICSSYSTEM_API ANPC : public ACharacter, public ISPSWeaponHolder
 {
 	GENERATED_BODY()
 

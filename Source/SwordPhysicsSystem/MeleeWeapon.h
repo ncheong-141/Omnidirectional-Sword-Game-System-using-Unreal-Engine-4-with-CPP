@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SPSTargetable.h"
+#include "SPSWeaponHolder.h"
 #include "MeleeWeapon.generated.h"
 
 // Forward declaration
@@ -35,7 +35,7 @@ protected:
 	UPROPERTY()
 		AActor* weaponHolder;
 	UPROPERTY()
-		TScriptInterface<ISPSTargetable> weaponHolderInterfaceReference; 
+		TScriptInterface<ISPSWeaponHolder> weaponHolderInterfaceReference; 
 
 	bool weaponHolderIsAvatar; 
 

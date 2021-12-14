@@ -71,7 +71,7 @@ void AMeleeWeapon::setWeaponHolder(AActor* actor) {
 	}
 
 	// Set up interface reference for future usage
-	weaponHolderInterfaceReference = TScriptInterface<ISPSTargetable>(actor);
+	weaponHolderInterfaceReference = TScriptInterface<ISPSWeaponHolder>(actor);
 
 	 //Check
 	if (weaponHolderInterfaceReference == nullptr) {

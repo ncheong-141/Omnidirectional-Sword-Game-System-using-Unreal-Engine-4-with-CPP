@@ -22,7 +22,7 @@
 #include "TargetingSystem.h"
 #include "SwordTargetingSystemComponent.h"
 #include "AvatarHUD.h"
-#include "SPSTargetable.h"
+#include "SPSWeaponHolder.h"
 #include "Avatar.generated.h"
 
 // Forward declarations to reduce compile time 
@@ -31,7 +31,7 @@ class UCameraComponent;
 class USkeletalMeshComponent;
 
 UCLASS()
-class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter, public ISPSTargetable
+class SWORDPHYSICSSYSTEM_API AAvatar : public ACharacter, public ISPSWeaponHolder
 {
 	GENERATED_BODY()
 
