@@ -54,14 +54,7 @@ public:
 
 	// Animation base currently playing
 	UPROPERTY()
-		UAnimSequenceBase* currentlyPlayingAnimation;
-
-
-	// Float curve data of current animation
-	const FFloatCurve* ForwardMovementDistanceFloatCurve;
-	const FFloatCurve* RightMovementDistanceFloatCurve;
-	const FFloatCurve* UpMovementDistanceFloatCurve;
-	const FFloatCurve* RightHandMovementSpeedFloatCurve;
+		UAnimSequence* currentlyPlayingAnimation;
 
 	// Current time and Total animation duration for reference
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
@@ -83,11 +76,7 @@ public:
 	// Called at each animation tick
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
-	// Get the movement distance curve values. Called in Anim Notifcation states when appropiate
-	void setMovementFloatCurvePointers(UAnimSequenceBase* Animation); 
+	void setCurrentAnimation(UAnimSequenceBase* animation);
 
-	// Get attack curve values (hand speed, directions (in future), etc)
-	void setAttackFloatCurvePointers(UAnimSequenceBase* Animation);
-
-	void setCurrentAnimationBase(UAnimSequenceBase* animation);
+	float getFloatValueFromCurve(float time, UAnimSequence* Sequence, FName CurveName);
 };

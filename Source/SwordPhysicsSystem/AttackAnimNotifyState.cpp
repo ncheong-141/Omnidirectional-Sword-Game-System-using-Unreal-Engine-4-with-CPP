@@ -48,14 +48,8 @@ void UAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 				// Set the float curve data to anim instance
 				if (Animation != nullptr) {
 
-					// For movement curves
-					avatarAnimInstance->setMovementFloatCurvePointers(Animation);
-
-					// For attack curves
-					avatarAnimInstance->setAttackFloatCurvePointers(Animation);
-					
 					// Animation base reference
-					avatarAnimInstance->setCurrentAnimationBase(Animation);
+					avatarAnimInstance->setCurrentAnimation(Animation);
 				}
 			}
 			else {

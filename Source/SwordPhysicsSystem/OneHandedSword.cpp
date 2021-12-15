@@ -28,7 +28,7 @@ AOneHandedSword::AOneHandedSword(const FObjectInitializer& ObjectInitializer) : 
 	proximityBox->OnComponentBeginOverlap.AddDynamic(this, &AOneHandedSword::proximityCheck);
 
 	// Attach proximity box to the root component (the mesh here)
-	proximityBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	proximityBox->SetupAttachment(RootComponent);
 }
 
 void AOneHandedSword::init(FString name_, float mass_) {

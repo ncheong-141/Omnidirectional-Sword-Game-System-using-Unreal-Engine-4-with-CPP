@@ -57,6 +57,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 		}
 
 
+
 		// If there is an animation currently playing
 		if (animationCurrentlyPlaying) {
 
@@ -99,42 +100,29 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 			}
 
 
-
 			/* Reading of curve data */
 			// Set curve current and last frame values
 			// Note last frame value is obtained from the curve as the curves can switch depending on anim playing
+			if (currentlyPlayingAnimation != nullptr) {
 
-			// ForwardMovement distance
-			if (ForwardMovementDistanceFloatCurve != nullptr) {
-				fMovementDistanceCurveLastFrameValue = ForwardMovementDistanceFloatCurve->Evaluate(lastFrameTime);;
-				fMovementDistanceCurveCurrentValue = ForwardMovementDistanceFloatCurve->Evaluate(currentTime);
-			}
-			else {
-				UE_LOG(LogTemp, Error, TEXT("ForwardMovement curve nullptr in %s"), __FUNCTION__);
-			}
-
-			// Right movement distance			
-			if (RightMovementDistanceFloatCurve != nullptr) {
-				rMovementDistanceCurveLastFrameValue = RightMovementDistanceFloatCurve->Evaluate(lastFrameTime);
-				rMovementDistanceCurveCurrentValue = RightMovementDistanceFloatCurve->Evaluate(currentTime);
-			}
-			else {
-				UE_LOG(LogTemp, Error, TEXT("RightMovement curve nullptr in %s"), __FUNCTION__);
-			}
-
-			// Up movement distance
-			if (UpMovementDistanceFloatCurve != nullptr) {
-				upMovementDistanceCurveLastFrameValue = UpMovementDistanceFloatCurve->Evaluate(lastFrameTime);;
-				upMovementDistanceCurveCurrentValue = UpMovementDistanceFloatCurve->Evaluate(currentTime);
-			}
-			else {
-				UE_LOG(LogTemp, Error, TEXT("UpdMovement curve nullptr in %s"), __FUNCTION__);
-			}
+				// ForwardMovement distance
+				fMovementDistanceCurveLastFrameValue = getFloatValueFromCurve(lastFrameTime, currentlyPlayingAnimation, FName("ForwardMovement"));
+				fMovementDistanceCurveCurrentValue = getFloatValueFromCurve(currentTime, currentlyPlayingAnimation, FName("ForwardMovement"));
+				
+				// Right movement distance			
+				rMovementDistanceCurveLastFrameValue = getFloatValueFromCurve(lastFrameTime, currentlyPlayingAnimation, FName("RightMovement"));
+				rMovementDistanceCurveCurrentValue = getFloatValueFromCurve(currentTime, currentlyPlayingAnimation, FName("RightMovement"));
 		
-			// Right hand movement speed
-			if (RightHandMovementSpeedFloatCurve != nullptr) {
-				righthandMovementCurveCurrentValue = RightHandMovementSpeedFloatCurve->Evaluate(currentTime);
-			}
+				// Up movement distance
+				upMovementDistanceCurveLastFrameValue = getFloatValueFromCurve(lastFrameTime, currentlyPlayingAnimation, FName("UpMovement"));
+				upMovementDistanceCurveCurrentValue = getFloatValueFromCurve(currentTime, currentlyPlayingAnimation, FName("UpMovement"));
+
+
+				// Right hand movement speed
+				righthandMovementCurveCurrentValue = getFloatValueFromCurve(currentTime, currentlyPlayingAnimation, FName("thumb_01_r_MovementSpeed"));
+				
+			} 
+			
 
 			/* Apply animation curve values */
 			// The curve current values are updated in the animation notification states
@@ -157,51 +145,21 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 	}
 }
 
-
-void USPSAnimInstance::setMovementFloatCurvePointers(UAnimSequenceBase* Animation) {
-
-	if (Animation != nullptr) {
-		// Get the curve data reference from the animation
-		const FRawCurveTracks& curves = Animation->GetCurveData();
-
-		// Establish the variable for curve name
-		FSmartName curveName;
-
-		// Get data
-		Animation->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("ForwardMovement"), curveName);
-		ForwardMovementDistanceFloatCurve = static_cast<const FFloatCurve*>(curves.GetCurveData(curveName.UID));
-
-		Animation->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("RightMovement"), curveName);
-		RightMovementDistanceFloatCurve = static_cast<const FFloatCurve*>(curves.GetCurveData(curveName.UID));
-
-		Animation->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("UpMovement"), curveName);
-		UpMovementDistanceFloatCurve = static_cast<const FFloatCurve*>(curves.GetCurveData(curveName.UID));
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
-	}
+void USPSAnimInstance::setCurrentAnimation(UAnimSequenceBase* Animation) {
+	currentlyPlayingAnimation = Cast<UAnimSequence>(Animation);
 }
 
-void USPSAnimInstance::setAttackFloatCurvePointers(UAnimSequenceBase* Animation) {
+float USPSAnimInstance::getFloatValueFromCurve(float time, UAnimSequence* Sequence, FName CurveName) {
 
-	if (Animation != nullptr) {
-		// Get the curve data reference from the animation
-		const FRawCurveTracks& curves = Animation->GetCurveData();
+	USkeleton* Skeleton = Sequence->GetSkeleton();
 
-		// Establish the variable for curve name
-		FSmartName curveName;
+	const FSmartNameMapping* NameMapping = Skeleton->GetSmartNameContainer(USkeleton::AnimCurveMappingName);
 
-		// Get data for right hand movement speed
-		Animation->GetSkeleton()->GetSmartNameByName(USkeleton::AnimCurveMappingName, TEXT("thumb_01_r_MovementSpeed"), curveName);
-		RightHandMovementSpeedFloatCurve = static_cast<const FFloatCurve*>(curves.GetCurveData(curveName.UID));
+	USkeleton::AnimCurveUID Uid;
+	Uid = NameMapping->FindUID(CurveName);
 
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("Animation is nullptr in %s"), __FUNCTION__);
-	}
-
-}
-
-void USPSAnimInstance::setCurrentAnimationBase(UAnimSequenceBase* Animation) {
-	currentlyPlayingAnimation = Animation;
+	float value = Sequence->EvaluateCurveData(Uid, time);
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, FString::Printf(TEXT("Value from curve: %f"), value));
+	
+	return value;
 }

@@ -14,7 +14,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 
 	// Initialise variables
 	proximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Proximity Sphere"));
-	proximitySphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	proximitySphere->SetupAttachment(RootComponent);
 	proximitySphere->SetSphereRadius(32.f);
 
 	// Code to make ANMPC::proc() run when this proximity sphere overlaps another actor

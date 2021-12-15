@@ -9,12 +9,6 @@
 
 void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) {
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: Begin"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
-
-
 	// Get the avatar and AnimInstance references to store in class for future use
 	// Initial checks
 	if (MeshComp != nullptr) {
@@ -59,8 +53,7 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 
 				// Set the float curve data to anim instance
 				if (Animation != nullptr) {
-					avatarAnimInstance->setMovementFloatCurvePointers(Animation);
-					avatarAnimInstance->setCurrentAnimationBase(Animation);
+					avatarAnimInstance->setCurrentAnimation(Animation);
 				}
 			}
 			else {
@@ -80,8 +73,6 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 
 void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 	
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
 
 	// Check if avatar and animation instance cast was successful 
 
@@ -97,11 +88,6 @@ void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 
 void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) {
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, __FUNCTION__);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Animation->GetName());
-	UE_LOG(LogTemp, Display, TEXT("Notification function: End"));
-	UE_LOG(LogTemp, Display, TEXT("Animation name: %s"), *(Animation->GetName()));
-
 	// Set dodge to false as it has ended
 	if (avatar) {
 		avatar->setAvatarIsInDodge(false);

@@ -138,35 +138,31 @@ void SwordStance::dodge() {
 		// Dodge action mappings (should be WASD and Lshift) (Should move the dodge action mapping to the SPSPlayer controller)
 		FKey dodgeKey = avatarPtr->pController->dodgeActionMappings[avatarPtr->pController->dodgeActionMappings.Num() - 1].Key; // Note, since the dodge key is specified first in the input UI section, this is its position
 
+		// Set avatar to follow with camera yaw
+		avatarPtr->bUseControllerRotationYaw = true;
+		avatarPtr->avatarMovementComponent->bOrientRotationToMovement = false;
+
 		if (avatarPtr->pController->IsInputKeyDown(dodgeKey)) {
 
 			// Flow control for each WASD key 
 			// (should change to switch statement to minimise latency)
 			if (avatarPtr->pController->IsInputKeyDown(EKeys::A)) {
 
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Left"));
-				UE_LOG(LogTemp, Display, TEXT("Dodge Left"))
 				avatarPtr->setAvatarIsInDodge(true);
 				avatarPtr->setDodgeDirection(2);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::D)) {
 
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Right"));
-				UE_LOG(LogTemp, Display, TEXT("Dodge Right"))
 				avatarPtr->setAvatarIsInDodge(true);
 				avatarPtr->setDodgeDirection(3);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::W)) {
 
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Forward"));
-				UE_LOG(LogTemp, Display, TEXT("Dodge Forward"))
 				avatarPtr->setAvatarIsInDodge(true);
 				avatarPtr->setDodgeDirection(0);
 			}
 			else if (avatarPtr->pController->IsInputKeyDown(EKeys::S)) {
 
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Dodge Back"));
-				UE_LOG(LogTemp, Display, TEXT("Dodge Back"))
 				avatarPtr->setAvatarIsInDodge(true);
 				avatarPtr->setDodgeDirection(1);
 			}
