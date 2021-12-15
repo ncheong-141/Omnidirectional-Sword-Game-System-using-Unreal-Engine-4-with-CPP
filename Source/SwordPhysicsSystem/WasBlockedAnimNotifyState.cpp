@@ -4,6 +4,7 @@
 #include "WasBlockedAnimNotifyState.h"
 
 #include "Avatar.h"
+#include "NPC.h"
 #include "SPSAnimInstance.h"
 
 void UWasBlockedAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) {
@@ -61,8 +62,24 @@ void UWasBlockedAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 			// Set damage to false
 			weaponHolder->getMeleeWeapon()->canDamage = false;
 
-			// Reversse attackspeed variable to simulate recoil (no animations for rebound)
-			weaponHolder->setAttackSpeed(-1.f); 
+			// Hard coding this for now since both need to be treated differently 
+			if (Cast<AAvatar>(weaponHolder.GetObject())) {
+				
+				AAvatar* avatar = Cast<AAvatar>(weaponHolder.GetObject());
+
+				// Reversse attackspeed variable to simulate recoil (no animations for rebound)
+				avatar->setAttackSpeed(-1.f);
+			}
+
+			if (Cast<ANPC>(weaponHolder.GetObject())) {
+
+				ANPC* npc = Cast<ANPC>(weaponHolder.GetObject());
+				
+				// Not required as doing in npc attack state
+				npc->stopAttackIfBlocked();
+			}
+
+
 		}
 	}
 }

@@ -72,7 +72,7 @@ protected:
 		bool avatarInProximity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
-		bool attacking;
+		bool inAttackRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
 		bool inAttackMotion;
@@ -98,6 +98,13 @@ protected:
 	// ID between number of attacks available
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 		int currentAttackID; 
+
+	// Time between attacks
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+		float attackDelayTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+		float currentTimeTillAttack;
 
 
 	// Adding weapon to Avatar, assuming a specific mesh is already set
@@ -174,7 +181,7 @@ private:
 	void moveTowardsAvatar(float deltaSeconds);
 
 	// Start attacking avatar
-	void startAttackingAvatar();
+	void startAttackingAvatar(float DeltaTime);
 
 	// Put guard up to avatar
 	void putGuardUp();

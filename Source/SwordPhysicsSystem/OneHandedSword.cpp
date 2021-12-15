@@ -51,8 +51,9 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	AMeleeWeapon* enemySword = Cast<AMeleeWeapon>(otherActor);
 	if (enemySword != nullptr) {
 
-		// Check if sword has been hit before and sword is in candamage state
-		if (!targetsHit.Contains(otherActor) && canDamage) {
+		// Check if sword has been hit before. Does not need to be in the can damage state!!
+		if (!targetsHit.Contains(otherActor) ) {
+			
 			UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
 			// Add ssword to targets hit to not hit more than once in one attack
@@ -72,6 +73,10 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 					UE_LOG(LogTemp, Display, TEXT("Enemy Sword is blocking and set Attack to was blocked"));
 				}
 			}
+
+			// If hit enemy sword, dont consider any other targets
+			
+			return 0;;
 		}
 
 	}
@@ -104,6 +109,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 				}
 			}
 		}
+		// Should be done through the interface 
 		else {
 			// Not an avatar but NPC (
 			

@@ -61,11 +61,11 @@ void UCanDamageAnimNotifyState_Trail::NotifyTick(USkeletalMeshComponent* MeshCom
 
 	// Constantly setting to true as animation may change/blend, this would invoke 
 	// the NotifyEnd() method of another canDamageState and thus this needs to be updated regularly
-	if (weaponHolder) {
+	//if (weaponHolder) {
 
-		// Set melee weapon can damage to true
-		weaponHolder->getMeleeWeapon()->canDamage = true;
-	}
+	//	// Set melee weapon can damage to true
+	//	weaponHolder->getMeleeWeapon()->canDamage = true;
+	//}
 }
 
 

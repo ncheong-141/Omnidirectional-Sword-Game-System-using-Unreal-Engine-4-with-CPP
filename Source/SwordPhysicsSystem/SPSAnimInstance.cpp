@@ -78,14 +78,14 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 					currentTime += DeltaSeconds;
 				}
 				else {
-					UE_LOG(LogTemp, Error, TEXT("over total time"));
+					//UE_LOG(LogTemp, Error, TEXT("over total time"));
 					// End the attack
 					animatedAvatar->getStance()->swordStanceDeactivation();
 					animationCurrentlyPlaying = false;
 				}
-				UE_LOG(LogTemp, Display, TEXT("Current Time: %f"), currentTime);
-				UE_LOG(LogTemp, Display, TEXT("Anim Notif Time: %f"), totalNotificationDuration);
-				UE_LOG(LogTemp, Display, TEXT("Corrected Anim Time: %f"), correctedNotificationDuration);
+				//UE_LOG(LogTemp, Display, TEXT("Current Time: %f"), currentTime);
+				//UE_LOG(LogTemp, Display, TEXT("Anim Notif Time: %f"), totalNotificationDuration);
+				//UE_LOG(LogTemp, Display, TEXT("Corrected Anim Time: %f"), correctedNotificationDuration);
 
 			}
 			else {
@@ -95,7 +95,7 @@ void USPSAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 					currentTime -= DeltaSeconds;
 				}
 				else {
-					UE_LOG(LogTemp, Error, TEXT("less than 0 time"));
+				//	UE_LOG(LogTemp, Error, TEXT("less than 0 time"));
 				}
 			}
 
@@ -159,7 +159,7 @@ float USPSAnimInstance::getFloatValueFromCurve(float time, UAnimSequence* Sequen
 	Uid = NameMapping->FindUID(CurveName);
 
 	float value = Sequence->EvaluateCurveData(Uid, time);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, FString::Printf(TEXT("Value from curve: %f"), value));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, FString::Printf(TEXT("Value from curve: %f"), value));
 	
 	return value;
 }

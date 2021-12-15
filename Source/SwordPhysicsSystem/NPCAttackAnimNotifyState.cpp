@@ -40,6 +40,13 @@ void UNPCAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 void UNPCAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) {
 
+	if (npc) {
+
+		// If was blocked, end attack motion (for npc)
+		if (npc->SPSActorWasBlocked()) {
+			npc->stopAttackIfBlocked();
+		}
+	}
 
 }
 

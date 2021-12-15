@@ -20,9 +20,9 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	// Initialise variables
 	proximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Proximity Sphere"));
 	proximitySphere->SetupAttachment(RootComponent);
-	proximitySphere->SetSphereRadius(500.f);
+	proximitySphere->SetSphereRadius(700.f);
 
-	attackRangeSize = 200.f;
+	attackRangeSize = 350.f;
 	attackRangeSphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
 	attackRangeSphere->SetupAttachment(RootComponent);
 	attackRangeSphere->SetSphereRadius(attackRangeSize);
@@ -54,7 +54,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	// AI flags
 	avatarInProximity = false;
 	moving = false;
-	attacking = false;
+	inAttackRange = false;
 	isBlocking = false;
 	wasBlocked = false;
 	hasBeenHit = false;
@@ -62,9 +62,12 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	// Attacking system
 	numAttacksAvailable = 14; 
 	currentAttackID = 0;
+	attackDelayTime = 3.f; 
+	currentTimeTillAttack = attackDelayTime; 
 
 	// Blocking system
 	npcBasicSwordFocalPoint = FVector2D(0.f);
+
 
 }
 
@@ -75,6 +78,7 @@ void ANPC::Tick(float DeltaTime)
 
 	// Update velocities
 	velocityUpdate();
+
 
 	// If avatar is in proximity
 	if (avatarInProximity) {
@@ -91,7 +95,7 @@ void ANPC::Tick(float DeltaTime)
 
 		// If attack avatar
 		if (attackAvatar) {
-			startAttackingAvatar();
+			startAttackingAvatar(DeltaTime);
 		}
 
 		// If is blocking
@@ -165,41 +169,57 @@ void ANPC::moveTowardsAvatar(float deltaSeconds) {
 	
 	if (avatarRef != nullptr) {
 
-		// actor location - location = vector pointing to avatar
-		FVector vectorToAvatar = avatarRef->GetActorLocation() - GetActorLocation();
+		// Dont move if any of these cond
+		if (!hasBeenHit && !inAttackMotion && !wasBlocked) {
 
-		float sizeVec = vectorToAvatar.Size(); 
-		UE_LOG(LogTemp, Display, TEXT("sizeVec: %f, 0.5* attackRangeSize: %f"), sizeVec, 0.5 * attackRangeSize);
-		
-		// Change to unit vector
-		vectorToAvatar.Normalize(); 
+			// actor location - location = vector pointing to avatar
+			FVector vectorToAvatar = avatarRef->GetActorLocation() - GetActorLocation();
 
-		// Add input to movment of NPC (dont walk right up)
-		if (sizeVec > 0.9* attackRangeSize) {
-			AddMovementInput(vectorToAvatar, maxMovementSpeed * deltaSeconds);
+			float sizeVec = vectorToAvatar.Size();
+			UE_LOG(LogTemp, Display, TEXT("sizeVec: %f, 0.5* attackRangeSize: %f"), sizeVec, 0.5 * attackRangeSize);
+
+			// Change to unit vector
+			vectorToAvatar.Normalize();
+
+			// Add input to movment of NPC (dont walk right up)
+			if (sizeVec > 0.9 * attackRangeSize) {
+				AddMovementInput(vectorToAvatar, maxMovementSpeed * deltaSeconds);
+			}
 		}
 	}
 }
 
-void ANPC::startAttackingAvatar() {
+void ANPC::startAttackingAvatar(float DeltaTime) {
 
-	// In attack range, start an attack if not already attacking 
-	if (attacking && !inAttackMotion) {
+	// Check if NPC can attack
+	if (currentTimeTillAttack <= 0) {
 
-		// If an attack has strted, end blocking if needed
-		isBlocking = false;
+		// In attack range, start an attack if not already attacking 
+		if (inAttackRange && !inAttackMotion && !wasBlocked && !isBlocking && !hasBeenHit) {
 
-		// Generate a random value between 0 - Number of attacks
-		currentAttackID = rand() % numAttacksAvailable;
+			// If an attack has strted, end blocking if needed
+			isBlocking = false;
 
-		// Executes the attack from anim blueprint
-		inAttackMotion = true;
+			// Generate a random value between 0 - Number of attacks
+			currentAttackID = rand() % numAttacksAvailable;
 
-		// Set Weapon in attack
-		MeleeWeapon->startAttackMotion();
+			// Executes the attack from anim blueprint
+			inAttackMotion = true;
 
-		// This gets set back to false in anim notif state for NPC
+			// Set Weapon in attack
+			// This gets set back to false in anim notif state for NPC
+			MeleeWeapon->startAttackMotion();
+
+			// Reset currentTImeTillAttack since attack performed
+			currentTimeTillAttack = attackDelayTime;
+		}
 	}
+	else {
+
+		// Decrement time if not
+		currentTimeTillAttack -= DeltaTime; 
+	}
+
 }
 
 void ANPC::putGuardUp() {
@@ -284,7 +304,7 @@ int ANPC::attackRangeCheck_Implementation(UPrimitiveComponent* OverlappedCompone
 	}
 
 	// Avatar entered attack range
-	attacking = true;
+	inAttackRange = true;
 
 	return 0;
 }
@@ -297,7 +317,7 @@ int ANPC::endAttackRangeCheck_Implementation(UPrimitiveComponent* OverlappedComp
 	}
 
 	// Avatar exited attack range
-	attacking = false;
+	inAttackRange = false;
 
 	return 0;
 }
@@ -368,7 +388,21 @@ void ANPC::setAttackSpeed(float amount) {
 
 
 void ANPC::stopAttackIfBlocked() {
+
+	// Set wasnt blocked 
+	wasBlocked = false;
+
+	// Stop attack
 	inAttackMotion = false;
+
+	// Weapon end motion
+	getMeleeWeapon()->endAttackMotion();
+
+	// Set attackspeed back to normal (when have proper animations this wont be needed)
+	setAttackSpeed(1.f);
+
+	// Set has been hit to true just for flinch animation
+	setHasBeenHit(true);
 }
 
 /* Gettrers and setters */
