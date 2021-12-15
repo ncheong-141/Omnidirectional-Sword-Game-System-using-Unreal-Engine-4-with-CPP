@@ -3,6 +3,7 @@
 
 #include "NPCAttackAnimNotifyState.h"
 #include "NPC.h"
+#include "MeleeWeapon.h"
 
 void UNPCAttackAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) {
 
@@ -48,6 +49,7 @@ void UNPCAttackAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAni
 	// Set is in attack motion to false
 	if (npc) {
 		npc->setIsInAttackMotion(false);
+		npc->getMeleeWeapon()->endAttackMotion();
 	}
 
 }

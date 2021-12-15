@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
 		USphereComponent* attackRangeSphere;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Properties")
+		float attackRangeSize;
+
 	// NPC properties 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
 		float currentHitPoints;
@@ -37,9 +40,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Avatar Properties")
 		float attackSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Properties")
-		float movementSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
+		float maxMovementSpeed;
 
+	// Speed vairables 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
+		FVector2D worldVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
+		FVector2D localVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC Properties")
+		FVector2D normalisedLocalVelocity;
 
 	// AI control variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Properties")
@@ -161,10 +173,14 @@ private:
 	// Move to avatar
 	void moveTowardsAvatar(float deltaSeconds);
 
+	// Start attacking avatar
 	void startAttackingAvatar();
 
+	// Put guard up to avatar
 	void putGuardUp();
 
+	// Calculate velocities 
+	void velocityUpdate();
 
 public:
 

@@ -88,6 +88,8 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 	isInAttackMotion = false;
 	isMoving = false;
 	wasMovingBeforeAction = false;
+	isParrying = false;
+	hasBeenHit = false;
 	attackMotionStartingSector = 0; 
 	dodgeDirection = 0;
 	avatarMaxSpeed = this->GetCharacterMovement()->GetMaxSpeed();
@@ -473,6 +475,9 @@ void AAvatar::MoveForward(float amount) {
 
 void AAvatar::MoveForwardRelease() {
 
+	// Reset avatar to orientate to movemnet when not straging
+	bUseControllerRotationYaw = false;
+	avatarMovementComponent->bOrientRotationToMovement = true;
 }
 
 void AAvatar::MoveBack(float amount) {
@@ -917,6 +922,14 @@ bool AAvatar::avatarWasMovingBeforeAction() {
 	return wasMovingBeforeAction;
 }
 
+bool AAvatar::getHasBeenHit() {
+	return hasBeenHit; 
+}
+
+bool AAvatar::getIsParrying() {
+	return isParrying;
+}
+
 bool AAvatar::isInputMovementLocked() {
 	return inputMovementLocked;
 }
@@ -1009,4 +1022,12 @@ void AAvatar::setAttackMotionStartingSector(int sectorID) {
 
 void AAvatar::setDodgeDirection(int directionID) {
 	dodgeDirection = directionID; 
+}
+
+void AAvatar::setHasBeenHit(bool value) {
+	hasBeenHit = value;
+}
+
+void AAvatar::setIsParrying(bool value) {
+	isParrying = value;
 }

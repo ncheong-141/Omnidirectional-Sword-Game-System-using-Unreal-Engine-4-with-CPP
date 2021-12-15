@@ -154,6 +154,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
 		bool wasBlocked;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool isParrying;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Avatar Properties")
+		bool hasBeenHit;
+
 
 	// Moving is always updated in avatar, wasMoving to determine if the isMoving was true
 	// and needs to be known before an action which changes speed sets it to false (i.e. after an attack)
@@ -313,6 +319,7 @@ public:
 
 	/* Getters and setters */
 
+
 	float getCurrentStamina(); 
 	float getMaxStamina(); 
 	int getCurrentStanceID();
@@ -338,7 +345,8 @@ public:
 	UViewportSector* const getCurrentViewportSector();
 	TArray<UViewportSector*> const getViewportGrid();
 	const float getNumAxesSegments();
-
+	bool getHasBeenHit();
+	bool getIsParrying();
 
 	void setCurrentHP(float amount); 
 	void setMaxHP(float amount);
@@ -356,5 +364,6 @@ public:
 	void setAvatarWasMovingBeforeAction(bool value);
 	void setAttackMotionStartingSector(int sectorID); 
 	void setDodgeDirection(int directionID);
-
+	void setHasBeenHit(bool value);
+	void setIsParrying(bool value);
 }; 
