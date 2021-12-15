@@ -195,7 +195,7 @@ void ANPC::startAttackingAvatar(float DeltaTime) {
 	if (currentTimeTillAttack <= 0) {
 
 		// In attack range, start an attack if not already attacking 
-		if (inAttackRange && !inAttackMotion && !wasBlocked && !isBlocking && !hasBeenHit) {
+		if (inAttackRange && !inAttackMotion && !wasBlocked && !hasBeenHit) {
 
 			// If an attack has strted, end blocking if needed
 			isBlocking = false;

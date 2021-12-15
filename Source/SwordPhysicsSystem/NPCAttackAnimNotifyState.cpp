@@ -46,6 +46,12 @@ void UNPCAttackAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 		if (npc->SPSActorWasBlocked()) {
 			npc->stopAttackIfBlocked();
 		}
+
+		// If has been hit during attack, transition out
+		if (npc->getHasBeenHit()) {
+			npc->setIsInAttackMotion(false);
+			npc->getMeleeWeapon()->endAttackMotion();
+		}
 	}
 
 }
