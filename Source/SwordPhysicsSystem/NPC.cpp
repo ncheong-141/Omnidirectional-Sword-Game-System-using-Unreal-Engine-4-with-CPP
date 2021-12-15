@@ -95,9 +95,13 @@ void ANPC::Tick(float DeltaTime)
 		}
 
 		// If is blocking
-		if (isBlocking) {
+		if (blockForAvatar) {
 			putGuardUp();
 		}
+	}
+	else {
+		// Stop blocking if out of range
+		isBlocking = false; 
 	}
 }
 
@@ -165,12 +169,13 @@ void ANPC::moveTowardsAvatar(float deltaSeconds) {
 		FVector vectorToAvatar = avatarRef->GetActorLocation() - GetActorLocation();
 
 		float sizeVec = vectorToAvatar.Size(); 
-
+		UE_LOG(LogTemp, Display, TEXT("sizeVec: %f, 0.5* attackRangeSize: %f"), sizeVec, 0.5 * attackRangeSize);
+		
 		// Change to unit vector
 		vectorToAvatar.Normalize(); 
 
 		// Add input to movment of NPC (dont walk right up)
-		if (sizeVec > 0.5* attackRangeSize) {
+		if (sizeVec > 0.9* attackRangeSize) {
 			AddMovementInput(vectorToAvatar, maxMovementSpeed * deltaSeconds);
 		}
 	}
@@ -180,6 +185,9 @@ void ANPC::startAttackingAvatar() {
 
 	// In attack range, start an attack if not already attacking 
 	if (attacking && !inAttackMotion) {
+
+		// If an attack has strted, end blocking if needed
+		isBlocking = false;
 
 		// Generate a random value between 0 - Number of attacks
 		currentAttackID = rand() % numAttacksAvailable;
@@ -196,6 +204,9 @@ void ANPC::startAttackingAvatar() {
 
 void ANPC::putGuardUp() {
 
+	// Put isBlocking
+	isBlocking = true;
+	
 	// Track Avatar focal point if he/she is not attacking, when attacking dont move sword
 	// As then this will be impossible to hit
 	// Could do a step towards Avatar focal point but maybe later
