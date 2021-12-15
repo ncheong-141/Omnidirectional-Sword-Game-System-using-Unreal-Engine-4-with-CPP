@@ -99,7 +99,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 				// Check if cast successful
 				if (npc != nullptr) {
 
-					npc->hasBeenHit = true;
+					npc->setHasBeenHit(true);
 				}
 			}
 		}

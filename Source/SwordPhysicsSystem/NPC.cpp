@@ -6,7 +6,10 @@
 #include "MeleeWeapon.h"
 #include "OneHandedSword.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
 
+// External library for random
+#include <stdlib.h> 
 
 // Constructor
 
@@ -15,23 +18,91 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	// Initialise variables
 	proximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Proximity Sphere"));
 	proximitySphere->SetupAttachment(RootComponent);
-	proximitySphere->SetSphereRadius(32.f);
+	proximitySphere->SetSphereRadius(500.f);
+
+	attackRangeSphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
+	attackRangeSphere->SetupAttachment(RootComponent);
+	attackRangeSphere->SetSphereRadius(200.f);
 
 	// Code to make ANMPC::proc() run when this proximity sphere overlaps another actor
 	proximitySphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::proximityCheck);
+	proximitySphere->OnComponentEndOverlap.AddDynamic(this, &ANPC::endProximityCheck);
+	
+	// Attack range sphere functionality
+	attackRangeSphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::attackRangeCheck);
+	attackRangeSphere->OnComponentEndOverlap.AddDynamic(this, &ANPC::endAttackRangeCheck);
+
 	
 	// Set variables 
 	hasBeenHit = false;
-
 	maxHitPoints = 1000;
 	currentHitPoints = maxHitPoints;
 	attackSpeed = 1.f;
+	movementSpeed = 20.f; 
+
+
+	// AI Control Variables
+	rotateToAvatar = true;
+	moveToAvatar = false;
+	attackAvatar = false; 
+	blockForAvatar = false;
+
+	// AI flags
+	avatarInProximity = false;
+	moving = false;
+	attacking = false;
 	isBlocking = true;
 	wasBlocked = false;
 
+	// Attacking system
+	numAttacksAvailable = 14; 
+	currentAttackID = 0;
 }
 
-// Note, although this was eclared in the header as NPC::Prox() it is now NPC::Prox_Implementaiton here
+// Called every frame
+void ANPC::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// If avatar is in proximity
+	if (avatarInProximity) {
+		
+		// Turn to avatar if flagged to 
+		if (rotateToAvatar) {
+			turnToAvatar();
+		}
+
+		// If move to avatar
+		if (moveToAvatar) {
+			moveTowardsAvatar(DeltaTime);
+		}
+
+		// If attack avatar
+		if (attackAvatar) {
+			startAttackingAvatar();
+		}
+
+		// If is blocking
+		if (isBlocking) {
+			putGuardUp();
+		}
+	}
+}
+
+
+// Called when the game starts or when spawned
+void ANPC::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Get avatar reference
+	APawn* playerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (playerPawn) {
+		avatarRef = Cast<AAvatar>(playerPawn);
+	}
+}
+
+// Note, although this was eclared in the header as NPC::ProximityCheck() it is now NPC::ProximityCheck_Implementaiton here
 int ANPC::proximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 
 	//This is where our code will fo for what happens when there is an intersection
@@ -41,16 +112,54 @@ int ANPC::proximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent
 		return -1;
 	}
 
+	// Avatar entered prximity
+	avatarInProximity = true;
+	return 0;
+}
+
+int ANPC::endProximityCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+
+	// If the overlapped actor is not the player, you should just simply return from the funciton
+	if (Cast < AAvatar >(OtherActor) == nullptr) {
+		return -1;
+	}
+
+	// Avatar exited prximity
+	avatarInProximity = false;
 	return 0;
 }
 
 
-// Called when the game starts or when spawned
-void ANPC::BeginPlay()
-{
-	Super::BeginPlay();
-	
+// Attack range sphere functionality
+int ANPC::attackRangeCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+
+	//This is where our code will fo for what happens when there is an intersection
+
+	// If the overlapped actor is not the player, you should just simply return from the funciton
+	if (Cast < AAvatar >(OtherActor) == nullptr) {
+		return -1;
+	}
+
+	// Avatar entered attack range
+	attacking = true;
+
+	return 0;
 }
+
+int ANPC::endAttackRangeCheck_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+
+	// If the overlapped actor is not the player, you should just simply return from the funciton
+	if (Cast < AAvatar >(OtherActor) == nullptr) {
+		return -1;
+	}
+
+	// Avatar exited attack range
+	attacking = false;
+
+	return 0;
+}
+
+
 
 
 void ANPC::PostInitializeComponents() {
@@ -79,13 +188,88 @@ void ANPC::PostInitializeComponents() {
 }
 
 
-// Called every frame
-void ANPC::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+void ANPC::turnToAvatar() {
 
-	
+	if (avatarRef != nullptr) {
+
+		// actor location - location = vector pointing to avatar
+		FVector vectorToAvatar = avatarRef->GetActorLocation() - GetActorLocation();
+
+		// Get rotation of the vector
+		FRotator rotationToAvatar = vectorToAvatar.Rotation(); 
+
+		// set the pitch to 0 as dont want npc to pitch
+		rotationToAvatar.Pitch = 0; 
+
+		// Set world rotation of NPC (Hard lock on) 
+		RootComponent->SetWorldRotation(rotationToAvatar); 
+	}
 }
+
+void ANPC::moveTowardsAvatar(float deltaSeconds) {
+	
+	if (avatarRef != nullptr) {
+
+		// actor location - location = vector pointing to avatar
+		FVector vectorToAvatar = avatarRef->GetActorLocation() - GetActorLocation();
+
+		// Change to unit vector
+		vectorToAvatar.Normalize(); 
+
+		// Add input to movment of NPC
+		AddMovementInput(vectorToAvatar, movementSpeed*deltaSeconds);
+	}
+
+}
+
+void ANPC::startAttackingAvatar() {
+
+	// In attack range, start an attack if not already attacking 
+	if (attacking && !inAttackMotion) {
+
+		// Generate a random value between 0 - Number of attacks
+		currentAttackID = rand() % numAttacksAvailable;
+
+		// Executes the attack from anim blueprint
+		inAttackMotion = true;
+
+		// This gets set back to false in anim notif state for NPC
+	}
+}
+
+void ANPC::putGuardUp() {
+
+	// Track Avatar focal point if he/she is not attacking, when attacking dont move sword
+	// As then this will be impossible to hit
+	// Could do a step towards Avatar focal point but maybe later
+	if (!avatarRef->avatarIsInAttackMotion()) {
+
+		// Get player focal point
+		FVector2D avatarSFPPosition = avatarRef->getSwordFocalPoint()->position2D;
+
+		// Need to be in opposites sides in X but same in Y
+		npcBasicSwordFocalPoint.X = 1.f - avatarSFPPosition.X;
+		npcBasicSwordFocalPoint.Y = avatarSFPPosition.Y;
+	}
+}
+
+/* Getters and setters */
+bool ANPC::getHasBeenHit() {
+	return hasBeenHit;
+}
+
+void ANPC::setHasBeenHit(bool value) {
+	hasBeenHit = value;
+}
+
+bool ANPC::getIsInAttackMotion() {
+	return inAttackMotion;
+}
+
+void ANPC::setIsInAttackMotion(bool value) {
+	inAttackMotion = value;
+}
+
 
 
 /* Targetable Interface functions*/
@@ -131,7 +315,7 @@ void ANPC::setAttackSpeed(float amount) {
 
 
 void ANPC::stopAttackIfBlocked() {
-
+	inAttackMotion = false;
 }
 
 /* Gettrers and setters */
