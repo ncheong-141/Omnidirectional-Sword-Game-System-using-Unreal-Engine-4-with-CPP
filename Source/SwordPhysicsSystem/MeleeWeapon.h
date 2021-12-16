@@ -48,7 +48,8 @@ public:
 	/* Public Abstract class variables */
 	// Can damage variable, toggled depending on what part of the animation the sword is in 
 	// This is set in animation notifications
-	bool canDamage; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Properties")
+		bool canDamage; 
 
 	// Constructor
 	AMeleeWeapon(const FObjectInitializer& ObjectInitializer);
