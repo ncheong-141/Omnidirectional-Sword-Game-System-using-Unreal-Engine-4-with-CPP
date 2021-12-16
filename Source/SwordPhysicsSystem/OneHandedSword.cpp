@@ -88,7 +88,6 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 		if (weaponHolderIsAvatar) {
 
 			// Dont hit things when conditions arent met
-			// Removed: avatarWeaponHolder->avatarIsInAttackMotion() to generalise and canDamage is never true unless in attack motion
 			if (canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
 
 				// Damage actor
@@ -117,22 +116,30 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 			// Removed: avatarWeaponHolder->avatarIsInAttackMotion() to generalise and canDamage is never true unless in attack motion
 			if (canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
 
-				// Damage actor
-
-				// Add to hit list so do not strike more than once with one swing
-				targetsHit.Add(otherActor);
-
 				// Set staggared if target is a NPC 
 				AAvatar* avatar = Cast<AAvatar>(otherActor);
+
 
 				// Check if cast successful
 				if (avatar != nullptr) {
 
-					// Set hasBeenHit to true only if its not already in animation
-					if (avatar->getHasBeenHit() == false) {
-						avatar->setHasBeenHit(true);
+					// Check to see if in iframe
+					if (!avatar->avatarIsInIframe()) {
+
+						// Damage actor
+
+						// Add to hit list so do not strike more than once with one swing
+						targetsHit.Add(otherActor);
+
+						// Set hasBeenHit to true only if its not already in animation
+						if (avatar->getHasBeenHit() == false) {
+							avatar->setHasBeenHit(true);
+						}
 					}
+
 				}
+
+
 			}
 		}
 	}

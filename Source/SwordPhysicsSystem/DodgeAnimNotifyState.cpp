@@ -28,6 +28,9 @@ void UDodgeAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 				// Set avatar to change yaw with camera direction for all dodges
 				avatar->bUseControllerRotationYaw = true;
 				avatar->avatarMovementComponent->bOrientRotationToMovement = false;
+				
+				// Set avatar to is in Iframe
+				avatar->setAvatarIsInIframe(true);
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
@@ -83,6 +86,12 @@ void UDodgeAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSe
 	if (avatarAnimInstance) {
 		avatarAnimInstance->animationCurrentlyPlaying = true;
 	}	
+
+	// Set avatar to is in Iframe
+	if (avatar) {
+		avatar->setAvatarIsInIframe(true);
+	}
+
 }
 
 
@@ -91,6 +100,7 @@ void UDodgeAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeq
 	// Set dodge to false as it has ended
 	if (avatar) {
 		avatar->setAvatarIsInDodge(false);
+		avatar->setAvatarIsInIframe(false);
 
 		// Reset camera back to normal
 		avatar->bUseControllerRotationYaw = false;
