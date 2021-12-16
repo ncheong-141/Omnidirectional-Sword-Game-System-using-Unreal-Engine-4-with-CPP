@@ -52,7 +52,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	if (enemySword != nullptr) {
 
 		// Check if sword has been hit before. Does not need to be in the can damage state but needs to be in attack motion
-		if (!targetsHit.Contains(otherActor) && weaponHolderInterfaceReference->SPSActorIsInAttackMotion()) {
+		if (!targetsHit.Contains(otherActor) && weaponHolderInterfaceReference->SPSActorIsInAttackMotion() && canDamage) {
 			
 			UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
@@ -82,15 +82,18 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	}
 
 	// Check if an Targatable SPS actor ( check if cast can be succssful)
-	if (Cast<ISPSWeaponHolder>(otherActor)) {
+	ISPSWeaponHolder* targetWeaponHolder = Cast<ISPSWeaponHolder>(otherActor);
+	if (targetWeaponHolder != nullptr) {
 
 		// If the weapon holder is an Avatar
 		if (weaponHolderIsAvatar) {
 
 			// Dont hit things when conditions arent met
-			if (canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor)) {
+			// Also check if the targetWeaponHodlers melee weapon is in the targets hit, if so then dont hit weaponholder
+			if (canDamage && otherActor != (AActor*)weaponHolder && !targetsHit.Contains(otherActor) && !targetsHit.Contains( (AActor*)targetWeaponHolder->getMeleeWeapon()) ) {
 
 				// Damage actor
+				UE_LOG(LogTemp, Display, TEXT("Hit a enemy."));
 
 				// Add to hit list so do not strike more than once with one swing
 				targetsHit.Add(otherActor);

@@ -22,7 +22,7 @@ void UNPC_StaggeredAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp
 
 				// Begin notifcation code for avatar
 				// Not required to set isInDodge for avatar as done in input command
-				npc->setHasBeenHit(true);
+				//npc->setHasBeenHit(true);
 			}
 			else {
 				UE_LOG(LogTemp, Error, TEXT("Avatar cast unsuccessful in %s"), __FUNCTION__)
