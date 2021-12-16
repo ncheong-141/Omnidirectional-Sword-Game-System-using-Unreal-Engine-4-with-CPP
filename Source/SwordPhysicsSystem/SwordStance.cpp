@@ -114,7 +114,7 @@ void SwordStance::Pitch(float amount) {
 	if (avatarPtr->pController && amount) {
 
 		// Here 200 is mouse sensitivity (hardcoded for this case), getworld...etc gives you the amount of time that passed between the last frame and this frame
-		avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+		avatarPtr->AddControllerPitchInput(-avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 
 	}
 }

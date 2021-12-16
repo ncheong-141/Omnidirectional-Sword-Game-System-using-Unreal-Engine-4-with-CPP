@@ -61,7 +61,7 @@ void BodyRotationSlashStance::Pitch(float amount) {
 
 		// Avatar is not attacking
 		if (!avatarPtr->avatarIsInAttackMotion()) {
-			avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			avatarPtr->AddControllerPitchInput(-avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 	}
 }

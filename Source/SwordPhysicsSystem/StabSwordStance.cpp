@@ -64,7 +64,7 @@ void StabSwordStance::Pitch(float amount) {
 		if (avatarPtr->getMeleeWeapon() != nullptr) {
 
 			if (avatarPtr->getMeleeWeapon()->canDamage) {
-				avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+				avatarPtr->AddControllerPitchInput(-avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 			}
 		}
 	}

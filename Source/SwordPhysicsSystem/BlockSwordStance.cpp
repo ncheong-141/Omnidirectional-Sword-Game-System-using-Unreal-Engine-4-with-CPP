@@ -122,7 +122,7 @@ void BlockSwordStance::Pitch(float amount) {
 
 		// Dont enter the body of this function if the controller is not set up, or amount == 0; 
 		if (avatarPtr->pController && amount) {
-			avatarPtr->AddControllerPitchInput(avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
+			avatarPtr->AddControllerPitchInput(-avatarPtr->getBasePitchTurnSpeed() * amount * avatarPtr->GetWorld()->GetDeltaSeconds());
 		}
 	}
 }
