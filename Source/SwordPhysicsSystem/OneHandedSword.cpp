@@ -51,8 +51,8 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	AMeleeWeapon* enemySword = Cast<AMeleeWeapon>(otherActor);
 	if (enemySword != nullptr) {
 
-		// Check if sword has been hit before. Does not need to be in the can damage state!!
-		if (!targetsHit.Contains(otherActor) ) {
+		// Check if sword has been hit before. Does not need to be in the can damage state but needs to be in attack motion
+		if (!targetsHit.Contains(otherActor) && weaponHolderInterfaceReference->SPSActorIsInAttackMotion()) {
 			
 			UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
@@ -70,7 +70,7 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 
 					// Blocking, so set this attacking actor to WasBlocked
 					weaponHolderInterfaceReference->SPSSetActorWasBlocked(true);
-					UE_LOG(LogTemp, Display, TEXT("Enemy Sword is blocking and set Attack to was blocked"));
+					UE_LOG(LogTemp, Display, TEXT("Enemy Sword is blocking and set Attacker to was blocked"));
 				}
 			}
 

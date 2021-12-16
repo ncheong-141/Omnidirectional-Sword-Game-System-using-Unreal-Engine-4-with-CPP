@@ -209,6 +209,7 @@ public:
 	virtual float getAttackSpeed() override;
 	virtual void setAttackSpeed(float amount) override;
 	virtual void stopAttackIfBlocked() override;
+	virtual bool SPSActorIsInAttackMotion() override;
 
 	AMeleeWeapon* const getMeleeWeapon() override;
 

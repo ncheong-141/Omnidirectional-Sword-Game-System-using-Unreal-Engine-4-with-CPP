@@ -852,7 +852,9 @@ void AAvatar::stopAttackIfBlocked() {
 	setAttackSpeed(1.f);
 }
 
-
+bool AAvatar::SPSActorIsInAttackMotion() {
+	return isInAttackMotion;
+}
 
 
 

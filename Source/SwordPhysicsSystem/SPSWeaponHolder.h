@@ -32,6 +32,7 @@ public:
 	virtual void SPSSetActorIsBlocking(bool value) = 0;
 	virtual void SPSSetActorWasBlocked(bool value) = 0;
 	virtual void stopAttackIfBlocked() = 0; 
+	virtual bool SPSActorIsInAttackMotion() = 0;
 
 	// Hit point variables 
 	virtual float SPSActorGetHP() = 0;

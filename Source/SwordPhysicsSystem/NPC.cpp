@@ -208,7 +208,10 @@ void ANPC::startAttackingAvatar(float DeltaTime) {
 
 			// Set Weapon in attack
 			// This gets set back to false in anim notif state for NPC
-			MeleeWeapon->startAttackMotion();
+			if (MeleeWeapon) {
+				MeleeWeapon->startAttackMotion();
+			}
+			
 
 			// Reset currentTImeTillAttack since attack performed
 			currentTimeTillAttack = attackDelayTime;
@@ -363,6 +366,10 @@ void ANPC::SPSSetActorWasBlocked(bool value) {
 	wasBlocked = value;
 }
 
+bool ANPC::SPSActorIsInAttackMotion() {
+	return inAttackMotion;
+}
+
 float ANPC::SPSActorGetHP() {
 	return currentHitPoints;
 }
@@ -396,7 +403,7 @@ void ANPC::stopAttackIfBlocked() {
 	inAttackMotion = false;
 
 	// Weapon end motion
-	getMeleeWeapon()->endAttackMotion();
+	//getMeleeWeapon()->endAttackMotion();
 
 	// Set attackspeed back to normal (when have proper animations this wont be needed)
 	setAttackSpeed(1.f);
