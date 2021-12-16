@@ -677,7 +677,7 @@ void AAvatar::setAttackAnimInformation() {
 void AAvatar::inputMovementLockCheck() {
 
 	// List of conditions in which would lock cardinal movement (use ||)
-	if (isInDodge || isInAir || isInAttackMotion ) {
+	if (isInDodge || isInAir || isInAttackMotion || hasBeenHit) {
 		inputMovementLocked = true;
 	}
 	else {
@@ -688,7 +688,7 @@ void AAvatar::inputMovementLockCheck() {
 void AAvatar::actionAbilityLockCheck() {
 
 	// List of conditions in which would lock actions (use ||)
-	if (isInDodge || isInAir) {
+	if (isInDodge || isInAir || hasBeenHit) {
 		actionAbilityLocked = true;
 	}
 	else {

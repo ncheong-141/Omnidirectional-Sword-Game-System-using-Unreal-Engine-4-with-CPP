@@ -18,7 +18,7 @@ USwordTargetingSystemComponent::USwordTargetingSystemComponent(const FObjectInit
 	targetsInProximity = TArray<AActor*>();
 	yawSensitivity = 4;
 	pitchSensitivity = 1.0;
-	lockOnStepSize = 0.2;
+	lockOnStepSize = 1;
 
 	// Instantiate sight sphere
 	sightProximitySphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Target System Proximity Sphere"));

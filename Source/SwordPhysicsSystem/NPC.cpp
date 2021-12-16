@@ -22,7 +22,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	proximitySphere->SetupAttachment(RootComponent);
 	proximitySphere->SetSphereRadius(700.f);
 
-	attackRangeSize = 350.f;
+	attackRangeSize = 500.f;
 	attackRangeSphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
 	attackRangeSphere->SetupAttachment(RootComponent);
 	attackRangeSphere->SetSphereRadius(attackRangeSize);
@@ -58,6 +58,7 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	isBlocking = false;
 	wasBlocked = false;
 	hasBeenHit = false;
+	dead = false;
 
 	// Attacking system
 	numAttacksAvailable = 14; 
@@ -76,9 +77,13 @@ void ANPC::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// If dead dont do anything (leave body)
+	if (dead) {
+		return;
+	}
+
 	// Update velocities
 	velocityUpdate();
-
 
 	// If avatar is in proximity
 	if (avatarInProximity) {

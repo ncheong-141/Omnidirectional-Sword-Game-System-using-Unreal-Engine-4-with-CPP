@@ -89,6 +89,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
 		bool hasBeenHit;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
+		bool dead;
 
 	// Attacking
 	// Just using a random attack selecter 
