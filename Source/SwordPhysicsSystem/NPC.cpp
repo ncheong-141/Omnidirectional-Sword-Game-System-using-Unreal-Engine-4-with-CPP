@@ -27,6 +27,10 @@ ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitialize
 	attackRangeSphere->SetupAttachment(RootComponent);
 	attackRangeSphere->SetSphereRadius(attackRangeSize);
 
+	blockPawnSphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("Block Sphere"));
+	blockPawnSphere->SetupAttachment(RootComponent);
+	blockPawnSphere->SetSphereRadius(150.f);
+
 	// Code to make ANMPC::proc() run when this proximity sphere overlaps another actor
 	proximitySphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::proximityCheck);
 	proximitySphere->OnComponentEndOverlap.AddDynamic(this, &ANPC::endProximityCheck);
@@ -188,7 +192,11 @@ void ANPC::moveTowardsAvatar(float deltaSeconds) {
 
 			// Add input to movment of NPC (dont walk right up)
 			if (sizeVec > 0.9 * attackRangeSize) {
+				moving = true;
 				AddMovementInput(vectorToAvatar, maxMovementSpeed * deltaSeconds);
+			}
+			else {
+				moving = false;
 			}
 		}
 	}

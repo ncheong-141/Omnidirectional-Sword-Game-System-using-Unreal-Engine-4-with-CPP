@@ -69,6 +69,7 @@ void UWasBlockedAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 
 				// Reversse attackspeed variable to simulate recoil (no animations for rebound)
 				avatar->setAttackSpeed(-1.f);
+				UE_LOG(LogTemp, Display, TEXT("AS -1"));
 			}
 
 			if (Cast<ANPC>(weaponHolder.GetObject())) {

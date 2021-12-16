@@ -26,6 +26,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
 		USphereComponent* attackRangeSphere;
 
+	// Used since system is not good at very close ranges (sword hits body first no matter what)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
+		USphereComponent* blockPawnSphere;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Properties")
 		float attackRangeSize;
 

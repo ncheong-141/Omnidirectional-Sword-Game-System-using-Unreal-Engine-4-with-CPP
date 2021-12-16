@@ -68,7 +68,7 @@ AAvatar::AAvatar(const FObjectInitializer& ObjectInitializer) {
 	slashStance = SlashSwordStance(this, 1, true, true);
 	blockStance = BlockSwordStance(this, 2, true, true);
 	stabStance = StabSwordStance(this, 3, true, true);
-	bodyRotationSlashStance = BodyRotationSlashStance(this, 4, true, true);
+	bodyRotationSlashStance = BodyRotationSlashStance(this, 4, true, false);
 
 	// Set the Avatar sword stance initially to Default.
 	AAvatar::setStance(defaultStance);

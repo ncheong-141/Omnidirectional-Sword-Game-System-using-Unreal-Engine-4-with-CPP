@@ -52,7 +52,8 @@ int AOneHandedSword::proximityCheck_Implementation(UPrimitiveComponent* overlapp
 	if (enemySword != nullptr) {
 
 		// Check if sword has been hit before. Does not need to be in the can damage state but needs to be in attack motion
-		if (!targetsHit.Contains(otherActor) && weaponHolderInterfaceReference->SPSActorIsInAttackMotion() && canDamage) {
+		// Also dont hit if the owner of the sword has already been hit
+		if (!targetsHit.Contains(otherActor) && !targetsHit.Contains(enemySword->GetOwner()) && weaponHolderInterfaceReference->SPSActorIsInAttackMotion() && canDamage) {
 			
 			UE_LOG(LogTemp, Display, TEXT("Hit a enemy sword."));
 
