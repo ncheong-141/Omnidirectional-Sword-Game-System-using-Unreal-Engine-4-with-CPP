@@ -359,7 +359,13 @@ void ANPC::setIsInAttackMotion(bool value) {
 	inAttackMotion = value;
 }
 
+bool ANPC::getIsUnbalancedFromBlock() {
+	return unbalancedFromBlock;
+}
 
+void ANPC::setIsunbalancedFromBlock(bool value) {
+	unbalancedFromBlock = value;
+}
 
 /* Targetable Interface functions*/
 bool ANPC::SPSActorIsBlocking() {
@@ -416,13 +422,13 @@ void ANPC::stopAttackIfBlocked() {
 	inAttackMotion = false;
 
 	// Weapon end motion
-	//getMeleeWeapon()->endAttackMotion();
+	getMeleeWeapon()->endAttackMotion();
 
 	// Set attackspeed back to normal (when have proper animations this wont be needed)
 	setAttackSpeed(1.f);
 
 	// Set has been hit to true just for flinch animation
-	setHasBeenHit(true);
+	//setHasBeenHit(true);
 }
 
 /* Gettrers and setters */

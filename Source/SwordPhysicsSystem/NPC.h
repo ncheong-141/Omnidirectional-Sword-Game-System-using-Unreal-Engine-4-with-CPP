@@ -91,6 +91,9 @@ protected:
 		bool wasBlocked;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
+		bool unbalancedFromBlock;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
 		bool hasBeenHit;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NPC Properties")
@@ -202,6 +205,8 @@ public:
 	void setHasBeenHit(bool value); 
 	bool getIsInAttackMotion(); 
 	void setIsInAttackMotion(bool value);
+	bool getIsUnbalancedFromBlock();
+	void setIsunbalancedFromBlock(bool value);
 
 
 	/* Targetable Interface functions*/

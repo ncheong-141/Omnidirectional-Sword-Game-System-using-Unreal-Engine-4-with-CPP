@@ -76,11 +76,10 @@ void UWasBlockedAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 
 				ANPC* npc = Cast<ANPC>(weaponHolder.GetObject());
 				
-				// Not required as doing in npc attack state
-				npc->stopAttackIfBlocked();
+				//npc->stopAttackIfBlocked();
+
+				npc->setIsunbalancedFromBlock(true);
 			}
-
-
 		}
 	}
 }
@@ -100,6 +99,7 @@ void UWasBlockedAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 	if (weaponHolder) {
 
 		if (weaponHolder->SPSActorWasBlocked()) {
+
 			weaponHolder->stopAttackIfBlocked();
 		}
 	}
